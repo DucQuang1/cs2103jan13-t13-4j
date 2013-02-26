@@ -2,7 +2,6 @@ import java.awt.EventQueue;
 import java.awt.Color;
 import java.awt.Font;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,20 +9,11 @@ import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jfree.chart.*;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.StandardBarPainter;
-import org.jfree.data.category.*;
-
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
-public class MainWindow {
+public class Finances {
 
 	private JFrame mainFrame;
 
@@ -34,7 +24,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow();
+					Finances window = new Finances();
 					window.mainFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -46,7 +36,7 @@ public class MainWindow {
 	/**
 	 * Create the application.
 	 */
-	public MainWindow() {
+	public Finances() {
 		initialize();
 	}
 
@@ -180,22 +170,22 @@ public class MainWindow {
 		
 		JButton btnAdd = new JButton("");
 		btnAdd.setBackground(new Color(255, 255, 255));
-		btnAdd.setIcon(new ImageIcon(MainWindow.class.getResource("/img/Add.png")));
+		btnAdd.setIcon(new ImageIcon(Finances.class.getResource("/img/Add.png")));
 		crudPanel.add(btnAdd, "cell 0 0");
 		
-		JButton btnEdit = new JButton(new ImageIcon(MainWindow.class.getResource("/img/Edit.png")));
+		JButton btnEdit = new JButton(new ImageIcon(Finances.class.getResource("/img/Edit.png")));
 		crudPanel.add(btnEdit, "cell 1 0");
 		
 		JButton btnDel = new JButton("");
-		btnDel.setIcon(new ImageIcon(MainWindow.class.getResource("/img/Del.png")));
+		btnDel.setIcon(new ImageIcon(Finances.class.getResource("/img/Del.png")));
 		crudPanel.add(btnDel, "cell 2 0");
 		
 		JButton btnUndo = new JButton("");
-		btnUndo.setIcon(new ImageIcon(MainWindow.class.getResource("/img/Undo.png")));
+		btnUndo.setIcon(new ImageIcon(Finances.class.getResource("/img/Undo.png")));
 		crudPanel.add(btnUndo, "cell 3 0");
 		
 		JButton btnSearch = new JButton("");
-		btnSearch.setIcon(new ImageIcon(MainWindow.class.getResource("/img/Search.png")));
+		btnSearch.setIcon(new ImageIcon(Finances.class.getResource("/img/Search.png")));
 		crudPanel.add(btnSearch, "cell 4 0");
 		
 		/**
