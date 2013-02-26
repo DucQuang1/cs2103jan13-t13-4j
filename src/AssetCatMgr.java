@@ -31,7 +31,7 @@ public class AssetCatMgr {
 			Scanner assetCatReader = new Scanner(new FileReader(path + "/db/AssetCategory.txt"));
 
 			while (assetCatReader.hasNext()) {
-				StringTokenizer st = new StringTokenizer(assetCatReader.nextLine(), ",");
+				StringTokenizer st = new StringTokenizer(assetCatReader.nextLine(), "|");
 				amt = Double.parseDouble(st.nextToken());
 				category = st.nextToken();
 				AssetDataset.setValue(amt,key,category);

@@ -1,4 +1,4 @@
-800,OCBC
-500,DBS
-200,Cash
-55,EZ-Link
+800|OCBC
+500|DBS
+200|Cash
+55|EZ-Link

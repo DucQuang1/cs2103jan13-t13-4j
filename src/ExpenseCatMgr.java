@@ -31,7 +31,7 @@ public class ExpenseCatMgr {
 			Scanner ExpenseCatReader = new Scanner(new FileReader(path + "/db/ExpenseCategory.txt"));
 
 			while (ExpenseCatReader.hasNext()) {
-				StringTokenizer st = new StringTokenizer(ExpenseCatReader.nextLine(), ",");
+				StringTokenizer st = new StringTokenizer(ExpenseCatReader.nextLine(), "|");
 				amt = Double.parseDouble(st.nextToken());
 				category = st.nextToken();
 				ExpenseDataset.setValue(amt,key,category);

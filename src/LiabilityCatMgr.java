@@ -31,7 +31,7 @@ public class LiabilityCatMgr {
 			Scanner LiabilityCatReader = new Scanner(new FileReader(path + "/db/LiabilityCategory.txt"));
 
 			while (LiabilityCatReader.hasNext()) {
-				StringTokenizer st = new StringTokenizer(LiabilityCatReader.nextLine(), ",");
+				StringTokenizer st = new StringTokenizer(LiabilityCatReader.nextLine(), "|");
 				amt = Double.parseDouble(st.nextToken());
 				category = st.nextToken();
 				LiabilityDataset.setValue(amt,key,category);

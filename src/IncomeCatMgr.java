@@ -31,7 +31,7 @@ public class IncomeCatMgr {
 			Scanner IncomeCatReader = new Scanner(new FileReader(path + "/db/IncomeCategory.txt"));
 
 			while (IncomeCatReader.hasNext()) {
-				StringTokenizer st = new StringTokenizer(IncomeCatReader.nextLine(), ",");
+				StringTokenizer st = new StringTokenizer(IncomeCatReader.nextLine(), "|");
 				amt = Double.parseDouble(st.nextToken());
 				category = st.nextToken();
 				IncomeDataset.setValue(amt,key,category);
