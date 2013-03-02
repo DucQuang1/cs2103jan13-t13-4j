@@ -21,14 +21,14 @@ public class AssetCatMgr {
 	public ChartPanel readAssetCatTxt() {
 		double amt;
 		String category;
-		String path = getClass().getResource(".").getPath();	//see if necessary
+		String path = getClass().getResource(".").getPath() + "/db/AssetCategory.txt";	//see if necessary
 
 		//initialize AssetDataSet
 		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
 
 		//read in data from the txt file
 		try {
-			Scanner assetCatReader = new Scanner(new FileReader(path + "/db/AssetCategory.txt"));
+			Scanner assetCatReader = new Scanner(new FileReader(path));
 
 			while (assetCatReader.hasNext()) {
 				StringTokenizer st = new StringTokenizer(assetCatReader.nextLine(), "|");
