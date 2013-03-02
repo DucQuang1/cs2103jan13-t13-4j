@@ -47,7 +47,7 @@ public class IncomeCatMgr {
 			CategoryPlot IncomePlot = IncomeType.getCategoryPlot();
 			IncomePlot.setBackgroundPaint(Color.WHITE);							//to set the background color of the chart as white
 			BarRenderer IncomeRenderer = (BarRenderer) IncomePlot.getRenderer();
-			IncomeRenderer.setSeriesPaint(0, new Color(50, 96, 255));
+			IncomeRenderer.setSeriesPaint(0, new Color(13, 92, 166));
 			IncomeRenderer.setBarPainter(new StandardBarPainter());				//to disable the default 'shiny look'
 			
 			//creating the chart panel
