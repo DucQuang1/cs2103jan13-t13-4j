@@ -7,14 +7,14 @@ import java.util.Date;
  *
  */
 public class Entry{
-	private int transactionType;
-	private int id;
-	private double amount;
-	private Date date;
-	private String category1;
-	private String category2;
-	private String description;
-	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
+	protected int transactionType;
+	protected int id;
+	protected double amount;
+	protected Date date;
+	protected String category1;
+	protected String category2;
+	protected String description;
+	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
 	/**
 	 * Default Constructor
 	 */
@@ -38,52 +38,111 @@ public class Entry{
 		this.description = description;
 	}
 	
-	//Getters
+	/**
+	 * gets id
+	 * @return id
+	 */
 	public int getId(){
 		return id;
 	}
+	/**
+	 * gets transactionType
+	 * @return transactionType
+	 */
 	public int getTransactionType(){
 		return transactionType;
 	}
+	/**
+	 * gets amount
+	 * @return amount
+	 */
 	public double getAmount(){
 		return amount;
 	}
+	/**
+	 * get date
+	 * @return date
+	 */
 	public Date getDate(){
 		return date;
 	}
+	/**
+	 * get category1
+	 * @return category1
+	 */
 	public String getCategory1(){
 		return category1;
 	}
+	/**
+	 * get category2
+	 * @return category2
+	 */
 	public String getCategory2(){
 		return category2;
 	}
+	/**
+	 * get description
+	 * @return description
+	 */
 	public String getDescription(){
 		return description;
 	}
 	
-	//Setters (for updating)
+	/**
+	 * sets id
+	 * @param id
+	 */
 	public void setId(int id){
 		this.id= id;
 	}
+	/**
+	 * sets transactionType
+	 * @param transactionType
+	 */
 	public void setTransactionType(int transactionType){
 		this.transactionType= transactionType;
 	}
+	/**
+	 * sets amount
+	 * @param amount
+	 */
 	public void setAmount(double amount){
 		this.amount = amount;
 	}
+	/**
+	 * sets date
+	 * @param date
+	 */
 	public void setDate(Date date){
 		this.date = date;
 	}
+	/**
+	 * sets category1
+	 * @param category1
+	 */
 	public void setCategory1(String category1){
 		this.category1 = category1;
 	}
+	/**
+	 * sets category2
+	 * @param category2
+	 */
 	public void setCategory2(String category2){
 		this.category2 = category2;
 	}
+	/**
+	 * sets description
+	 * @param description
+	 */
 	public void setDescription(String description){
 		this.description = description;
 	}
 	
+	/**
+	 * returns a string in format to be printed to txt file
+	 * each field is separated by a pipe character
+	 * @return output
+	 */
 	public String toTxt(){
 		String output = new String();
 		output = "\n"  + Integer.toString(id) + "|" + Integer.toString(transactionType) + "|"

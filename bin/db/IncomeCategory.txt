@@ -1,3 +1,4 @@
-4000|Salary
-1000|Dividends
-200|GST Rebate
+Salary|4000
+Dividends|1000
+GST Rebate|2200.0
+TestCat|600.0

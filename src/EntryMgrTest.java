@@ -18,16 +18,21 @@ public class EntryMgrTest {
 		Date d1 = null;
 		final SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
 		try {
-			d1 = date_format.parse("28/02/13");
+			d1 = date_format.parse("20/02/13");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		entryMgr.addEntry(2, 600.00, d1, "DBS", "HDB Installment", "trial");
+		int tempId = entryMgr.addEntry(2, 100.00, d1, "DBS", "Restaurant", "trial");
+		System.out.println(tempId);
+		//Entry testEntry = new Entry(5, 1, 4000, d1, "DBS", "Salary", "trial");
+		//entryMgr.editEntry(testEntry);
 		LinkedList<Entry> transactionList = new LinkedList<Entry>(entryMgr.getTransactionList());
-		for(Entry e : transactionList){
-			System.out.print(e.toTxt());
+		
+		System.out.println(entryMgr.getEntry(3).toTxt());
+		for(Entry entry : transactionList){
+			System.out.print(entry.toTxt());
 		}
-		System.out.println(transactionList.size());
+		System.out.println();
 	}
 
 }

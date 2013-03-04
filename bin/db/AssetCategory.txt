@@ -1,4 +1,5 @@
-800|OCBC
-500|DBS
-200|Cash
-55|EZ-Link
+OCBC|3600.0
+DBS|600.0
+Cash|350.0
+EZ-Link|50
+TestCat|2600.0
