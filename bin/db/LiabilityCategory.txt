@@ -1,2 +1,2 @@
-1000|AMEX Card
-2000|OCBC Platinum
+AMEX Card|1200
+OCBC Platinum|850
