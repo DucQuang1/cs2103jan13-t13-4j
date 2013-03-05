@@ -141,13 +141,24 @@ public class Entry{
 	/**
 	 * returns a string in format to be printed to txt file
 	 * each field is separated by a pipe character
+	 * includes a newline in front by default
+	 * supports option for not printing newline in front, 
+	 * which is used for first entry to file, to prevent a blank line and subsequent errors
+	 * @param includeNewLine
 	 * @return output
 	 */
-	public String toTxt(){
+	public String toTxt(boolean includeNewLine){
+		
 		String output = new String();
-		output = "\n"  + Integer.toString(id) + "|" + Integer.toString(transactionType) + "|"
+		
+		if (includeNewLine){
+			output += "\n";
+		}
+		
+		output += Integer.toString(id) + "|" + Integer.toString(transactionType) + "|"
 				+ Double.toString(amount) + "|" + date_format.format(date) + "|"
 				+ category1 + "|" + category2 + "|" + description ;
+		
 		return output;
 	}
 }

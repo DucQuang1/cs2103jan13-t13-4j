@@ -24,6 +24,8 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * GUI class that displays the main window
@@ -182,6 +184,14 @@ public class Finances {
 		ExpensePanel.add(renderChart(ExpenseDataset, 3));
 		ExpensePanel.add(btnEditExpenseCategories);
 		mainFrame.getContentPane().add(ExpensePanel, "cell 1 2,grow");
+		
+		//to clear log when exiting the application
+		mainFrame.addWindowListener(new WindowAdapter(){
+			
+			public void windowClosing(WindowEvent e) {
+                TransactionMgr.getHistoryMgr().clearLog();
+            }
+		});
 
 	}
 	
@@ -221,6 +231,7 @@ public class Finances {
 		ExpensePanel.add(btnEditExpenseCategories);
 		
 		//refresh transactionList
+		TransactionListPanel.removeAll();
 		renderList(TransactionListPanel, TransactionMgr.getEntryMgr().getTransactionList());
 		mainFrame.validate();
 	}
@@ -238,27 +249,28 @@ public class Finances {
 			tempPanel.setBackground(new Color(255, 255, 255));
 			JTextArea entry = new JTextArea();
 			String entryText = new String();
-			entryText += "ID:\t" + Integer.toString(transactionList.get(i).getId()) + "\n";
-			switch(transactionList.get(i).getTransactionType())
+			Entry tempEntry = transactionList.get(i);
+			entryText += "ID:\t" + Integer.toString(tempEntry.getId()) + "\n";
+			switch(tempEntry.getTransactionType())
 			{
 				case 0:	entryText += "Income\t";
 						break;
 				case 1:
 				case 2: entryText += "Expense\t";
 						break;
-				case 3: entryText += "Take Loan\t";
+				case 3: entryText += "Repay Loan\t";
 						break;
-				case 4:	entryText += "Repay Loan\t";
+				case 4:	entryText += "Take Loan\t";
 						break;
 				default:entryText += "Unspecified Type!";
 						break;
 			}
-			entryText += Double.toString(transactionList.get(i).getAmount()) + "\n";
-			entryText += "From:\t" + transactionList.get(i).getCategory1() + "\n";
-			entryText += "To:\t" + transactionList.get(i).getCategory2() + "\n";
+			entryText += Double.toString(tempEntry.getAmount()) + "\n";
+			entryText += "From:\t" + tempEntry.getCategory1() + "\n";
+			entryText += "To:\t" + tempEntry.getCategory2() + "\n";
 			entry.setText(entryText);			
 			tempPanel.add(entry);
-			JLabel descriptionLabel = new JLabel("<html>" + transactionList.get(i).getDescription() + "</html>");
+			JLabel descriptionLabel = new JLabel("<html>" + tempEntry.getDescription() + "</html>");
 			descriptionLabel.setFont(new Font("SanSerif",Font.ITALIC,12));
 			tempPanel.add(descriptionLabel);
 			

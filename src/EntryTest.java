@@ -23,7 +23,8 @@ public class EntryTest {
 		Entry e1 = new Entry(1,1,5000,d1,"Cash","Salary","first expense");
 		System.out.println(d1.toString());
 		System.out.println(e1.toString());	//toString is a pre-defined method by the system.
-		System.out.println(e1.toTxt());		//have to use toTxt to print out to txt.
+		System.out.println(e1.toTxt(false));		//have to use toTxt to print out to txt.
+		System.out.println(e1.toTxt(true));			//prints with an extra newline in front
 		
 	}
 

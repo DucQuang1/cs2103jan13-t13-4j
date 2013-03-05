@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-//TODO month textfield not showing up properly (too squeezed)
 
 /**
  * GUI class that handles an liability entry
@@ -42,8 +41,8 @@ public class TransactionMgrJPanelTakeLoan extends InputPanel {
 		assetTypeCB.addItem("New Category");
 		add(assetTypeCB, "cell 1 1,growx");
 		
-		JLabel lblExpenseCategory = new JLabel("liability Category");
-		add(lblExpenseCategory, "cell 2 1,alignx left");
+		JLabel lblLiabilityCategory = new JLabel("Liability Category");
+		add(lblLiabilityCategory, "cell 2 1,alignx left");
 		
 		//drop down menu for liability categories
 		final JComboBox<String> liabilityCatCB = new JComboBox<String>();
@@ -107,29 +106,25 @@ public class TransactionMgrJPanelTakeLoan extends InputPanel {
 	
 				//get asset category
 				if (assetTypeCB.getSelectedIndex() == assetTypeCB.getItemCount()-1){
-					System.out.println(assetTypeCB.getSelectedIndex());
 					category1 = category1Field.getText();
 					//check if new category is unique
 					if (assetCatMgr.checkExisting(category1))
 						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+								"Please try a different name.<br>";
 				}
 				else {
 					category1 = (String) assetTypeCB.getSelectedItem();
-					System.out.println(assetTypeCB.getSelectedIndex());
 				}
 				//get liability category
 				if (liabilityCatCB.getSelectedIndex() == liabilityCatCB.getItemCount()-1){
-					System.out.println(liabilityCatCB.getSelectedIndex());
-					category2 = category1Field.getText();
+					category2 = category2Field.getText();
 					//check if new category is unique
-					if (assetCatMgr.checkExisting(category2))
+					if (liabilityCatMgr.checkExisting(category2))
 						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+								"Please try a different name.<br>";
 				}
 				else {
 					category2 = (String) liabilityCatCB.getSelectedItem();
-					System.out.println(liabilityCatCB.getSelectedIndex());
 				}
 				
 				description = descriptionField.getText();
@@ -145,7 +140,7 @@ public class TransactionMgrJPanelTakeLoan extends InputPanel {
 					int id = 1 + entryMgr.getCurrentId();
 					
 					//update entryMgr
-					entryMgr.addEntry(0, amount, date, category1, category2, description);
+					entryMgr.addEntry(4, amount, date, category1, category2, description);
 					
 					//update assetCatmgr
 					int assetType = assetTypeCB.getSelectedIndex();
@@ -159,15 +154,17 @@ public class TransactionMgrJPanelTakeLoan extends InputPanel {
 					//update liabilityCatMgr
 					int liabilityType = liabilityCatCB.getSelectedIndex();
 					if (liabilityType == liabilityCatCB.getItemCount()-1){
-						liabilityCatMgr.addCategory(category1, amount);
+						liabilityCatMgr.addCategory(category2, amount);
 					}
 					else{
 						liabilityCatMgr.addAmountToCategory(liabilityCatCB.getItemAt(liabilityType), amount);
 					}
 					
 					//update historyMgr
-					historyMgr.addLog(0, id, 0, amount, date, category1, category2, description);
-
+					historyMgr.addLog(0, id, 4, amount, date, category1, category2, description);
+					
+					resetFields();
+					
 					hostFrame.dispose();
 				}
 			}

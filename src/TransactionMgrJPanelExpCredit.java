@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-//TODO month textfield not showing up properly (too squeezed)
 
 /**
  * GUI class that handles an liability entry
@@ -32,10 +31,10 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 		
 		setBackground(new Color(255, 240, 243));
 		
-		JLabel lblType = new JLabel("Asset Type");
+		JLabel lblType = new JLabel("Liability Type");
 		add(lblType, "cell 0 1,alignx left");
 		
-		//drop down menu for asset categories
+		//drop down menu for liability categories
 		final JComboBox<String> liabilityTypeCB = new JComboBox<String>();
 		for(String liabilityCat : liabilityCatMgr.getCategoryList())
 			liabilityTypeCB.addItem(liabilityCat);
@@ -105,31 +104,27 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 					errorMsg += "Unable to process date.<br>";
 				}
 	
-				//get asset category
+				//get liability category
 				if (liabilityTypeCB.getSelectedIndex() == liabilityTypeCB.getItemCount()-1){
-					System.out.println(liabilityTypeCB.getSelectedIndex());
 					category1 = category1Field.getText();
 					//check if new category is unique
-					if (assetCatMgr.checkExisting(category1))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					if (liabilityCatMgr.checkExisting(category1))
+						errorMsg += "Liability Type already exists.<br>" +
+								"Please try a different name.<br>";
 				}
 				else {
 					category1 = (String) liabilityTypeCB.getSelectedItem();
-					System.out.println(liabilityTypeCB.getSelectedIndex());
 				}
-				//get liability category
+				//get expense category
 				if (expenseCatCB.getSelectedIndex() == expenseCatCB.getItemCount()-1){
-					System.out.println(expenseCatCB.getSelectedIndex());
-					category2 = category1Field.getText();
+					category2 = category2Field.getText();
 					//check if new category is unique
-					if (assetCatMgr.checkExisting(category2))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					if (expenseCatMgr.checkExisting(category2))
+						errorMsg += "Expense Category already exists.<br>" +
+								"Please try a different name.<br>";
 				}
 				else {
 					category2 = (String) expenseCatCB.getSelectedItem();
-					System.out.println(expenseCatCB.getSelectedIndex());
 				}
 				
 				description = descriptionField.getText();
@@ -145,29 +140,31 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 					int id = 1 + entryMgr.getCurrentId();
 					
 					//update entryMgr
-					entryMgr.addEntry(0, amount, date, category1, category2, description);
+					entryMgr.addEntry(2, amount, date, category1, category2, description);
 					
-					//update assetCatmgr
-					int assetType = liabilityTypeCB.getSelectedIndex();
-					if (assetType == liabilityTypeCB.getItemCount()-1){
-						assetCatMgr.addCategory(category1, amount);
-					}
-					else{
-						assetCatMgr.addAmountToCategory(liabilityTypeCB.getItemAt(assetType), amount);
-					}
-					
-					//update liabilityCatMgr
-					int liabilityType = expenseCatCB.getSelectedIndex();
-					if (liabilityType == expenseCatCB.getItemCount()-1){
+					//update liabilityCatmgr
+					int liabilityType = liabilityTypeCB.getSelectedIndex();
+					if (liabilityType == liabilityTypeCB.getItemCount()-1){
 						liabilityCatMgr.addCategory(category1, amount);
 					}
 					else{
-						liabilityCatMgr.addAmountToCategory(expenseCatCB.getItemAt(liabilityType), amount);
+						liabilityCatMgr.addAmountToCategory(liabilityTypeCB.getItemAt(liabilityType), amount);
+					}
+					
+					//update expenseCatMgr
+					int expenseType = expenseCatCB.getSelectedIndex();
+					if (expenseType == expenseCatCB.getItemCount()-1){
+						expenseCatMgr.addCategory(category2, amount);
+					}
+					else{
+						expenseCatMgr.addAmountToCategory(expenseCatCB.getItemAt(expenseType), amount);
 					}
 					
 					//update historyMgr
-					historyMgr.addLog(0, id, 0, amount, date, category1, category2, description);
+					historyMgr.addLog(0, id, 2, amount, date, category1, category2, description);
 
+					resetFields();
+					
 					hostFrame.dispose();
 				}
 			}

@@ -41,14 +41,26 @@ public class EntryMgr {
 	 * @param category1
 	 * @param category2
 	 * @param description
+	 * @return current_id
 	 */
 	public int addEntry(int transactionType, double amount, Date date, String category1, String category2, String description){
+		
 		int id = current_id + 1;			//update current_id at each entry
 		Entry newEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+		
 		BufferedWriter entryWriter;
+		
 		try {
+			Scanner entryReader = new Scanner(new FileReader(txt_path));
 			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
-			entryWriter.append(newEntry.toTxt());
+			
+			if (!entryReader.hasNext()){
+				entryWriter.append(newEntry.toTxt(false));
+			}
+			else{
+				entryWriter.append(newEntry.toTxt(true));
+			}
+			entryReader.close();
 			entryWriter.close();
 			return ++current_id;
 		} catch (IOException e) {
@@ -83,7 +95,9 @@ public class EntryMgr {
 						Date date = date_format.parse(st.nextToken());
 						String category1 = st.nextToken();
 						String category2 = st.nextToken();
-						String description = st.nextToken();
+						String description = "";
+						if (st.hasMoreTokens())				//check, as description is an optional entry
+							description = st.nextToken();
 						entry = new Entry(id, transactionType, amount, date, category1, category2, description);
 			        }
 		    	}
@@ -107,31 +121,48 @@ public class EntryMgr {
 	 * @return true if edited successfully
 	 */
 	public boolean editEntry(Entry entry){
+		
+		int currentId = 0;
 		int id = entry.getId();
 		boolean edited = false;
+		
 		try {
+			
 			File inFile = new File(txt_path);
 			File tempFile;
 			tempFile = File.createTempFile("tempFile", ".txt");
 			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
 		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
 		    
-		    //this block parses id of each entry from EntryList.txt and adds to temp file if not id to be edited
+		    //this block parses id of the 1st entry from EntryList.txt and adds to temp file if not id to be edited
 		    String line = fileReader.readLine();
-		    fileWriter.print(line);
+		    currentId = Character.getNumericValue(line.charAt(0));
+		    if (currentId != id){
+		    	fileWriter.print(line);		    	
+		    }
+		    else{
+		    	fileWriter.print(entry.toTxt(false));
+		    	fileWriter.flush();
+		    	edited = true;
+		    }
+		    
+		    //this block parses id of each entry from EntryList.txt and adds to temp file if not id to be edited
 		    while ((line = fileReader.readLine()) != null) {
-		    	int currentId = Character.getNumericValue(line.charAt(0));
-		        if (currentId != id) {
+		    	
+		    	currentId = Character.getNumericValue(line.charAt(0));
+		        
+		    	if (currentId != id) {
 		        	fileWriter.println();			//newline should be added before the line, like Entry.toTxt()
 		        	fileWriter.print(line);
 		        	fileWriter.flush();
 		        }
 		        else{
-		        	fileWriter.print(entry.toTxt());	//no println before as entry.toTxt() inserts a newline before
+		        	fileWriter.print(entry.toTxt(true));	//no println before as entry.toTxt() inserts a newline before
 		        	fileWriter.flush();
 		        	edited = true;
 		        }
 		    }
+		    
 		    fileReader.close();
 		    fileWriter.close();
 		    
@@ -148,6 +179,7 @@ public class EntryMgr {
 		    } catch (Exception e){
 		    	e.printStackTrace();
 		    }
+		    
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -189,7 +221,9 @@ public class EntryMgr {
 						Date date = date_format.parse(st.nextToken());
 						String category1 = st.nextToken();
 						String category2 = st.nextToken();
-						String description = st.nextToken();
+						String description = "";
+						if (st.hasMoreTokens())				//check, as description is an optional entry
+							description = st.nextToken();
 						deletedEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
 			        	idFound = true;
 			        }

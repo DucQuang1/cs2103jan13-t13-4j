@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-//TODO month textfield not showing up properly (too squeezed)
 
 /**
  * GUI class that handles an liability entry
@@ -42,8 +41,8 @@ public class TransactionMgrJPanelRepayLoan extends InputPanel {
 		assetTypeCB.addItem("New Category");
 		add(assetTypeCB, "cell 1 1,growx");
 		
-		JLabel lblExpenseCategory = new JLabel("liability Category");
-		add(lblExpenseCategory, "cell 2 1,alignx left");
+		JLabel lblLiabilityCategory = new JLabel("Liability Category");
+		add(lblLiabilityCategory, "cell 2 1,alignx left");
 		
 		//drop down menu for liability categories
 		final JComboBox<String> liabilityCatCB = new JComboBox<String>();
@@ -97,6 +96,7 @@ public class TransactionMgrJPanelRepayLoan extends InputPanel {
 				} catch (Exception exYY){
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
+				
 				Date date = null;
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY%100);
 				try {
@@ -107,34 +107,29 @@ public class TransactionMgrJPanelRepayLoan extends InputPanel {
 	
 				//get asset category
 				if (assetTypeCB.getSelectedIndex() == assetTypeCB.getItemCount()-1){
-					System.out.println(assetTypeCB.getSelectedIndex());
-					category1 = category1Field.getText();
-					//check if new category is unique
-					if (assetCatMgr.checkExisting(category1))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					//cannot deduct from new category (illegal)
+					errorMsg += "Cannot deduct from a new category.<br>" +
+								"You may register an asset in the new category first or deduct from an existing category.<br>";
 				}
 				else {
 					category1 = (String) assetTypeCB.getSelectedItem();
-					System.out.println(assetTypeCB.getSelectedIndex());
+					//check if balance in category sufficient
+					if(assetCatMgr.getAmount(category1) < amount){
+						errorMsg += "Sorry, you do not have enough money in " + category1 + ".<br>" +
+									"Please register an income in " + category1 + " or deduct from another category.<br>";
 				}
+				
 				//get liability category
 				if (liabilityCatCB.getSelectedIndex() == liabilityCatCB.getItemCount()-1){
-					System.out.println(liabilityCatCB.getSelectedIndex());
-					category2 = category1Field.getText();
-					//check if new category is unique
-					if (assetCatMgr.checkExisting(category2))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					//cannot deduct from new category (illegal)
+					errorMsg += "Cannot deduct from a new category.<br>" +
+								"You may register a liability in the new category first or deduct from an existing category.<br>";
 				}
 				else {
 					category2 = (String) liabilityCatCB.getSelectedItem();
-					System.out.println(liabilityCatCB.getSelectedIndex());
 				}
 				
 				description = descriptionField.getText();
-				
-				//TODO check if liability and asset categories to be reduced >= amount repaying
 				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
@@ -147,7 +142,7 @@ public class TransactionMgrJPanelRepayLoan extends InputPanel {
 					int id = 1 + entryMgr.getCurrentId();
 					
 					//update entryMgr
-					entryMgr.addEntry(0, amount, date, category1, category2, description);
+					entryMgr.addEntry(3, amount, date, category1, category2, description);
 					
 					//update assetCatmgr
 					int assetType = assetTypeCB.getSelectedIndex();
@@ -155,26 +150,28 @@ public class TransactionMgrJPanelRepayLoan extends InputPanel {
 						assetCatMgr.addCategory(category1, amount);
 					}
 					else{
-						assetCatMgr.addAmountToCategory(assetTypeCB.getItemAt(assetType), amount);
+						assetCatMgr.addAmountToCategory(assetTypeCB.getItemAt(assetType), -amount);
 					}
 					
 					//update liabilityCatMgr
 					int liabilityType = liabilityCatCB.getSelectedIndex();
 					if (liabilityType == liabilityCatCB.getItemCount()-1){
-						liabilityCatMgr.addCategory(category1, amount);
+						liabilityCatMgr.addCategory(category2, amount);
 					}
 					else{
-						liabilityCatMgr.addAmountToCategory(liabilityCatCB.getItemAt(liabilityType), amount);
+						liabilityCatMgr.addAmountToCategory(liabilityCatCB.getItemAt(liabilityType), -amount);
 					}
 					
 					//update historyMgr
-					historyMgr.addLog(0, id, 0, amount, date, category1, category2, description);
+					historyMgr.addLog(0, id, 3, amount, date, category1, category2, description);
 
+					resetFields();
+					
 					hostFrame.dispose();
+					}
 				}
 			}
 		});
 		add(btnSubmitEntry, "cell 4 4");
-
 	}
 }
