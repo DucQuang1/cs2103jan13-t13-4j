@@ -6,9 +6,12 @@ public class AssetCatMgrTest {
 	@Test
 	public void test() {
 		AssetCatMgr assetCatMgr = new AssetCatMgr();
+		
 		System.out.println(assetCatMgr.getSubtotal());
+		
 		//System.out.println(assetCatMgr.checkExisting("OCBC"));
-		//System.out.println(assetCatMgr.checkExisting("EZ-Link"));
+		
+		//System.out.println(assetCatMgr.addCategory("EZ-Link", 90.0));
 		
 		//System.out.println(assetCatMgr.deleteAssetCategory("Wallet"));
 		

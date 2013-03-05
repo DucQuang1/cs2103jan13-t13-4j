@@ -36,12 +36,22 @@ public class HistoryMgr {
 	 */
 	public void addLog(int operationType, int id, int transactionType, double amount, 
 			Date date, String category1, String category2, String description){
+		
 		Log newLog = new Log(operationType, id, transactionType, amount, date, category1, category2, description);
-		BufferedWriter entryWriter;
+		
+		BufferedWriter logWriter;
+		
 		try {
-			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
-			entryWriter.append(newLog.toTxt());
-			entryWriter.close();
+			Scanner logReader = new Scanner(new FileReader(txt_path));
+			logWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			if (!logReader.hasNext()){
+				logWriter.append(newLog.toTxt(false));
+			}
+			else{
+				logWriter.append(newLog.toTxt(true));				
+			}
+			logReader.close();
+			logWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,7 +115,9 @@ public class HistoryMgr {
 				Date date = date_format.parse(st.nextToken());
 				String category1 = st.nextToken();
 				String category2 = st.nextToken();
-				String description = st.nextToken();
+				String description = "";
+				if (st.hasMoreTokens())				//check, as description is an optional entry
+					description = st.nextToken();
 				lastOperation = new Log(operationType, id, transactionType, amount,
 						date, category1, category2, description);
 			}
@@ -132,7 +144,7 @@ public class HistoryMgr {
 	}
 	
 	/**
-	 * Clears the log. To be used after closing the application.
+	 * Clears the log. Automatically executed when closing the application.
 	 */
 	public void clearLog(){
 		try {

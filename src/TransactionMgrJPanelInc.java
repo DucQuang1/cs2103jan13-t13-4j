@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-//TODO month textfield not showing up properly (too squeezed)
 
 /**
  * GUI class that handles an income entry
@@ -97,6 +96,7 @@ public class TransactionMgrJPanelInc extends InputPanel {
 				} catch (Exception exYY){
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
+				//process dd mm yyyy into date
 				Date date = null;
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY%100);
 				try {
@@ -107,29 +107,26 @@ public class TransactionMgrJPanelInc extends InputPanel {
 	
 				//get asset category
 				if (assetTypeCB.getSelectedIndex() == assetTypeCB.getItemCount()-1){
-					System.out.println(assetTypeCB.getSelectedIndex());
 					category1 = category1Field.getText();
 					//check if new category is unique
 					if (assetCatMgr.checkExisting(category1))
 						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+								"Please try a different name.<br>";
 				}
 				else {
 					category1 = (String) assetTypeCB.getSelectedItem();
-					System.out.println(assetTypeCB.getSelectedIndex());
 				}
+				
 				//get income category
 				if (incomeCatCB.getSelectedIndex() == incomeCatCB.getItemCount()-1){
-					System.out.println(incomeCatCB.getSelectedIndex());
-					category2 = category1Field.getText();
+					category2 = category2Field.getText();
 					//check if new category is unique
-					if (assetCatMgr.checkExisting(category2))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					if (incomeCatMgr.checkExisting(category2))
+						errorMsg += "Income category already exists.<br>" +
+								"Please try a different name.<br>";
 				}
 				else {
 					category2 = (String) incomeCatCB.getSelectedItem();
-					System.out.println(incomeCatCB.getSelectedIndex());
 				}
 				
 				description = descriptionField.getText();
@@ -159,7 +156,7 @@ public class TransactionMgrJPanelInc extends InputPanel {
 					//update incomeCatMgr
 					int incomeType = incomeCatCB.getSelectedIndex();
 					if (incomeType == incomeCatCB.getItemCount()-1){
-						incomeCatMgr.addCategory(category1, amount);
+						incomeCatMgr.addCategory(category2, amount);
 					}
 					else{
 						incomeCatMgr.addAmountToCategory(incomeCatCB.getItemAt(incomeType), amount);
@@ -168,6 +165,8 @@ public class TransactionMgrJPanelInc extends InputPanel {
 					//update historyMgr
 					historyMgr.addLog(0, id, 0, amount, date, category1, category2, description);
 
+					resetFields();
+					
 					hostFrame.dispose();
 				}
 			}

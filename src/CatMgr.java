@@ -11,8 +11,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * Logic class that manages all the  categories
- * @author Zhiyuan, JP
- *
+ * @author JP
+ * @author Zhiyuan
+ * 
  */
 public class CatMgr {
 	
@@ -63,17 +64,31 @@ public class CatMgr {
 	 * Pre: Requires an input String from the user to create the new Category name 
 	 * Post: Category.txt is updated with a new entry
 	 * @param inputCategory
+	 * @param amount
+	 * @return true if added successfully
 	 */
-	public void addCategory(String inputCategory, Double amount){
+	public boolean addCategory(String inputCategory, Double amount){
 		
 		BufferedWriter entryWriter;
+		
 		try {
+			Scanner CatReader = new Scanner(new FileReader(txt_path));
 			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
-			entryWriter.append("\n" + inputCategory + "|" + amount);
+
+			//check if file is empty to avoid adding an empty line for the first entry
+			if (!CatReader.hasNext()){
+				entryWriter.append(inputCategory + "|" + amount);
+			}
+			else{
+				entryWriter.append("\n" + inputCategory + "|" + amount);
+			}
+			CatReader.close();
 			entryWriter.close();
 		} catch (IOException e){
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 	
 	/**
@@ -315,7 +330,40 @@ public class CatMgr {
 			e.printStackTrace();
 		}
 		return deleted;
-	}	
+	}
+	
+	/**
+	 * Gets amount in a category
+	 * Only Used for checking if a transaction is legal (amount to be deducted <= current balance)
+	 * @param category
+	 * @return amount
+	 */
+	public double getAmount(String category){
+		
+		String line = null, readCategory = null;
+		double amount = 0;
+		
+		try {
+			Scanner CatReader = new Scanner(new FileReader(txt_path));
+
+			while (CatReader.hasNext()){
+				line = CatReader.nextLine();
+				if (!line.equals("")){
+					StringTokenizer st = new StringTokenizer(line, "|");
+					readCategory = st.nextToken();
+					if (readCategory.equals(category)){						
+						amount = Double.parseDouble(st.nextToken());
+						CatReader.close();
+						return amount;
+					}
+				}
+			}
+			CatReader.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		return amount;
+	}
 
 	/**
 	 * Gets subtotal from all s

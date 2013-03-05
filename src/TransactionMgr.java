@@ -13,8 +13,10 @@ import java.awt.Color;
 
 /**
  * GUI class that handles all requests from the user
- * @author Pang Kang Wei,Joshua	A0087809M
+ * note: all the managers are static to prevent creating duplicate managers
  * 
+ * @author Pang Kang Wei,Joshua	A0087809M
+ * @author JP
  */
 public class TransactionMgr {
 	
@@ -87,6 +89,10 @@ public class TransactionMgr {
 		return historyMgr;
 	}
 	
+	/**
+	 * Gets the balance
+	 * @return balance
+	 */
 	public double getBalance(){
 		double subtotal = 0;
 		subtotal = assetCatMgr.getSubtotal() - liabilityCatMgr.getSubtotal();
@@ -127,7 +133,7 @@ public class TransactionMgr {
 		frame.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(comboBox.getSelectedIndex());
+
 				switch(comboBox.getSelectedIndex()){
 				case 0:
 					frame.getContentPane().remove(inputPanel);

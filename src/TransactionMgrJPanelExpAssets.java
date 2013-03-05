@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-//TODO month textfield not showing up properly (too squeezed)
 
 /**
  * GUI class that handles an expense entry
@@ -97,6 +96,7 @@ public class TransactionMgrJPanelExpAssets extends InputPanel {
 				} catch (Exception exYY){
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
+				
 				Date date = null;
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY%100);
 				try {
@@ -107,47 +107,45 @@ public class TransactionMgrJPanelExpAssets extends InputPanel {
 	
 				//get asset category
 				if (assetTypeCB.getSelectedIndex() == assetTypeCB.getItemCount()-1){
-					System.out.println(assetTypeCB.getSelectedIndex());
-					category1 = category1Field.getText();
-					//check if new category is unique
-					if (assetCatMgr.checkExisting(category1))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					//cannot deduct from new category (illegal)
+					errorMsg += "Cannot deduct from a new category.<br>" +
+								"You may register an income in the new category first or deduct from an existing category.<br>";
 				}
 				else {
 					category1 = (String) assetTypeCB.getSelectedItem();
-					System.out.println(assetTypeCB.getSelectedIndex());
+					//check if balance in category sufficient
+					if(assetCatMgr.getAmount(category1) < amount){
+						errorMsg += "Sorry, you do not have enough money in " + category1 + ".<br>" +
+									"Please register an income in " + category1 + " or deduct from another category.<br>";
+					}
 				}
 				//get expense category
 				if (expenseCatCB.getSelectedIndex() == expenseCatCB.getItemCount()-1){
-					System.out.println(expenseCatCB.getSelectedIndex());
-					category2 = category1Field.getText();
+					category2 = category2Field.getText();
 					//check if new category is unique
-					if (assetCatMgr.checkExisting(category2))
-						errorMsg += "Asset Type already exists.<br>" +
-								"You may clear the text field or try a different name.<br>";
+					if (expenseCatMgr.checkExisting(category2))
+						errorMsg += "Expense Category already exists.<br>" +
+								"Please try a different name.<br>";
 				}
 				else {
 					category2 = (String) expenseCatCB.getSelectedItem();
-					System.out.println(expenseCatCB.getSelectedIndex());
 				}
 				
 				description = descriptionField.getText();
-				
-				//TODO check if specific asset cat has enough balance!
 				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
 					ErrorDisplay.setText(errorMsg);
 					errorMsg = "";
+					descriptionField.setText("");
 				}
 				else {
 
 					int id = 1 + entryMgr.getCurrentId();
 					
 					//update entryMgr
-					entryMgr.addEntry(0, amount, date, category1, category2, description);
+					entryMgr.addEntry(1, amount, date, category1, category2, description);
 					
 					//update assetCatmgr
 					int assetType = assetTypeCB.getSelectedIndex();
@@ -161,15 +159,17 @@ public class TransactionMgrJPanelExpAssets extends InputPanel {
 					//update expenseCatMgr
 					int expenseType = expenseCatCB.getSelectedIndex();
 					if (expenseType == expenseCatCB.getItemCount()-1){
-						expenseCatMgr.addCategory(category1, amount);
+						expenseCatMgr.addCategory(category2, amount);
 					}
 					else{
 						expenseCatMgr.addAmountToCategory(expenseCatCB.getItemAt(expenseType), amount);
 					}
 					
 					//update historyMgr
-					historyMgr.addLog(0, id, 0, amount, date, category1, category2, description);
-
+					historyMgr.addLog(0, id, 1, amount, date, category1, category2, description);
+					
+					resetFields();
+					
 					hostFrame.dispose();
 				}
 			}
