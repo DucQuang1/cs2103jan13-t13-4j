@@ -49,7 +49,7 @@ public class Finances {
 	private final JPanel crudPanel = new JPanel();						//crudPanel stores the buttons for CRUD operations, undo and search 
 
 	//labels
-	private final JLabel lblWelcomeToExpenzs = new JLabel("Welcome to Expenzs!");
+	private final JLabel lblWelcomeToExpenzs = new JLabel(new ImageIcon(Finances.class.getResource("/img/Header.png")));
 	private final JLabel lblBalance = new JLabel("You have $" + transactionMgr.getBalance());	//Needs to be updated
 	private final JLabel lblTransactions = new JLabel("Transactions", SwingConstants.CENTER);
 	
@@ -97,90 +97,122 @@ public class Finances {
 	 */
 	private void initialize(){
 		
+		//setting up the main window
 		mainFrame.getContentPane().setBackground(new Color(255, 255, 255));
 		mainFrame.setResizable(false);
-		mainFrame.setSize(1160, 700);
+		mainFrame.setSize(1200, 750);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.getContentPane().setLayout(new MigLayout("", "[400]0[400]0[250:300:350]", "[100,grow]0[300,grow]0[300,grow]"));
+		mainFrame.getContentPane().setLayout(new MigLayout("", "[400]0[400]0[250:300:350]", "0[100,grow]0[300,grow]0[300,grow]"));
 		
+		//setting up the top panel
 		BalancePanel.setBackground(new Color(255, 255, 255));		
 		BalancePanel.setLayout(new MigLayout("", "[1100]", "[50]5[30]"));
 		BalancePanel.add(lblWelcomeToExpenzs, "cell 0 0");
 		BalancePanel.add(lblBalance, "cell 0 1");
 		mainFrame.getContentPane().add(BalancePanel, "cell 0 0 3 1,grow");
 		
+		//setting up the asset panel
 		AssetPanel.setBackground(new Color(255, 255, 255));
 		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
-		AssetDataset = TransactionMgr.getAssetCatMgr().getChartData();
-		AssetPanel.add(renderChart(AssetDataset, 0));		
+		AssetDataset = TransactionMgr.getAssetChartData();
+		AssetPanel.add(renderChart(AssetDataset, 0));
 		AssetPanel.add(btnEditAssetCategories);
+		btnAssetTransfer.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.transferIntraAsset();
+			}
+		});
 		AssetPanel.add(btnAssetTransfer);
 		mainFrame.getContentPane().add(AssetPanel, "cell 0 1,grow");
 
+		//setting up the liability panel
 		LiabilityPanel.setBackground(new Color(255, 255, 255));
 		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
-		LiabilityDataset = TransactionMgr.getLiabilityCatMgr().getChartData();
+		LiabilityDataset = TransactionMgr.getLiabilityChartData();
 		LiabilityPanel.add(renderChart(LiabilityDataset, 1));
 		LiabilityPanel.add(btnEditLiabilityCategories);
+		btnLiabilityTransfer.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.transferIntraLiability();
+			}
+		});
 		LiabilityPanel.add(btnLiabilityTransfer);
 		mainFrame.getContentPane().add(LiabilityPanel, "cell 1 1,grow");
 		
+		//setting up the right panel
 		RightPanel.setBackground(new Color(255, 255, 255));
 		RightPanel.setLayout(new MigLayout("", "0[300,grow]0", "0[50]0[400,grow]0[50]0"));
-		mainFrame.getContentPane().add(RightPanel, "cell 2 1 1 2,grow");
-		
 		lblTransactions.setFont(new Font("Tahoma", Font.BOLD, 22));
 		RightPanel.add(lblTransactions, "cell 0 0,growx,aligny top");
+		mainFrame.getContentPane().add(RightPanel, "cell 2 1 1 2,grow");
 
-		TransactionListPanel.setBackground(new Color(240, 240, 230));
-		
-		renderList(TransactionListPanel, TransactionMgr.getEntryMgr().getTransactionList());
+		//setting up the transaction list panel and adding it to the right panel
+		TransactionListPanel.setBackground(new Color(240, 240, 230));		
+		renderList(TransactionListPanel, TransactionMgr.getTransactionList());
 		TransactionListPane.setViewportView(TransactionListPanel);
 		TransactionListPanel.setLayout(new MigLayout("flowy", "5[grow,left]5", "5[grow,top]5"));
 		RightPanel.add(TransactionListPane, "cell 0 1,grow");
 		RightPanel.validate();
 		
+		//setting up the crud buttons panel and adding it to the right panel
 		crudPanel.setBackground(new Color(255, 255, 255));
 		crudPanel.setLayout(new MigLayout("", "0[50]3[50]3[50]3[50]3[50]0", "0[50]0"));
 		RightPanel.add(crudPanel, "flowx,cell 0 2");
 		
 		//Add the respective buttons with their icon and a simple tooltip
-		btnAdd.setBackground(new Color(255, 255, 255));
+		btnAdd.setToolTipText("Add an Entry");
 		btnAdd.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				transactionMgr.AddTransaction();
+				transactionMgr.addTransaction();
 			}
 		});
-		btnAdd.setToolTipText("Add an Entry");
 		crudPanel.add(btnAdd, "cell 0 0");
 		
 		btnEdit.setBackground(new Color(255, 255, 255));
 		btnEdit.setToolTipText("Edit an Entry");
+		btnEdit.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.editTransaction();
+			}
+		});
 		crudPanel.add(btnEdit, "cell 1 0");
 		
 		btnDel.setBackground(new Color(255, 255, 255));
 		btnDel.setToolTipText("Delete an Entry");
+		btnDel.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.deleteTransaction();
+			}
+		});
 		crudPanel.add(btnDel, "cell 2 0");		
 		
 		btnUndo.setBackground(new Color(255, 255, 255));
 		btnUndo.setToolTipText("Undo your last transaction");
+		btnUndo.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.undo();
+				refresh();
+			}
+		});
 		crudPanel.add(btnUndo, "cell 3 0");
 		
 		btnSearch.setBackground(new Color(255, 255, 255));
 		btnSearch.setToolTipText("Search");
 		crudPanel.add(btnSearch, "cell 4 0");
 		
+		//setting up the income panel
 		IncomePanel.setBackground(new Color(255, 255, 255));
 		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
-		IncomeDataset = TransactionMgr.getIncomeCatMgr().getChartData();
+		IncomeDataset = TransactionMgr.getIncomeChartData();
 		IncomePanel.add(renderChart(IncomeDataset,2));
 		IncomePanel.add(btnEditIncomeCategories);
 		mainFrame.getContentPane().add(IncomePanel, "cell 0 2,grow");
 
-		
+		//setting up the expense panel
 		ExpensePanel.setBackground(new Color(255, 255, 255));
 		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
-		ExpenseDataset = TransactionMgr.getExpenseCatMgr().getChartData();
+		ExpenseDataset = TransactionMgr.getExpenseChartData();
 		ExpensePanel.add(renderChart(ExpenseDataset, 3));
 		ExpensePanel.add(btnEditExpenseCategories);
 		mainFrame.getContentPane().add(ExpensePanel, "cell 1 2,grow");
@@ -189,7 +221,8 @@ public class Finances {
 		mainFrame.addWindowListener(new WindowAdapter(){
 			
 			public void windowClosing(WindowEvent e) {
-                TransactionMgr.getHistoryMgr().clearLog();
+                TransactionMgr.clearLog();
+            
             }
 		});
 
@@ -205,34 +238,34 @@ public class Finances {
 		
 		//refresh 4 types
 		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
-		AssetDataset = TransactionMgr.getAssetCatMgr().getChartData();
+		AssetDataset = TransactionMgr.getAssetChartData();
 		AssetPanel.removeAll();
 		AssetPanel.add(renderChart(AssetDataset, 0));
 		AssetPanel.add(btnEditAssetCategories);
 		AssetPanel.add(btnAssetTransfer);
 		
 		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
-		LiabilityDataset = TransactionMgr.getLiabilityCatMgr().getChartData();
+		LiabilityDataset = TransactionMgr.getLiabilityChartData();
 		LiabilityPanel.removeAll();
 		LiabilityPanel.add(renderChart(LiabilityDataset, 1));
 		LiabilityPanel.add(btnEditLiabilityCategories);
 		LiabilityPanel.add(btnLiabilityTransfer);
 		
 		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
-		IncomeDataset = TransactionMgr.getIncomeCatMgr().getChartData();
+		IncomeDataset = TransactionMgr.getIncomeChartData();
 		IncomePanel.removeAll();
 		IncomePanel.add(renderChart(IncomeDataset, 2));
 		IncomePanel.add(btnEditIncomeCategories);
 		
 		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
-		ExpenseDataset = TransactionMgr.getExpenseCatMgr().getChartData();
+		ExpenseDataset = TransactionMgr.getExpenseChartData();
 		ExpensePanel.removeAll();
 		ExpensePanel.add(renderChart(ExpenseDataset, 3));
 		ExpensePanel.add(btnEditExpenseCategories);
 		
 		//refresh transactionList
 		TransactionListPanel.removeAll();
-		renderList(TransactionListPanel, TransactionMgr.getEntryMgr().getTransactionList());
+		renderList(TransactionListPanel, TransactionMgr.getTransactionList());
 		mainFrame.validate();
 	}
 
@@ -261,6 +294,10 @@ public class Finances {
 				case 3: entryText += "Repay Loan\t";
 						break;
 				case 4:	entryText += "Take Loan\t";
+						break;
+				case 5: entryText += "Asset Transfer\t";
+						break;
+				case 6:	entryText += "Liability Transfer\t";
 						break;
 				default:entryText += "Unspecified Type!";
 						break;

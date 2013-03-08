@@ -11,11 +11,15 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-
+/**
+ * Class that manages all the logs via History.txt
+ * @author JP
+ *
+ */
 public class HistoryMgr {
 
 	//default format for date
-	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
+	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yy");
 	public final String txt_path = getClass().getResource(".").getPath() + "/db/History.txt";
 	
 	/**
@@ -44,6 +48,8 @@ public class HistoryMgr {
 		try {
 			Scanner logReader = new Scanner(new FileReader(txt_path));
 			logWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			
+			//check if first log. do not add a newline for the first log.
 			if (!logReader.hasNext()){
 				logWriter.append(newLog.toTxt(false));
 			}
@@ -146,7 +152,7 @@ public class HistoryMgr {
 	/**
 	 * Clears the log. Automatically executed when closing the application.
 	 */
-	public void clearLog(){
+	public boolean clearLog(){
 		try {
 			File inFile = new File(txt_path);
 		    try{ 
@@ -156,9 +162,10 @@ public class HistoryMgr {
 		    }
 			File newFile = new File(txt_path);
 			newFile.createNewFile();
-			
+			return true;
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			return false;
 		}
 	}
 }

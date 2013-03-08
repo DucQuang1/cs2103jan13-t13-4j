@@ -7,6 +7,6 @@ public class TransactionMgrTest {
 	public void test() {
 		Finances finances = new Finances();
 		TransactionMgr transactionMgr = new TransactionMgr(finances);
-		transactionMgr.AddTransaction();
+		transactionMgr.addTransaction();
 	}
 }

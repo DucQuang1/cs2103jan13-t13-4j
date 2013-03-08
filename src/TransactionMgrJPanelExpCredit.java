@@ -17,11 +17,6 @@ import java.util.Date;
  *
  */
 public class TransactionMgrJPanelExpCredit extends InputPanel {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	public TransactionMgrJPanelExpCredit(final JFrame hostFrame, final LiabilityCatMgr liabilityCatMgr, final ExpenseCatMgr expenseCatMgr,
 			final EntryMgr entryMgr, final HistoryMgr historyMgr) {
@@ -29,30 +24,30 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 		super(hostFrame, entryMgr, historyMgr);
 		setCatMgr(liabilityCatMgr, expenseCatMgr);
 		
-		setBackground(new Color(255, 240, 243));
+		inputPanel.setBackground(new Color(255, 240, 243));
 		
 		JLabel lblType = new JLabel("Liability Type");
-		add(lblType, "cell 0 1,alignx left");
+		inputPanel.add(lblType, "cell 0 1,alignx left");
 		
 		//drop down menu for liability categories
 		final JComboBox<String> liabilityTypeCB = new JComboBox<String>();
 		for(String liabilityCat : liabilityCatMgr.getCategoryList())
 			liabilityTypeCB.addItem(liabilityCat);
 		liabilityTypeCB.addItem("New Category");
-		add(liabilityTypeCB, "cell 1 1,growx");
+		inputPanel.add(liabilityTypeCB, "cell 1 1,growx");
 		
 		JLabel lblliabilityCategory = new JLabel("liability Category");
-		add(lblliabilityCategory, "cell 2 1,alignx left");
+		inputPanel.add(lblliabilityCategory, "cell 2 1,alignx left");
 		
 		//drop down menu for expense categories
 		final JComboBox<String> expenseCatCB = new JComboBox<String>();
 		for(String expenseCat : expenseCatMgr.getCategoryList())
 			expenseCatCB.addItem(expenseCat);
 		expenseCatCB.addItem("New Category");
-		add(expenseCatCB, "cell 3 1,growx");
+		inputPanel.add(expenseCatCB, "cell 3 1,growx");
 		
-		JButton btnSubmitEntry = new JButton("Submit Entry");
-		btnSubmitEntry.addActionListener(new ActionListener() {
+		JButton btnAddEntry = new JButton("Add Entry");
+		btnAddEntry.addActionListener(new ActionListener() {
 			
 			//variables for storing user's inputs
 			int DD, MM, YYYY;
@@ -97,7 +92,7 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
 				Date date = null;
-				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY%100);
+				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
 				try {
 					date = date_format.parse(dateString);
 				} catch (ParseException e1) {
@@ -169,7 +164,7 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 				}
 			}
 		});
-		add(btnSubmitEntry, "cell 4 4");
+		inputPanel.add(btnAddEntry, "cell 4 4");
 
 	}
 }

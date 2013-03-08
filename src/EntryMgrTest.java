@@ -16,7 +16,7 @@ public class EntryMgrTest {
 	public void test() {
 		EntryMgr entryMgr = new EntryMgr();
 		Date d1 = null;
-		final SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
+		final SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yy");
 		try {
 			d1 = date_format.parse("18/02/13");
 		} catch (ParseException e) {
@@ -24,10 +24,18 @@ public class EntryMgrTest {
 		}
 		//int tempId = entryMgr.addEntry(1, 100.00, d1, "DBS", "Restaurant", "trial");
 		//System.out.println(tempId);
-		Entry testEntry = new Entry(1, 1, 4000, d1, "DBS", "Mont Blanc", "trial");
-		entryMgr.editEntry(testEntry);
+		//Entry testEntry = new Entry(1, 1, 4000, d1, "DBS", "Mont Blanc", "trial");
+		//entryMgr.editEntry(testEntry);
 		
 		LinkedList<Entry> transactionList = new LinkedList<Entry>(entryMgr.getTransactionList());
+		
+		for(Entry entry : transactionList){
+			System.out.println(entry.toTxt(true));
+			System.out.print(entry.getDate().toString());
+		}
+		System.out.println();
+		
+		//entryMgr.sort(transactionList);	//change sort to public when testing
 		
 		for(Entry entry : transactionList){
 			System.out.print(entry.toTxt(true));

@@ -72,7 +72,7 @@ public class Log extends Entry{
 		if (includeNewLine)
 			output += "\n";
 		
-		output = Integer.toString(operationType) + "|" + Integer.toString(id) + "|" 
+		output += Integer.toString(operationType) + "|" + Integer.toString(id) + "|" 
 				+ Integer.toString(transactionType) + "|"+ Double.toString(amount) + "|" 
 				+ date_format.format(date) + "|" + category1 + "|" + category2 + "|" + description ;
 		return output;

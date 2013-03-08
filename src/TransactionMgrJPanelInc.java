@@ -17,11 +17,6 @@ import java.util.Date;
  *
  */
 public class TransactionMgrJPanelInc extends InputPanel {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	public TransactionMgrJPanelInc(final JFrame hostFrame, final AssetCatMgr assetCatMgr, final IncomeCatMgr incomeCatMgr,
 			final EntryMgr entryMgr, final HistoryMgr historyMgr) {
@@ -29,30 +24,30 @@ public class TransactionMgrJPanelInc extends InputPanel {
 		super(hostFrame, entryMgr, historyMgr);
 		setCatMgr(assetCatMgr, incomeCatMgr);
 		
-		setBackground(new Color(230, 240, 255));
+		inputPanel.setBackground(new Color(230, 240, 255));
 		
 		JLabel lblType = new JLabel("Asset Type");
-		add(lblType, "cell 0 1,alignx left");
+		inputPanel.add(lblType, "cell 0 1,alignx left");
 		
 		//drop down menu for asset categories
 		final JComboBox<String> assetTypeCB = new JComboBox<String>();
 		for(String assetCat : assetCatMgr.getCategoryList())
 			assetTypeCB.addItem(assetCat);
 		assetTypeCB.addItem("New Category");
-		add(assetTypeCB, "cell 1 1,growx");
+		inputPanel.add(assetTypeCB, "cell 1 1,growx");
 		
 		JLabel lblExpenseCategory = new JLabel("Income Category");
-		add(lblExpenseCategory, "cell 2 1,alignx left");
+		inputPanel.add(lblExpenseCategory, "cell 2 1,alignx left");
 		
 		//drop down menu for income categories
 		final JComboBox<String> incomeCatCB = new JComboBox<String>();
 		for(String incomeCat : incomeCatMgr.getCategoryList())
 			incomeCatCB.addItem(incomeCat);
 		incomeCatCB.addItem("New Category");
-		add(incomeCatCB, "cell 3 1,growx");
+		inputPanel.add(incomeCatCB, "cell 3 1,growx");
 		
-		JButton btnSubmitEntry = new JButton("Submit Entry");
-		btnSubmitEntry.addActionListener(new ActionListener() {
+		JButton btnAddEntry = new JButton("Add Entry");
+		btnAddEntry.addActionListener(new ActionListener() {
 			
 			//variables for storing user's inputs
 			int DD, MM, YYYY;
@@ -98,7 +93,7 @@ public class TransactionMgrJPanelInc extends InputPanel {
 				}
 				//process dd mm yyyy into date
 				Date date = null;
-				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY%100);
+				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
 				try {
 					date = date_format.parse(dateString);
 				} catch (ParseException e1) {
@@ -171,7 +166,7 @@ public class TransactionMgrJPanelInc extends InputPanel {
 				}
 			}
 		});
-		add(btnSubmitEntry, "cell 4 4");
+		inputPanel.add(btnAddEntry, "cell 4 4");
 
 	}
 }
