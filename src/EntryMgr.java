@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -21,7 +23,7 @@ import java.util.StringTokenizer;
 public class EntryMgr {
 	
 	//default format for date
-	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
+	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
 	public final String txt_path = getClass().getResource(".").getPath() + "/db/EntryList.txt";
 	private static int current_id;
 	
@@ -62,7 +64,7 @@ public class EntryMgr {
 			}
 			entryReader.close();
 			entryWriter.close();
-			return ++current_id;
+			return ++current_id;	//return 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -85,11 +87,10 @@ public class EntryMgr {
 		    //this block parses id of each entry from EntryList.txt and searches for entry with id
 		    while ((line = fileReader.readLine()) != null) {
 		    	if(line != ""){
-			    	int currentId = Character.getNumericValue(line.charAt(0));
+		    		StringTokenizer st = new StringTokenizer(line, "|");
+			    	int currentId = Integer.parseInt(st.nextToken());
 			        if (currentId == id) {
 			        	idFound = true;
-			        	StringTokenizer st = new StringTokenizer(line, "|");
-						st.nextToken();	//skip the first token, which is the id
 						int transactionType = Integer.parseInt(st.nextToken());
 						double amount = Double.parseDouble(st.nextToken());
 						Date date = date_format.parse(st.nextToken());
@@ -122,7 +123,6 @@ public class EntryMgr {
 	 */
 	public boolean editEntry(Entry entry){
 		
-		int currentId = 0;
 		int id = entry.getId();
 		boolean edited = false;
 		
@@ -134,11 +134,13 @@ public class EntryMgr {
 			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
 		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
 		    
-		    //this block parses id of the 1st entry from EntryList.txt and adds to temp file if not id to be edited
+		    //this block parses id of first entry from EntryList.txt and adds to temp file if not id to be edited
+		    //no need to check if first line exists as this method can only be invoked if there are entries in the txt
 		    String line = fileReader.readLine();
-		    currentId = Character.getNumericValue(line.charAt(0));
-		    if (currentId != id){
-		    	fileWriter.print(line);		    	
+		    StringTokenizer st = new StringTokenizer(line, "|");
+		    if (Integer.parseInt(st.nextToken()) != id){
+		    	fileWriter.print(line);		
+		    	fileWriter.flush();
 		    }
 		    else{
 		    	fileWriter.print(entry.toTxt(false));
@@ -149,20 +151,21 @@ public class EntryMgr {
 		    //this block parses id of each entry from EntryList.txt and adds to temp file if not id to be edited
 		    while ((line = fileReader.readLine()) != null) {
 		    	
-		    	currentId = Character.getNumericValue(line.charAt(0));
-		        
-		    	if (currentId != id) {
-		        	fileWriter.println();			//newline should be added before the line, like Entry.toTxt()
-		        	fileWriter.print(line);
-		        	fileWriter.flush();
-		        }
-		        else{
-		        	fileWriter.print(entry.toTxt(true));	//no println before as entry.toTxt() inserts a newline before
-		        	fileWriter.flush();
-		        	edited = true;
-		        }
-		    }
+		    	if(line != ""){
+			    	st = new StringTokenizer(line, "|");
+			        if (Integer.parseInt(st.nextToken())!= id) {
+			        	fileWriter.println();			//newline should be added before the line
+			        	fileWriter.print(line);
+			        	fileWriter.flush();
+			        }
+			        else{
+			        	fileWriter.print(entry.toTxt(true));	//no println before as entry.toTxt() inserts a newline before
+			        	fileWriter.flush();
+			        	edited = true;
+			        }
 		    
+		    	}
+		    }
 		    fileReader.close();
 		    fileWriter.close();
 		    
@@ -201,20 +204,30 @@ public class EntryMgr {
 		    BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
 		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
 		    
-		    //this block parses id of each entry from EntryList.txt and adds to temp file if not id to be deleted
+		    //this block parses id of first entry from EntryList.txt and adds to temp file if not id to be deleted
+		    //no need to check if first line exists as this method can only be invoked if there are entries in the txt
 		    String line = fileReader.readLine();
-		    fileWriter.print(line);
+		    StringTokenizer st = new StringTokenizer(line, "|");
+		    if (Integer.parseInt(st.nextToken()) != id){
+		    	fileWriter.print(line);		
+		    	fileWriter.flush();
+		    }
+		    else{
+		    	idFound = true;
+		    }
+		    
+		    //this block parses id of remaining entries from EntryList.txt and adds to temp file if not id to be deleted
 		    while ((line = fileReader.readLine()) != null) {
-		    	if(line != ""){		    		
-			    	int currentId = Character.getNumericValue(line.charAt(0));
-			        if (currentId != id) {
-			        	fileWriter.println();			//newline should be added before the line, like Entry.toTxt()
+		    	if(line != ""){
+			    	st = new StringTokenizer(line, "|");
+			        if (Integer.parseInt(st.nextToken())!= id) {
+			        	fileWriter.println();			//newline should be added before the line
 			        	fileWriter.print(line);
 			        	fileWriter.flush();
 			        }
 			        else{
 			        	//collect info about deleted Entry
-			        	StringTokenizer st = new StringTokenizer(line, "|");
+			        	st = new StringTokenizer(line, "|");
 			        	st.nextToken();	//skip id
 						int transactionType = Integer.parseInt(st.nextToken());
 						double amount = Double.parseDouble(st.nextToken());
@@ -289,7 +302,7 @@ public class EntryMgr {
 		} catch (FileNotFoundException | ParseException e) {
 			e.printStackTrace();
 		}
-		
+		sort(transactionList);
 		return transactionList;
 	}
 	
@@ -322,5 +335,35 @@ public class EntryMgr {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	/**
+	 * Sorts a list of entries
+	 * @param entryList
+	 */
+	private void sort(LinkedList<Entry> entryList){
+		
+		Collections.sort(entryList, new Comparator<Entry>(){
+			
+	        public int compare(Entry e1, Entry e2) {
+	            return later(e1.getDate(),e2.getDate());
+	        }
+		});
+	}
+	
+	/**
+	 * Compares 2 dates
+	 * @param d1
+	 * @param d2
+	 * @return 1 if d1 later d2, 0 if same, -1 if earlier
+	 */
+	private int later(Date d1, Date d2){
+
+		if (d1.getTime() < d2.getTime())
+			return -1;
+		if(d1.getTime() == d2.getTime())
+			return 0;
+		else	//(d1.getTime() > d2.getTime())
+			return 1;
 	}
 }

@@ -14,7 +14,7 @@ public class Entry{
 	protected String category1;
 	protected String category2;
 	protected String description;
-	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/mm/yy");
+	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
 	/**
 	 * Default Constructor
 	 */
