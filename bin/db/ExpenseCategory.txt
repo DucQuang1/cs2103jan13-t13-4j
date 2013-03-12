@@ -1,0 +1,3 @@
+Food|0.0
+Transport|5850.0
+Restaurant|1000.0

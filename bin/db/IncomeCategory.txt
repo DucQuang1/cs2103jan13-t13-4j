@@ -1,0 +1,3 @@
+Salary|7500.0
+Gift|140.0
+Transport|4930.0

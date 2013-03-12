@@ -1,0 +1,2 @@
+HDB Loan|4000.0
+Credit Card Debt|2000.0
