@@ -45,9 +45,48 @@ public class EntryMgr {
 	 * @param description
 	 * @return current_id
 	 */
-	public int addEntry(int transactionType, double amount, Date date, String category1, String category2, String description){
+	public int addEntry(int transactionType, double amount, Date date, 
+			String category1, String category2, String description){
 		
 		int id = current_id + 1;			//update current_id at each entry
+		Entry newEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+		
+		BufferedWriter entryWriter;
+		
+		try {
+			Scanner entryReader = new Scanner(new FileReader(txt_path));
+			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			
+			if (!entryReader.hasNext()){
+				entryWriter.append(newEntry.toTxt(false));
+			}
+			else{
+				entryWriter.append(newEntry.toTxt(true));
+			}
+			entryReader.close();
+			entryWriter.close();
+			return ++current_id;	//return 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return current_id;
+	}
+	
+	/**
+	 * Adds back an entry with a previous id into EntryList.txt
+	 * For undoing a delete operation
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 * @return current_id
+	 */
+	public int addBackEntry(int id, int transactionType, double amount, Date date, 
+			String category1, String category2, String description){
+		
 		Entry newEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
 		
 		BufferedWriter entryWriter;
@@ -268,6 +307,113 @@ public class EntryMgr {
 			e.printStackTrace();
 		}
 		return deletedEntry;
+	}
+	
+	/**
+	 * Renames all entries having the old category name with the new category name
+	 * @param type (0:Assets, 1:Liabilities, 2:Income, 3:Expenses)
+	 * @param oldName
+	 * @param newName
+	 * @return true if renamed successfully
+	 */
+	public boolean renameCat(int type, String oldName, String newName){
+		
+		try {
+			File inFile = new File(txt_path);
+			File tempFile = File.createTempFile("tempFile", ".txt");
+			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from History.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    boolean notFirstLine = false;	//boolean flag to indicate first line, need new line
+		    String line = null;
+			StringTokenizer st = null;
+			Entry tempEntry = null;
+			
+			
+			while ((line = fileReader.readLine()) != null) {
+
+		    	st = new StringTokenizer(line, "|");
+				int id = Integer.parseInt(st.nextToken());
+				int transactionType = Integer.parseInt(st.nextToken());
+				double amount = Double.parseDouble(st.nextToken());
+				Date date = date_format.parse(st.nextToken());
+				String category1 = st.nextToken();
+				String category2 = st.nextToken();
+				String description = "";
+				if(st.hasMoreTokens())				//check, as description is an optional entry
+					description = st.nextToken();
+				
+				//nested switch to check type, then transaction type, then the relevant category names
+				switch(type){
+					case 0:	//check for asset-related transaction types
+							switch(transactionType){
+							case 5:	if(category2.equals(oldName))
+										category2 = newName;
+							case 0:
+							case 1:
+							case 3:
+							case 4:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							}
+							break;
+					case 1:	//check for liability-related transaction types
+							switch(transactionType){
+							case 2:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							case 6:	if(category1.equals(oldName))
+										category1 = newName;
+							case 3:
+							case 4:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 2:	//check for income-related transaction types
+							switch(transactionType){
+							case 0:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 3:	//check for expense-related transaction types
+							switch(transactionType){
+							case 1:
+							case 2:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+				}
+				tempEntry = new Entry(id, transactionType, amount,
+						date, category1, category2, description);
+				fileWriter.print(tempEntry.toTxt(notFirstLine));	//first line no new line, the rest will have new line
+				notFirstLine = true;
+
+			}
+			
+			fileReader.close();
+			fileWriter.close();
+			
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**

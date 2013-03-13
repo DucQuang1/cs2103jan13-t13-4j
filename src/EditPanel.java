@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
  */
 public class EditPanel {
 
-	//default format for date
+	//default format for date and errorMsg
 	protected static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
 	protected static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
 	
@@ -167,7 +167,6 @@ public class EditPanel {
 					errorMsg += "Unable to process date.<br>";
 				}
 				
-				description = descriptionField.getText();
 				
 				double difference = amount - entry.getAmount();	//new - old amount
 				String category1 = entry.getCategory1();
@@ -225,6 +224,12 @@ public class EditPanel {
 				if(category2insufficient){
 					errorMsg += "Sorry, you do not have enough money in " + category2 + " for deduction.<br>";
 				}
+				
+				//check for pipe characters in description field
+				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
 				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
