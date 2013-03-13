@@ -50,6 +50,7 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 		btnAddEntry.addActionListener(new ActionListener() {
 			
 			//variables for storing user's inputs
+			boolean pipePresent = false;
 			int DD, MM, YYYY;
 			double amount;
 			String category1, category2, description;
@@ -106,6 +107,8 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 					if (liabilityCatMgr.checkExisting(category1))
 						errorMsg += "Liability Type already exists.<br>" +
 								"Please try a different name.<br>";
+					if(category1.indexOf("|") >= 0)
+						pipePresent = true;
 				}
 				else {
 					category1 = (String) liabilityTypeCB.getSelectedItem();
@@ -117,18 +120,29 @@ public class TransactionMgrJPanelExpCredit extends InputPanel {
 					if (expenseCatMgr.checkExisting(category2))
 						errorMsg += "Expense Category already exists.<br>" +
 								"Please try a different name.<br>";
+					if(category2.indexOf("|") >= 0)
+						pipePresent = true;
 				}
 				else {
 					category2 = (String) expenseCatCB.getSelectedItem();
 				}
 				
 				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					pipePresent = true;
+				
+				//check if pipes present
+				if(pipePresent){
+					errorMsg += "Pipe characters are not supported.<br>" +
+							"So sorry about that!<br>";
+				}
 				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
 					ErrorDisplay.setText(errorMsg);
 					errorMsg = "";
+					pipePresent = false;
 				}
 				else {
 					

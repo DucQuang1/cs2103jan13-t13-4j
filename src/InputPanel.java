@@ -6,7 +6,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -166,4 +168,5 @@ public class InputPanel {
 		category1Field.setText("");
 		descriptionField.setText("");
 	}
+	
 }

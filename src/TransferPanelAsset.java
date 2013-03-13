@@ -77,8 +77,11 @@ public class TransferPanelAsset extends TransferPanel{
 					errorMsg += "Unable to process date.<br>";
 				}
 				
+				//check for pipe characters in description field
 				description = descriptionField.getText();
-				
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
 				
 				//check if balance in relevant categories sufficient
 				String category1 = String.valueOf(fromCB.getSelectedItem());
