@@ -54,12 +54,12 @@ public class Finances {
 	private final JLabel lblTransactions = new JLabel("Transactions", SwingConstants.CENTER);
 	
 	//buttons for editing chart and categories
-	private final JButton btnEditAssetCategories = new JButton("Edit Asset Categories");
+	private final JButton btnRenameAssetCategories = new JButton("Rename Asset Categories");
 	private final JButton btnAssetTransfer = new JButton("Transfer");
-	private final JButton btnEditLiabilityCategories = new JButton("Edit Liability Categories");
+	private final JButton btnRenameLiabilityCategories = new JButton("Rename Liability Categories");
 	private final JButton btnLiabilityTransfer = new JButton("Transfer");
-	private final JButton btnEditIncomeCategories = new JButton("Edit Income Categories");
-	private final JButton btnEditExpenseCategories = new JButton("Edit Expense Categories");
+	private final JButton btnRenameIncomeCategories = new JButton("Rename Income Categories");
+	private final JButton btnRenameExpenseCategories = new JButton("Rename Expense Categories");
 	
 	//crud, undo, search buttons
 	private final JButton btnAdd = new JButton(new ImageIcon(Finances.class.getResource("/img/Add.png")));
@@ -116,7 +116,13 @@ public class Finances {
 		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
 		AssetDataset = TransactionMgr.getAssetChartData();
 		AssetPanel.add(renderChart(AssetDataset, 0));
-		AssetPanel.add(btnEditAssetCategories);
+		btnRenameAssetCategories.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameAssetCategories();
+			}
+		});
+		AssetPanel.add(btnRenameAssetCategories);
 		btnAssetTransfer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 
@@ -131,7 +137,13 @@ public class Finances {
 		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
 		LiabilityDataset = TransactionMgr.getLiabilityChartData();
 		LiabilityPanel.add(renderChart(LiabilityDataset, 1));
-		LiabilityPanel.add(btnEditLiabilityCategories);
+		btnRenameLiabilityCategories.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameLiabilityCategories();
+			}
+		});
+		LiabilityPanel.add(btnRenameLiabilityCategories);
 		btnLiabilityTransfer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				transactionMgr.transferIntraLiability();
@@ -206,7 +218,13 @@ public class Finances {
 		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
 		IncomeDataset = TransactionMgr.getIncomeChartData();
 		IncomePanel.add(renderChart(IncomeDataset,2));
-		IncomePanel.add(btnEditIncomeCategories);
+		btnRenameIncomeCategories.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameIncomeCategories();
+			}
+		});
+		IncomePanel.add(btnRenameIncomeCategories);
 		mainFrame.getContentPane().add(IncomePanel, "cell 0 2,grow");
 
 		//setting up the expense panel
@@ -214,7 +232,13 @@ public class Finances {
 		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
 		ExpenseDataset = TransactionMgr.getExpenseChartData();
 		ExpensePanel.add(renderChart(ExpenseDataset, 3));
-		ExpensePanel.add(btnEditExpenseCategories);
+		btnRenameExpenseCategories.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameExpenseCategories();
+			}
+		});
+		ExpensePanel.add(btnRenameExpenseCategories);
 		mainFrame.getContentPane().add(ExpensePanel, "cell 1 2,grow");
 		
 		//to clear log when exiting the application
@@ -241,27 +265,27 @@ public class Finances {
 		AssetDataset = TransactionMgr.getAssetChartData();
 		AssetPanel.removeAll();
 		AssetPanel.add(renderChart(AssetDataset, 0));
-		AssetPanel.add(btnEditAssetCategories);
+		AssetPanel.add(btnRenameAssetCategories);
 		AssetPanel.add(btnAssetTransfer);
 		
 		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
 		LiabilityDataset = TransactionMgr.getLiabilityChartData();
 		LiabilityPanel.removeAll();
 		LiabilityPanel.add(renderChart(LiabilityDataset, 1));
-		LiabilityPanel.add(btnEditLiabilityCategories);
+		LiabilityPanel.add(btnRenameLiabilityCategories);
 		LiabilityPanel.add(btnLiabilityTransfer);
 		
 		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
 		IncomeDataset = TransactionMgr.getIncomeChartData();
 		IncomePanel.removeAll();
 		IncomePanel.add(renderChart(IncomeDataset, 2));
-		IncomePanel.add(btnEditIncomeCategories);
+		IncomePanel.add(btnRenameIncomeCategories);
 		
 		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
 		ExpenseDataset = TransactionMgr.getExpenseChartData();
 		ExpensePanel.removeAll();
 		ExpensePanel.add(renderChart(ExpenseDataset, 3));
-		ExpensePanel.add(btnEditExpenseCategories);
+		ExpensePanel.add(btnRenameExpenseCategories);
 		
 		//refresh transactionList
 		TransactionListPanel.removeAll();

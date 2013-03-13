@@ -89,6 +89,12 @@ public class TransferPanelLiability extends TransferPanel{
 					errorMsg += "Sorry, you do not have enough money in " + category1 + " for transferring.<br>";
 				}
 
+				//check for pipe characters in description field
+				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
+				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text

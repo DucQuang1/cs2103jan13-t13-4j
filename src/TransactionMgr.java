@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
  */
 public class TransactionMgr {
 	
-	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yy");
+	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
 	
 	private Finances finances;	//for calling the refresh function
 
@@ -48,8 +48,10 @@ public class TransactionMgr {
 	/**
 	 * Default Constructor
 	 */
-	public TransactionMgr(Finances finances){
+	public TransactionMgr(final Finances finances){
+		
 		this.finances = finances;
+
 	}
 	
 	/**
@@ -116,15 +118,8 @@ public class TransactionMgr {
 	 * @return true if added successfully
 	 */
 	public boolean addTransaction(){
-		//sets up the pop-up first
-		popUpFrame = new JFrame();
-		popUpFrame.setResizable(false);
-		popUpFrame.setSize(720,400);
-		popUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		popUpFrame.getContentPane().setLayout(new MigLayout(
-				"", 
-				"[750]", 
-				"[30,grow]5[350,grow]"));
+		
+		setUpPopUpFrame(0);
 		
 		JLabel lblTransactionType = new JLabel("Transaction Type");
 		popUpFrame.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
@@ -145,8 +140,7 @@ public class TransactionMgr {
 		comboBox.addItem("Repaying Loan");
 		comboBox.addItem("Take Loan");
 		popUpFrame.getContentPane().add(comboBox, "flowx, cell 0 0 1 1");
-		
-		//TODO button keeps jumping right after selecting the transaction type
+
 		JButton btnSelect = new JButton("Select");
 		popUpFrame.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
@@ -185,17 +179,8 @@ public class TransactionMgr {
 				popUpFrame.revalidate();
 			}
 		});
-		popUpFrame.getContentPane().add(btnSelect, "cell 4 0 2 1");
 		popUpFrame.getContentPane().add(inputPanel, "cell 0 1 6 1,grow");
-		popUpFrame.setVisible(true);
-		popUpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		popUpFrame.addWindowListener(new WindowAdapter(){
-			
-			public void windowClosed(WindowEvent e) {
-				
-                finances.refresh();
-            }
-		});
+		
 		return true;
 	}
 	
@@ -206,16 +191,7 @@ public class TransactionMgr {
 	 */
 	public boolean editTransaction(){
 
-		//sets up the pop-up first
-		popUpFrame = new JFrame();
-		popUpFrame.getContentPane().remove(inputPanel);
-		popUpFrame.setResizable(false);
-		popUpFrame.setSize(720,400);
-		popUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		popUpFrame.getContentPane().setLayout(new MigLayout(
-				"", 
-				"[750]", 
-				"[30,grow]5[350,grow]"));
+		setUpPopUpFrame(0);
 		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
 		popUpFrame.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
@@ -248,15 +224,7 @@ public class TransactionMgr {
 			}
 		});
 		popUpFrame.getContentPane().add(btnSelect, "cell 4 0 2 1");
-		popUpFrame.setVisible(true);
-		popUpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		popUpFrame.addWindowListener(new WindowAdapter(){
-			
-		public void windowClosed(WindowEvent e) {
 		
-            finances.refresh();
-            }
-		});
 		return true;
 	}
 	
@@ -267,16 +235,7 @@ public class TransactionMgr {
 	 */
 	public boolean deleteTransaction(){
 
-		//sets up the pop-up first
-		popUpFrame = new JFrame();
-		popUpFrame.getContentPane().remove(inputPanel);
-		popUpFrame.setResizable(false);
-		popUpFrame.setSize(720,400);
-		popUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		popUpFrame.getContentPane().setLayout(new MigLayout(
-				"", 
-				"[750]", 
-				"[30,grow]5[350,grow]"));
+		setUpPopUpFrame(0);
 		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
 		popUpFrame.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
@@ -309,15 +268,7 @@ public class TransactionMgr {
 			}
 		});
 		popUpFrame.getContentPane().add(btnSelect, "cell 4 0 2 1");
-		popUpFrame.setVisible(true);
-		popUpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		popUpFrame.addWindowListener(new WindowAdapter(){
-			
-			public void windowClosed(WindowEvent e) {
-			
-                finances.refresh();
-            }
-		});
+		
 		return true;
 	}
 	
@@ -328,28 +279,12 @@ public class TransactionMgr {
 	 */
 	public boolean transferIntraAsset(){
 		
-		//sets up the pop-up first
-		popUpFrame = new JFrame();
-		popUpFrame.getContentPane().remove(inputPanel);
-		popUpFrame.setVisible(true);
-		popUpFrame.setSize(720,400);
-		popUpFrame.getContentPane().setBackground(new Color(255, 255, 255));
-		popUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		popUpFrame.getContentPane().setLayout(new MigLayout(
-				"", 
-				"[750]", 
-				"[30,grow]5[350,grow]"));
+		setUpPopUpFrame(0);
 
-		TransferPanelAsset transferPanelAsset = new TransferPanelAsset(popUpFrame, assetCatMgr, entryMgr, historyMgr);
+		TransferPanelAsset transferPanelAsset = new TransferPanelAsset(
+				popUpFrame, assetCatMgr, entryMgr, historyMgr);
 		popUpFrame.getContentPane().add(transferPanelAsset.getPanel());
 		popUpFrame.validate();
-		popUpFrame.addWindowListener(new WindowAdapter(){
-			
-			public void windowClosed(WindowEvent e) {
-			
-                finances.refresh();
-            }
-		});		
 		
 		return true;
 	}
@@ -361,30 +296,74 @@ public class TransactionMgr {
 	 */
 	public boolean transferIntraLiability(){
 		
-		//sets up the pop-up first
-		popUpFrame = new JFrame();
-		popUpFrame.getContentPane().remove(inputPanel);
-		popUpFrame.setVisible(true);
-		popUpFrame.setSize(720,400);
-		popUpFrame.getContentPane().setBackground(new Color(255, 255, 255));
-		popUpFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		popUpFrame.getContentPane().setLayout(new MigLayout(
-				"", 
-				"[750]", 
-				"[30,grow]5[350,grow]"));
+		setUpPopUpFrame(0);
 
 		TransferPanelLiability transferPanelLiability = new TransferPanelLiability (
 				popUpFrame, liabilityCatMgr, entryMgr, historyMgr);
-		popUpFrame.getContentPane().add(transferPanelLiability .getPanel());
+		popUpFrame.getContentPane().add(transferPanelLiability.getPanel());
 		popUpFrame.validate();
-		popUpFrame.addWindowListener(new WindowAdapter(){
-			
-			public void windowClosed(WindowEvent e) {
-			
-                finances.refresh();
-            }
-		});
 
+		return true;
+	}
+	
+	/**
+	 * Creates a pop up that allows user to edit asset categories 
+	 * Updates the new transaction information in the EntryMgr, HistoryMgr, and AssetCatMgr
+	 * @return true if updated successfully
+	 */
+	public boolean renameAssetCategories(){
+
+		setUpPopUpFrame(1);
+		
+		RenameAssetCatPanel renameAssetCatPanel = new RenameAssetCatPanel(
+				popUpFrame, assetCatMgr, entryMgr, historyMgr);
+		popUpFrame.validate();
+		
+		return true;
+	}
+	
+	/**
+	 * Creates a pop up that allows user to edit liability categories 
+	 * Updates the new transaction information in the EntryMgr, HistoryMgr, and LiabilityCatMgr
+	 * @return true if updated successfully
+	 */
+	public boolean renameLiabilityCategories(){
+
+		setUpPopUpFrame(1);
+		RenameLiabilityCatPanel renameLiabilityCatPanel = new RenameLiabilityCatPanel(
+				popUpFrame, liabilityCatMgr, entryMgr, historyMgr);
+		popUpFrame.validate();
+		
+		return true;
+	}
+	
+	/**
+	 * Creates a pop up that allows user to edit income categories 
+	 * Updates the new transaction information in the EntryMgr, HistoryMgr, and IncomeCatMgr
+	 * @return true if updated successfully
+	 */
+	public boolean renameIncomeCategories(){
+
+		setUpPopUpFrame(1);
+		RenameIncomeCatPanel renameIncomeCatPanel = new RenameIncomeCatPanel(
+				popUpFrame, incomeCatMgr, entryMgr, historyMgr);
+		popUpFrame.validate();
+		
+		return true;
+	}
+	
+	/**
+	 * Creates a pop up that allows user to edit expense categories 
+	 * Updates the new transaction information in the EntryMgr, HistoryMgr, and ExpenseCatMgr
+	 * @return true if updated successfully
+	 */
+	public boolean renameExpenseCategories(){
+
+		setUpPopUpFrame(1);
+		RenameExpenseCatPanel renameExpenseCatPanel = new RenameExpenseCatPanel(
+				popUpFrame, expenseCatMgr, entryMgr, historyMgr);
+		popUpFrame.validate();
+		
 		return true;
 	}
 	
@@ -540,7 +519,7 @@ public class TransactionMgr {
 	private boolean undoDelete(int id, int transactionType, double amount, Date date,
 			String category1, String category2, String description) {
 
-		entryMgr.addEntry(transactionType, amount, date, category1, category2, description);
+		entryMgr.addBackEntry(id, transactionType, amount, date, category1, category2, description);
 
 		//update category 1 based on transactionType
 		switch(transactionType){
@@ -576,4 +555,37 @@ public class TransactionMgr {
 		return true;
 	}
 	
+	/**
+	 * Private method for setting up the pop up frame's formatting
+	 * @param size (0 for normal frame, 1 for small frame)
+	 */
+	private void setUpPopUpFrame(int size){
+		
+		popUpFrame = new JFrame();
+		popUpFrame.setVisible(true);
+		popUpFrame.setResizable(false);
+		popUpFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		popUpFrame.getContentPane().setBackground(new Color(255, 255, 255));		
+		popUpFrame.addWindowListener(new WindowAdapter(){
+			
+			public void windowClosed(WindowEvent e) {
+			
+	            finances.refresh();
+	        }
+		});
+		switch(size){
+			case 0:	popUpFrame.getContentPane().setLayout(new MigLayout(
+					"", 
+					"[720]", 
+					"[30,grow]5[350,grow]"));
+					popUpFrame.setSize(720,400);
+					break;
+			case 1:	popUpFrame.getContentPane().setLayout(new MigLayout(
+					"", 
+					"[400]", 
+					"[30,grow]5[350,grow]"));
+					popUpFrame.setSize(400,400);
+					break;
+		}
+	}
 }

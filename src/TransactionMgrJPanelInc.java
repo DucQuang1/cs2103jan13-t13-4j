@@ -50,6 +50,7 @@ public class TransactionMgrJPanelInc extends InputPanel {
 		btnAddEntry.addActionListener(new ActionListener() {
 			
 			//variables for storing user's inputs
+			boolean pipePresent = false;
 			int DD, MM, YYYY;
 			double amount;
 			String category1, category2, description;
@@ -107,6 +108,8 @@ public class TransactionMgrJPanelInc extends InputPanel {
 					if (assetCatMgr.checkExisting(category1))
 						errorMsg += "Asset Type already exists.<br>" +
 								"Please try a different name.<br>";
+					if(category1.indexOf("|") >= 0)
+						pipePresent = true;
 				}
 				else {
 					category1 = (String) assetTypeCB.getSelectedItem();
@@ -119,18 +122,29 @@ public class TransactionMgrJPanelInc extends InputPanel {
 					if (incomeCatMgr.checkExisting(category2))
 						errorMsg += "Income category already exists.<br>" +
 								"Please try a different name.<br>";
+					if(category2.indexOf("|") >= 0)
+						pipePresent = true;
 				}
 				else {
 					category2 = (String) incomeCatCB.getSelectedItem();
 				}
 				
 				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					pipePresent = true;
 				
-				//if any errors present, display errorMsg
+				//check if pipes present
+				if(pipePresent){
+					errorMsg += "Pipe characters are not supported.<br>" +
+							"So sorry about that!<br>";
+				}
+				
+				//if any errors present, display errorMsg, reset errorMsg and boolean flags
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
 					ErrorDisplay.setText(errorMsg);
 					errorMsg = "";
+					pipePresent = false;
 				}
 				else {
 					

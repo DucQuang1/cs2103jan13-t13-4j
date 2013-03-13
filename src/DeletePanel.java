@@ -130,6 +130,7 @@ public class DeletePanel {
 				if(category2insufficient){
 					errorMsg += "Sorry, you do not have enough money in " + category2 + " for deduction.<br>";
 				}
+				
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
