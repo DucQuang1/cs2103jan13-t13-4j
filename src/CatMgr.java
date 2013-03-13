@@ -437,7 +437,8 @@ public class CatMgr {
 				StringTokenizer st = new StringTokenizer(CatReader.nextLine(), "|");
 				category = st.nextToken();
 				amt = Double.parseDouble(st.nextToken());
-				Dataset.setValue(amt,key,category);
+				if(amt > 0)
+					Dataset.setValue(amt,key,category);
 			}
 			CatReader.close();
 			
