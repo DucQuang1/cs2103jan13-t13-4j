@@ -5,10 +5,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-import javax.swing.JCheckBox;
 import javax.swing.JButton;
 import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 import javax.swing.ButtonGroup;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -17,28 +15,21 @@ import java.util.*;
 import javax.swing.table.*;
 import javax.swing.*;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-
 
 /*
  * This GUI class is the Search Manager to help the user with searching for particular entries 
  * @author: Pang Kang Wei, Joshua A0087809M
  */
 public class SearchMgr {
-	private JTextField SearchMgrDay_TF;
-	private JTextField SearchMgrMonth_TF;
-	private JTextField textField_2;
-	private JTextField SearchMgrYear_TF;
-	private JTable table;
-	private EntryMgr entryMgr = new EntryMgr();
-	private JTable table_2;
-	private JPanel panel = new JPanel();
-	private int DD, MM, YYYY;
-	private JLabel SearchMgrDisplay_LBL = new JLabel("Please do a search selection");
-	
-	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	
+	private JTextField searchMgrDay_TF;														//Text field to specify day
+	private JTextField searchMgrMonth_TF;													//Text field to specify month
+	private JTextField searchMgrYear_TF;													//Text field to specify year
+	private EntryMgr entryMgr = new EntryMgr();												//Create an instance of EntryMgr	
+	private int DD, MM, YYYY;																//private day, month and year for processing of Entry information
+	private JLabel searchMgrDisplay_LBL = new JLabel("Please do a search selection");		//Label to display number of search results
+	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");	//private SimpleDateFormat variable to format the date while processing Entry information
+	private JFrame frame;																	//Frame to hold the GUI elements
+	private JTable searchMgrResults_TABLE;													//Table to hold searched results
 	
 	
 	/*
@@ -56,7 +47,7 @@ public class SearchMgr {
 				resultEntries.add(allEntries.get(i));
 			}
 		}
-		SearchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
+		searchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
 		return resultEntries;
 	}
 	
@@ -77,6 +68,7 @@ public class SearchMgr {
 				throw new Exception();
 		} catch (Exception exDD){
 			System.out.println(exDD);
+			JOptionPane.showMessageDialog(frame, "Invalid Day");
 		}
 		
 		//check if month is valid
@@ -86,6 +78,7 @@ public class SearchMgr {
 				throw new Exception();
 		} catch (Exception exMM){
 			System.out.println(exMM);
+			JOptionPane.showMessageDialog(frame, "Invalid Month");
 		}
 		
 		//check if year is valid
@@ -95,6 +88,7 @@ public class SearchMgr {
 				throw new Exception();
 		} catch (Exception exYY){
 			System.out.println(exYY);
+			JOptionPane.showMessageDialog(frame, "Invalid year");
 		}
 		
 		Date date = null;
@@ -139,7 +133,7 @@ public class SearchMgr {
 			}
 		}
 
-		SearchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
+		searchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
 		return resultEntries;
 	}
 	
@@ -152,8 +146,8 @@ public class SearchMgr {
 	public LinkedList<Entry> searchByAmount(int sign, Double amount){
 		LinkedList<Entry> allEntries = new LinkedList<Entry>();
 		LinkedList<Entry> resultEntries = new LinkedList<Entry>();
-		allEntries = entryMgr.getTransactionList();
-
+		allEntries = entryMgr.getTransactionList(); 
+		
 		for (int i = 0; i < allEntries.size(); i++) {
 			switch(sign){
 			case 0:
@@ -184,11 +178,10 @@ public class SearchMgr {
 			}
 		}
 
-		SearchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
-		return resultEntries;
-	}
+		searchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
 
-	private JFrame frame;
+		return resultEntries;
+		}
 
 	/*
 	 * description: Main class to run the Search Manager
@@ -224,117 +217,137 @@ public class SearchMgr {
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 680, 433);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new MigLayout("", "[grow][grow][100px:n:100px][100px:n:100px][100px:n:100px][100px:n:100px][100px:n:100px]", "[][][][][][][][][][][][grow][]"));
+		frame.getContentPane().setLayout(new MigLayout("", "[50px:n:50px][grow][100px:n:100px][100px:n:100px][100px:n:100px][100px:n:100px][100px:n:100px]", "[][][][][][][][][][][][grow][grow]"));
 
+
+		final JScrollPane searchMgrScPane_SCP = new JScrollPane();					//ScrollPane to put the results Panel into it and to display results
+		frame.getContentPane().add(searchMgrScPane_SCP, "cell 0 11 7 2,grow");
 		
-		JLabel label = new JLabel("");
-		frame.getContentPane().add(label, "cell 1 10");
+		final JPanel searchMgrResultsPane_PNL = new JPanel();						//Panel for the results
+		searchMgrScPane_SCP.setViewportView(searchMgrResultsPane_PNL);
+		searchMgrResultsPane_PNL.setLayout(new MigLayout("", "[grow]", "[grow]"));
 		
-		//SearchMgrDisplay_LBL placement
-		frame.getContentPane().add(SearchMgrDisplay_LBL, "cell 2 10 3 1");
+		searchMgrResults_TABLE = new JTable();										//Table to display search results
+		searchMgrResultsPane_PNL.add(searchMgrResults_TABLE, "cell 0 0,grow");
 		
-		JRadioButton SearchMgrRadioBtn_0 = new JRadioButton("");
-		frame.getContentPane().add(SearchMgrRadioBtn_0, "cell 0 2");
-		SearchMgrRadioBtn_0.setMnemonic(0);
+		frame.getContentPane().add(searchMgrDisplay_LBL, "cell 2 10 3 1");
 		
-		final JComboBox SearchMgrAmount_CB = new JComboBox();
-		frame.getContentPane().add(SearchMgrAmount_CB, "cell 2 2,growx");
-		SearchMgrAmount_CB.addItem("Greater than");
-		SearchMgrAmount_CB.addItem("Lesser than");
-		SearchMgrAmount_CB.addItem("Equal");
-		SearchMgrAmount_CB.addItem("Greater-Equal");
-		SearchMgrAmount_CB.addItem("Lesser-Equal");
+		JRadioButton searchMgrSelectionAmount_RDBTN = new JRadioButton("");			//Radio button to specify search by amount
+		frame.getContentPane().add(searchMgrSelectionAmount_RDBTN, "cell 0 2");
+		searchMgrSelectionAmount_RDBTN.setMnemonic(0);
 		
-		final JTextField SearchMgrAmout_TF = new JTextField();
-		frame.getContentPane().add(SearchMgrAmout_TF, "cell 3 2,growx");
-		SearchMgrAmout_TF.setColumns(10);
+		final JComboBox searchMgrAmount_CB = new JComboBox();						//Combo box to specify search by amount sign
+		frame.getContentPane().add(searchMgrAmount_CB, "cell 2 2,growx");
+		searchMgrAmount_CB.addItem("Greater than");
+		searchMgrAmount_CB.addItem("Lesser than");
+		searchMgrAmount_CB.addItem("Equal");
+		searchMgrAmount_CB.addItem("Greater-Equal");
+		searchMgrAmount_CB.addItem("Lesser-Equal");
 		
-		JLabel lblAmount = new JLabel("Amount");
-		frame.getContentPane().add(lblAmount, "cell 3 3,alignx center");
+		final JTextField searchMgrAmout_TF = new JTextField();						//Text field to specify amount
+		frame.getContentPane().add(searchMgrAmout_TF, "cell 3 2,growx");
+		searchMgrAmout_TF.setColumns(10);
 		
-		JRadioButton SearchMgrRadioBtn_1 = new JRadioButton("");
-		frame.getContentPane().add(SearchMgrRadioBtn_1, "cell 0 5");
-		SearchMgrRadioBtn_1.setMnemonic(1);
+		JLabel searchMgrAmount_LBL = new JLabel("Amount");							//Label to specify amount
+		frame.getContentPane().add(searchMgrAmount_LBL, "cell 3 3,alignx center");
 		
-		final JComboBox SearchMgrDate_CB = new JComboBox();
-		frame.getContentPane().add(SearchMgrDate_CB, "cell 2 5,growx");
-		SearchMgrDate_CB.addItem("Before");
-		SearchMgrDate_CB.addItem("After");
-		SearchMgrDate_CB.addItem("Specific");
-		SearchMgrDate_CB.addItem("Bef-Include");
-		SearchMgrDate_CB.addItem("Aft-Include");
+		JRadioButton searchMgrSelectionDate_RDBTN = new JRadioButton("");			//Radio button to specify search by date
+		frame.getContentPane().add(searchMgrSelectionDate_RDBTN, "cell 0 5");
+		searchMgrSelectionDate_RDBTN.setMnemonic(1);
 		
-		
-		SearchMgrDay_TF = new JTextField();
-		frame.getContentPane().add(SearchMgrDay_TF, "flowx,cell 3 5,alignx center");
-		SearchMgrDay_TF.setColumns(10);
-		
-		SearchMgrMonth_TF = new JTextField();
-		frame.getContentPane().add(SearchMgrMonth_TF, "cell 4 5,alignx center");
-		SearchMgrMonth_TF.setColumns(10);
-		
-		SearchMgrYear_TF = new JTextField();
-		frame.getContentPane().add(SearchMgrYear_TF, "cell 5 5,alignx center");
-		SearchMgrYear_TF.setColumns(10);
-		
-		JLabel lblDd = new JLabel("DD");
-		frame.getContentPane().add(lblDd, "cell 3 6,alignx center");
-		
-		JLabel lblMm = new JLabel("MM");
-		frame.getContentPane().add(lblMm, "cell 4 6,alignx center");
-		
-		JLabel lblYyyy = new JLabel("YYYY");
-		frame.getContentPane().add(lblYyyy, "cell 5 6,alignx center");
-		
-		JRadioButton SearchMgrRadioBtn_2 = new JRadioButton("");
-		frame.getContentPane().add(SearchMgrRadioBtn_2, "cell 0 8");
-		SearchMgrRadioBtn_2.setMnemonic(2);
-		
-		final ButtonGroup btnGroup = new ButtonGroup();
-		btnGroup.add(SearchMgrRadioBtn_0);
-		btnGroup.add(SearchMgrRadioBtn_1);
-		btnGroup.add(SearchMgrRadioBtn_2);
-		SearchMgrRadioBtn_0.setSelected(true);
+		final JComboBox searchMgrDate_CB = new JComboBox();							//Combo box to select the type of sign for date
+		frame.getContentPane().add(searchMgrDate_CB, "cell 2 5,growx");
+		searchMgrDate_CB.addItem("Before");
+		searchMgrDate_CB.addItem("After");
+		searchMgrDate_CB.addItem("Specific");
+		searchMgrDate_CB.addItem("Bef-Include");
+		searchMgrDate_CB.addItem("Aft-Include");
 		
 		
-		JLabel lblTransactionType = new JLabel("Transaction Type");
-		frame.getContentPane().add(lblTransactionType, "cell 2 8,alignx center");
+		searchMgrDay_TF = new JTextField();											//Text field to specify the day
+		frame.getContentPane().add(searchMgrDay_TF, "flowx,cell 3 5,alignx center");
+		searchMgrDay_TF.setColumns(10);
 		
-		final JComboBox SearchMgrType_CB = new JComboBox();
-		frame.getContentPane().add(SearchMgrType_CB, "cell 3 8 2 1,growx");
-		SearchMgrType_CB.addItem("Income Received");
-		SearchMgrType_CB.addItem("Expense by Assets");
-		SearchMgrType_CB.addItem("Expense by Credit");
-		SearchMgrType_CB.addItem("Repaying Loan");
-		SearchMgrType_CB.addItem("Take Loan");
+		searchMgrMonth_TF = new JTextField();										//Text field to specify the month
+		frame.getContentPane().add(searchMgrMonth_TF, "cell 4 5,alignx center");
+		searchMgrMonth_TF.setColumns(10);
 		
-		JButton SearchMgrSearchNow_BTN = new JButton("Search Now");
-		SearchMgrSearchNow_BTN.addActionListener(new ActionListener() {
+		searchMgrYear_TF = new JTextField();										//Text field to specify the year
+		frame.getContentPane().add(searchMgrYear_TF, "cell 5 5,alignx center");
+		searchMgrYear_TF.setColumns(10);
+		
+		JLabel searchMgrDay_LBL = new JLabel("DD");									//Label to specify the day
+		frame.getContentPane().add(searchMgrDay_LBL, "cell 3 6,alignx center");
+		
+		JLabel searchMgrMonth_LBL = new JLabel("MM");								//Label to specify the month
+		frame.getContentPane().add(searchMgrMonth_LBL, "cell 4 6,alignx center");
+		
+		JLabel searchMgrYear_LBL = new JLabel("YYYY");								//Label to specify the year
+		frame.getContentPane().add(searchMgrYear_LBL, "cell 5 6,alignx center");
+		
+		JRadioButton searchMgrSelectionType_RDBTN = new JRadioButton("");			//Radio button for selection type
+		frame.getContentPane().add(searchMgrSelectionType_RDBTN, "cell 0 8");
+		searchMgrSelectionType_RDBTN.setMnemonic(2);
+		
+		final ButtonGroup searchMgrBtnGroup = new ButtonGroup();					//Radio button to specify the selection of search function
+		searchMgrBtnGroup.add(searchMgrSelectionAmount_RDBTN);
+		searchMgrBtnGroup.add(searchMgrSelectionDate_RDBTN);
+		searchMgrBtnGroup.add(searchMgrSelectionType_RDBTN);
+		searchMgrSelectionAmount_RDBTN.setSelected(true);
+		
+		
+		JLabel searchMgrType_LBL = new JLabel("Transaction Type");					//Label to specify the transaction type
+		frame.getContentPane().add(searchMgrType_LBL, "cell 2 8,alignx center");
+		
+		final JComboBox searchMgrType_CB = new JComboBox();							//Combo box for selecting the type of transaction type
+		frame.getContentPane().add(searchMgrType_CB, "cell 3 8 2 1,growx");
+		searchMgrType_CB.addItem("Income Received");
+		searchMgrType_CB.addItem("Expense by Assets");
+		searchMgrType_CB.addItem("Expense by Credit");
+		searchMgrType_CB.addItem("Repaying Loan");
+		searchMgrType_CB.addItem("Take Loan");
+		searchMgrType_CB.addItem("Transfer of Assets");
+		searchMgrType_CB.addItem("Transfer of Liabilities");
+		
+		JButton searchMgrSearchNow_BTN = new JButton("Search Now");					//Button to search for Entries
+		frame.getContentPane().add(searchMgrSearchNow_BTN, "cell 6 10,alignx center");
+		/*
+		 * description: Function is to listen for the Search Now button to be clicked and do the appropriate search
+		 * @author: Pang Kang Wei, Joshua A0087809M
+		 */
+		searchMgrSearchNow_BTN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(btnGroup.getSelection().getMnemonic());
+				System.out.println(searchMgrBtnGroup.getSelection().getMnemonic());
 				
 				LinkedList<Entry> searchedResults = new LinkedList<Entry>();
 
-				switch (btnGroup.getSelection().getMnemonic()) {
+				switch (searchMgrBtnGroup.getSelection().getMnemonic()) {
 				case 0:
 					searchedResults = new LinkedList<Entry>();
-					searchedResults = searchByAmount(SearchMgrAmount_CB.getSelectedIndex(), Double.parseDouble(SearchMgrAmout_TF.getText()));
+					try{
+					searchedResults = searchByAmount(searchMgrAmount_CB.getSelectedIndex(), Double.parseDouble(searchMgrAmout_TF.getText()));
+					}
+					catch(Exception e){
+						System.out.println("Invalid amount");
+
+						JOptionPane.showMessageDialog(frame, "Invalid amount");
+					}
 					break;
 				case 1:
 					searchedResults = new LinkedList<Entry>();
-					searchedResults = searchByDate(SearchMgrDate_CB.getSelectedIndex(), SearchMgrDay_TF.getText(), SearchMgrMonth_TF.getText(), SearchMgrYear_TF.getText());
+					searchedResults = searchByDate(searchMgrDate_CB.getSelectedIndex(), searchMgrDay_TF.getText(), searchMgrMonth_TF.getText(), searchMgrYear_TF.getText());
 					break;
 				case 2:
 					searchedResults = new LinkedList<Entry>();
-					searchedResults = searchByTransactionType(SearchMgrType_CB.getSelectedIndex());
+					searchedResults = searchByTransactionType(searchMgrType_CB.getSelectedIndex());
 					break;
 				}
 				
-
 				DefaultTableModel model;
 
 				String data[][] = new String[searchedResults.size()][7];
 				
+				//Setup the search results into data[][]
 				for(int i=0; i<searchedResults.size(); i++){
 					data[i][0] = searchedResults.get(i).getId() +"";
 					data[i][1] = searchedResults.get(i).getTransactionType() +"";
@@ -345,20 +358,22 @@ public class SearchMgr {
 					data[i][6] = searchedResults.get(i).getDescription() +"";
 				}
 
+				//Setup the column names for table
 				String col[] = { "ID", "Transaction Type", "Amount", "Date", "Cat1", "Cat2", "Description" };
 
 				model = new DefaultTableModel(data, col);
-				table_2 = new JTable(model);
-				table_2.enable(false);
-				panel.removeAll();
-				frame.getContentPane().add(panel, "cell 0 11 7 2,grow");
-				panel.setLayout(new MigLayout("", "[1px][grow]", "[1px][grow]"));
-				panel.add(table_2, "cell 1 1,grow");
-				panel.revalidate();
+				searchMgrResults_TABLE = new JTable(model);
+				searchMgrResults_TABLE.enable(false);
+				
+				//Renew the results panel
+				searchMgrResultsPane_PNL.removeAll();
+				searchMgrScPane_SCP.setViewportView(searchMgrResultsPane_PNL);
+				searchMgrResultsPane_PNL.setLayout(new MigLayout("", "[grow]", "[grow]"));
+				searchMgrResultsPane_PNL.add(searchMgrResults_TABLE, "cell 0 0,grow");
+				searchMgrResults_TABLE.revalidate();
+				searchMgrResultsPane_PNL.revalidate();
+				searchMgrResultsPane_PNL.setVisible(true);
 			}
 		});
-		frame.getContentPane().add(SearchMgrSearchNow_BTN, "cell 6 10,alignx center");
-		
 	}
-
 }
