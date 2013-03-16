@@ -1,0 +1,5 @@
+Food|1200
+Rent|800
+Transport|300
+Utilities|100
+Gifts|50
