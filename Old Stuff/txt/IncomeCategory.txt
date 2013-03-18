@@ -1,0 +1,6 @@
+Salary|4000
+Dividends|1000
+GST Rebate|2600.0
+TestCat|600.0
+lahsdu|400.0
+yyy|400.0
