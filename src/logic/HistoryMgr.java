@@ -1,4 +1,7 @@
 package logic;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,8 +15,12 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import javax.swing.JFrame;
+
 import data.Entry;
 import data.Log;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Class that manages all the logs via History.txt

@@ -17,6 +17,9 @@ import javax.swing.table.TableModel;
  */
 public class ExcelExporter {
 	
+	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	private String date = date_format.format(new Date());
+	
 	public ExcelExporter(){}
 	
 	public void exportTable(JTable table, File file){

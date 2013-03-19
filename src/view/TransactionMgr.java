@@ -1,6 +1,5 @@
 package view;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import net.miginfocom.swing.MigLayout;
@@ -19,7 +18,6 @@ import org.jfree.data.xy.XYDataset;
 import data.Entry;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,9 +32,7 @@ import logic.IncomeCatMgr;
 import logic.LiabilityCatMgr;
 
 /**
- * GUI class that handles all requests from the user that may potential change user's data
- * This class generates a popup frame, which is passed to another class (depending on the function called)
- * that will continue to generate the rest of the fields and pass user's input to the relevant managers
+ * GUI class that handles all requests from the user
  * note: all the managers are static to prevent duplication, and final to prevent mutation of references
  * 
  * @author Pang Kang Wei,Joshua	A0087809M
@@ -45,7 +41,6 @@ import logic.LiabilityCatMgr;
 public class TransactionMgr {
 	
 	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
 	
 	private Finances finances;	//for calling the refresh function
 
@@ -147,13 +142,8 @@ public class TransactionMgr {
 		
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel TransactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Add.png")));
-		TransactionMgrHeading_LBL.setText("Add Transaction");
-		TransactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(TransactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Type");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
 		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//to remove previous input panel's fields
@@ -170,10 +160,10 @@ public class TransactionMgr {
 		transactionMgr_CB.addItem("Expense by Credit");
 		transactionMgr_CB.addItem("Repaying Loan");
 		transactionMgr_CB.addItem("Take Loan");
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -206,7 +196,7 @@ public class TransactionMgr {
 					transactionMgrInput_PNL= transactionMgrJPanelTakeLoan.getPanel();
 					break;
 				}
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 1 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 			}
 		});
@@ -224,13 +214,9 @@ public class TransactionMgr {
 
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel TransactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Edit.png")));
-		TransactionMgrHeading_LBL.setText("Edit Transaction");
-		TransactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(TransactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
+		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//populate the comboBox. Clear before populating to prevent duplicate items
 		transactionMgr_CB.removeAllItems();
@@ -238,10 +224,10 @@ public class TransactionMgr {
 		transactionList = entryMgr.getTransactionList();
 		for(Entry entry : transactionList)
 			transactionMgr_CB.addItem(Integer.toString(entry.getId()));
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -253,11 +239,12 @@ public class TransactionMgr {
 				
 				transactionMgrPopUp_FRM.getContentPane().remove(transactionMgrInput_PNL);
 				transactionMgrInput_PNL= editPanel.getPanel();
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 6 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 				
 			}
 		});
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 4 0 2 1");
 		
 		return true;
 	}
@@ -271,13 +258,9 @@ public class TransactionMgr {
 
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel TransactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Del.png")));
-		TransactionMgrHeading_LBL.setText("Delete Transaction");
-		TransactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(TransactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
+		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//populate the comboBox. Clear before populating to prevent duplicate items
 		transactionMgr_CB.removeAllItems();
@@ -285,10 +268,10 @@ public class TransactionMgr {
 		transactionList = entryMgr.getTransactionList();
 		for(Entry entry : transactionList)
 			transactionMgr_CB.addItem(Integer.toString(entry.getId()));
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 	
@@ -300,11 +283,12 @@ public class TransactionMgr {
 				
 				transactionMgrPopUp_FRM.getContentPane().remove(transactionMgrInput_PNL);
 				transactionMgrInput_PNL= deletePanel.getPanel();
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2,grow");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 6 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 				
 			}
 		});
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 4 0 2 1");
 		
 		return true;
 	}
@@ -435,7 +419,7 @@ public class TransactionMgr {
 			case 0:	transactionMgrPopUp_FRM.getContentPane().setLayout(new MigLayout(
 					"", 
 					"[720]", 
-					"[40,grow]5[30,grow]5[350,grow]"));
+					"[30,grow]5[350,grow]"));
 					transactionMgrPopUp_FRM.setSize(720,400);
 					break;
 			case 1:	transactionMgrPopUp_FRM.getContentPane().setLayout(new MigLayout(

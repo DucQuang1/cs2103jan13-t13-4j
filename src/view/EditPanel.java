@@ -3,7 +3,6 @@ package view;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,22 +41,20 @@ public class EditPanel {
 	//hostFrame refers to the pop-up frame that holds this EditPanel
 	protected JFrame hostFrame;
 	
-	//the panel that contains all the GUI fields and buttons
 	private JPanel editPanel;
+	private JTextField amountField;
+	private JTextField dd;
+	private JTextField mm;
+	private JTextField yyyy;
+	private JTextField descriptionField;
 	
-	private JTextField editPanelAmount_TF;
-	private JTextField editPanelDD_TF;
-	private JTextField editPanelMM_TF;
-	private JTextField editPanelYYYY_TF;
-	private JTextField editPanelDescription_TF;
-	
-	private JLabel editPanelTransactionType_LBL = new JLabel();
-	private JLabel editPanelAmount_LBL = new JLabel("Amount");
-	private JLabel editPanelDate_LBL = new JLabel("Date");
-	private JLabel editPanelCategory1_LBL = new JLabel();
-	private JLabel editPanelCategory2_LBL = new JLabel();
-	private JLabel editPanelDescription_LBL = new JLabel("Description");
-	private JLabel editPanelError_LBL = new JLabel();
+	private JLabel lblTransactionType = new JLabel();
+	private JLabel lblAmount = new JLabel("Amount");
+	private JLabel lblDate = new JLabel("Date");
+	private JLabel lblCategory1 = new JLabel();
+	private JLabel lblCategory2 = new JLabel();
+	private JLabel lblDescription = new JLabel("Description");
+	private JLabel ErrorDisplay = new JLabel();
 	private String errorMsg = "";
 	
 	private final AssetCatMgr assetCatMgr;
@@ -90,56 +87,44 @@ public class EditPanel {
 		editPanel = new JPanel(new MigLayout("", "[100,left]5[100]25[130,left]5[100]5[grow]", "[20]5[]5[30]5[50]10[50,grow,top]"));
 		editPanel.setBackground(new Color(255, 255, 255));
 		editPanel.setSize(700,300);
-		//set colour for panel depending on transaction type
-		switch(entry.getTransactionType()){
-			case 0:	editPanel.setBackground(new Color(160, 190, 220));
-					break;
-			case 1:
-			case 2:	editPanel.setBackground(new Color(255, 200, 0));
-					break;
-			case 3:
-			case 4:	editPanel.setBackground(new Color(255, 185, 215));
-					break;
-		}
 		
-		editPanel.add(editPanelTransactionType_LBL, "cell 0 0 2 1,growx");
-		editPanel.add(editPanelCategory1_LBL, "cell 0 1,growx");
-		editPanel.add(editPanelCategory2_LBL, "cell 1 1,growx");
+		editPanel.add(lblTransactionType, "cell 0 0 2 1,growx");
+		editPanel.add(lblCategory1, "cell 0 1,growx");
+		editPanel.add(lblCategory2, "cell 1 1,growx");
 		
-		editPanel.add(editPanelAmount_LBL, "cell 0 2,alignx left");
+		editPanel.add(lblAmount, "cell 0 2,alignx left");
 
-		editPanelAmount_TF = new JTextField();
-		editPanelAmount_TF.setColumns(10);
-		editPanel.add(editPanelAmount_TF, "cell 1 2,growx");
+		amountField = new JTextField();
+		amountField.setColumns(10);
+		editPanel.add(amountField, "cell 1 2,growx");
 		
-		editPanel.add(editPanelDate_LBL, "cell 2 2,alignx left");
+		editPanel.add(lblDate, "cell 2 2,alignx left");
 
-		editPanelDD_TF = new JTextField();
-		editPanelDD_TF.setColumns(5);
-		editPanel.add(editPanelDD_TF, "flowx,cell 3 2,growx");
+		dd = new JTextField();
+		dd.setColumns(5);
+		editPanel.add(dd, "flowx,cell 3 2,growx");
 		
-		editPanelMM_TF = new JTextField();
-		editPanelMM_TF.setColumns(5);
-		editPanel.add(editPanelMM_TF, "cell 3 2,growx");
+		mm = new JTextField();
+		mm.setColumns(5);
+		editPanel.add(mm, "cell 3 2,growx");
 		
-		editPanelYYYY_TF = new JTextField();
-		editPanel.add(editPanelYYYY_TF, "cell 4 2");
-		editPanelYYYY_TF.setColumns(8);
+		yyyy = new JTextField();
+		editPanel.add(yyyy, "cell 4 2");
+		yyyy.setColumns(8);
 		
-		editPanel.add(editPanelDescription_LBL, "cell 0 3");
+		editPanel.add(lblDescription, "cell 0 3");
 		
-		editPanelDescription_TF = new JTextField();
-		editPanel.add(editPanelDescription_TF, "cell 1 3 4 1,grow");
+		descriptionField = new JTextField();
+		editPanel.add(descriptionField, "cell 1 3 4 1,grow");
 		
-		editPanelError_LBL.setFont(error_font);
-		editPanelError_LBL.setForeground(Color.RED);
-		editPanel.add(editPanelError_LBL, "cell 1 4 3 1,grow");
+		ErrorDisplay.setFont(error_font);
+		ErrorDisplay.setForeground(Color.RED);
+		editPanel.add(ErrorDisplay, "cell 1 4 3 1,grow");
 		
 				
 		
 		
-		JButton btnSubmitEntry = new JButton(new ImageIcon(Finances.class.getResource("/img/Tick.png")));
-		btnSubmitEntry.setToolTipText("Click to confirm!");
+		JButton btnSubmitEntry = new JButton("Edit Entry");
 		btnSubmitEntry.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -151,7 +136,7 @@ public class EditPanel {
 				
 				//check if amount is valid
 				try{
-					amount = Double.parseDouble(editPanelAmount_TF.getText());
+					amount = Double.parseDouble(amountField.getText());
 					if (amount < 0)
 						throw new Exception();
 				} catch (Exception exAmount){
@@ -160,7 +145,7 @@ public class EditPanel {
 				
 				//check if day of month is valid
 				try{
-					DD = Integer.parseInt(editPanelDD_TF.getText());
+					DD = Integer.parseInt(dd.getText());
 					if (DD <= 0 || DD > 31)
 						throw new Exception();
 				} catch (Exception exDD){
@@ -169,7 +154,7 @@ public class EditPanel {
 				
 				//check if month is valid
 				try{
-					MM = Integer.parseInt(editPanelMM_TF.getText());
+					MM = Integer.parseInt(mm.getText());
 					if (MM <= 0 || MM > 12)
 						throw new Exception();
 				} catch (Exception exMM){
@@ -178,7 +163,7 @@ public class EditPanel {
 				
 				//check if year is valid
 				try{
-					YYYY  = Integer.parseInt(editPanelYYYY_TF.getText());
+					YYYY  = Integer.parseInt(yyyy.getText());
 					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
 						throw new Exception();
 				} catch (Exception exYY){
@@ -253,7 +238,7 @@ public class EditPanel {
 				}
 				
 				//check for pipe characters in description field
-				description = editPanelDescription_TF.getText();
+				description = descriptionField.getText();
 				if(description.indexOf("|") >= 0)
 					errorMsg += "Pipe characters are not supported.<br>" +
 								"So sorry about that!<br>";
@@ -261,7 +246,7 @@ public class EditPanel {
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
-					editPanelError_LBL.setText(errorMsg);
+					ErrorDisplay.setText(errorMsg);
 					errorMsg = "";
 				}
 				else {
@@ -328,30 +313,30 @@ public class EditPanel {
 		int transactionType = entry.getTransactionType();
 		
 		switch (transactionType){
-			case 0:	editPanelTransactionType_LBL.setText("Income Entry:");
+			case 0:	lblTransactionType.setText("Income Entry:");
 					break;
-			case 1: editPanelTransactionType_LBL.setText("Expense using Assets:");
+			case 1: lblTransactionType.setText("Expense using Assets:");
 					break;
-			case 2: editPanelTransactionType_LBL.setText("Expense using Liabilities:");
+			case 2: lblTransactionType.setText("Expense using Liabilities:");
 					break;
-			case 3: editPanelTransactionType_LBL.setText("Repay Loan:");
+			case 3: lblTransactionType.setText("Repay Loan:");
 					break;
-			case 4: editPanelTransactionType_LBL.setText("Take Loan");
+			case 4: lblTransactionType.setText("Take Loan");
 					break;
-			case 5:	editPanelTransactionType_LBL.setText("Asset Transfer");
+			case 5:	lblTransactionType.setText("Asset Transfer");
 					break;
-			case 6:	editPanelTransactionType_LBL.setText("Liability Transfer");
+			case 6:	lblTransactionType.setText("Liability Transfer");
 					break;
 		}
-		editPanelAmount_TF.setText(Double.toString(entry.getAmount()));
+		amountField.setText(Double.toString(entry.getAmount()));
 		String date = date_format.format(entry.getDate());
 		StringTokenizer stDate = new StringTokenizer(date,"/");
-		editPanelDD_TF.setText(stDate.nextToken());
-		editPanelMM_TF.setText(stDate.nextToken());
-		editPanelYYYY_TF.setText(stDate.nextToken());
-		editPanelCategory1_LBL.setText(entry.getCategory1());
-		editPanelCategory2_LBL.setText(entry.getCategory2());
-		editPanelDescription_TF.setText(entry.getDescription());
+		dd.setText(stDate.nextToken());
+		mm.setText(stDate.nextToken());
+		yyyy.setText(stDate.nextToken());
+		lblCategory1.setText(entry.getCategory1());
+		lblCategory2.setText(entry.getCategory2());
+		descriptionField.setText(entry.getDescription());
 		editPanel.validate();
 	}
 }
