@@ -3,7 +3,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.LinkedList;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -62,7 +61,7 @@ public class RenameCatPanel{
 	
 	protected final static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
 	
-	protected JLabel heading = new JLabel(new ImageIcon(Finances.class.getResource("/img/Tag.png")));
+	protected JLabel heading = new JLabel();
 	protected JPanel scrollPanel = new JPanel();
 	protected JScrollPane scrollPane = new JScrollPane();
 	
