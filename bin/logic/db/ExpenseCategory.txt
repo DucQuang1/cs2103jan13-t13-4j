@@ -1,0 +1,3 @@
+Food|45.0
+Transport|5900.0
+Atas Restaurant|1000.0
