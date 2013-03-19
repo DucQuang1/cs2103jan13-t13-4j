@@ -30,8 +30,6 @@ public class TransferPanelLiability extends TransferPanel{
 		this.liabilityCatMgr = liabilityCatMgr;
 		resetFields();
 		
-		transferPanelHeading_LBL.setText("Intra Liability Transfer");
-		
 		JButton btnSubmitEntry = new JButton("Submit Entry");
 		btnSubmitEntry.addActionListener(new ActionListener() {
 			
@@ -44,7 +42,7 @@ public class TransferPanelLiability extends TransferPanel{
 				
 				//check if amount is valid
 				try{
-					amount = Double.parseDouble(transferPanelAmount_TF.getText());
+					amount = Double.parseDouble(amountField.getText());
 					if (amount < 0)
 						throw new Exception();
 				} catch (Exception exAmount){
@@ -53,7 +51,7 @@ public class TransferPanelLiability extends TransferPanel{
 				
 				//check if day of month is valid
 				try{
-					DD = Integer.parseInt(transferPanelDD_TF.getText());
+					DD = Integer.parseInt(dd.getText());
 					if (DD <= 0 || DD > 31)
 						throw new Exception();
 				} catch (Exception exDD){
@@ -62,7 +60,7 @@ public class TransferPanelLiability extends TransferPanel{
 				
 				//check if month is valid
 				try{
-					MM = Integer.parseInt(transferPanelMM_TF.getText());
+					MM = Integer.parseInt(mm.getText());
 					if (MM <= 0 || MM > 12)
 						throw new Exception();
 				} catch (Exception exMM){
@@ -71,7 +69,7 @@ public class TransferPanelLiability extends TransferPanel{
 				
 				//check if year is valid
 				try{
-					YYYY  = Integer.parseInt(transferPanelYYYY_TF.getText());
+					YYYY  = Integer.parseInt(yyyy.getText());
 					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
 						throw new Exception();
 				} catch (Exception exYY){
@@ -87,16 +85,18 @@ public class TransferPanelLiability extends TransferPanel{
 					errorMsg += "Unable to process date.<br>";
 				}
 				
+				description = descriptionField.getText();
+				
 				//check if balance in relevant categories sufficient
-				String category1 = String.valueOf(transferPanelFrom_CB.getSelectedItem());
-				String category2 = String.valueOf(transferPanelTo_CB.getSelectedItem());
+				String category1 = String.valueOf(fromCB.getSelectedItem());
+				String category2 = String.valueOf(toCB.getSelectedItem());
 			
 				if(amount > liabilityCatMgr.getAmount(category1)){
 					errorMsg += "Sorry, you do not have enough money in " + category1 + " for transferring.<br>";
 				}
 
 				//check for pipe characters in description field
-				description = transferPanelDescription_TF.getText();
+				description = descriptionField.getText();
 				if(description.indexOf("|") >= 0)
 					errorMsg += "Pipe characters are not supported.<br>" +
 								"So sorry about that!<br>";
@@ -104,7 +104,7 @@ public class TransferPanelLiability extends TransferPanel{
 				//if any errors present, display errorMsg
 				if (errorMsg != ""){
 					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
-					transferPanelError_LBL.setText(errorMsg);
+					ErrorDisplay.setText(errorMsg);
 					errorMsg = "";
 				}
 				else {
@@ -124,7 +124,7 @@ public class TransferPanelLiability extends TransferPanel{
 				}
 			}
 		});
-		transferPanel_PNL.add(btnSubmitEntry, "cell 4 4");
+		transferPanel.add(btnSubmitEntry, "cell 4 4");
 		
 	}
 	
@@ -138,14 +138,14 @@ public class TransferPanelLiability extends TransferPanel{
 		//populate fromCB with updated categories
 		LinkedList<String> fromList = liabilityCatMgr.getCategoryList();
 		for(String category : fromList)
-			transferPanelFrom_CB.addItem(category);
+			fromCB.addItem(category);
 		
 		//populate toCB with updated categories
 		LinkedList<String> toList = liabilityCatMgr.getCategoryList();
 		for(String category : toList)
-			transferPanelTo_CB.addItem(category);
+			toCB.addItem(category);
 		
-		transferPanelDescription_TF.setText("");
+		descriptionField.setText("");
 	}
 
 }
