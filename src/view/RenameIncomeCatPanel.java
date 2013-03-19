@@ -27,7 +27,7 @@ public class RenameIncomeCatPanel extends RenameCatPanel{
 			final EntryMgr entryMgr, final HistoryMgr historyMgr){
 		
 		super(hostFrame);
-		heading.setText("Rename Income Category");
+		heading.setText("Income Category Manager");
 		LinkedList<String> categoryList = incomeCatMgr.getCategoryList();
 		
 		//this block creates the iOS-styled row.
