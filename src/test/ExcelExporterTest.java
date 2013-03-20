@@ -3,14 +3,9 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import jxl.Workbook;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
 
 import logic.ExcelExporter;
 
@@ -39,17 +34,10 @@ public class ExcelExporterTest {
 			  };
 		String [] headers = {"Title","ISBN"};
 		DefaultTableModel model = new DefaultTableModel(data,headers);
-		WritableWorkbook workbook;
-		try {
-			workbook = Workbook.createWorkbook(new File("result.xls"));
-			WritableSheet sheet = workbook.createSheet("First Sheet", 0);
 		JTable table = new JTable(model);
+		File newFile = new File("results.xls");
 		ExcelExporter exporter = new ExcelExporter();
-		exporter.exportTable(table, sheet);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		exporter.exportTable(table, newFile);
 	}
 
 }

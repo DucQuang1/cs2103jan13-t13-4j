@@ -1,11 +1,13 @@
 package logic;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
-
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WriteException;
 
 /**
  * Class that takes in a JTable, a file path, and writes to it
@@ -15,25 +17,31 @@ import jxl.write.WriteException;
  */
 public class ExcelExporter {
 	
+	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	private String date = date_format.format(new Date());
+	
 	public ExcelExporter(){}
 	
-	public void exportTable(JTable table, WritableSheet sheet){
+	public void exportTable(JTable table, File file){
 		try {
 
 			TableModel model = table.getModel();
+			FileWriter out = new FileWriter(file);
 
 		  	for(int i=0; i < model.getColumnCount();i++) {
-		  		sheet.addCell(new Label(i, 0, model.getColumnName(i)));
+		  		out.write(model.getColumnName(i)+"\t");
 		  	}
+		  	out.write("\n");
 
 		  	for(int i=0; i < model.getRowCount();i++){
 		  		for(int j=0; j< model.getColumnCount(); j++){
-		  		//get [i][j] and write to [i+1][j] as first row is for headers
-		  			sheet.addCell(new Label(j, i+1, model.getValueAt(i,j).toString()));	
+	  				out.write(model.getValueAt(i,j).toString() + "\t");
 				}
+		  		out.write("\n");
 		  	}
+		  	out.close();
 
-		} catch (WriteException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		}

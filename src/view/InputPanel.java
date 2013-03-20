@@ -8,8 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,7 +33,7 @@ public class InputPanel {
 	protected final static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
 	
 	//inputPanelInput_PNLHost_FRM refers to the pop-up frame that holds this inputPanelInput_PNL
-	protected JFrame inputPanel_FRM;
+	protected JFrame inputPanelHost_FRM;
 	
 	protected JPanel inputPanelInput_PNL;
 	protected JTextField inputPanelAmount_TF;
@@ -66,7 +64,8 @@ public class InputPanel {
 	 */
 	public InputPanel(JFrame hostFrame, EntryMgr entryMgr, HistoryMgr historyMgr) {
 		
-		this.inputPanel_FRM = hostFrame;
+		//pass reference to the panel for checking and adding of transactions
+		this.inputPanelHost_FRM = hostFrame;
 		this.entryMgr = entryMgr;
 		this.historyMgr = historyMgr;
 		

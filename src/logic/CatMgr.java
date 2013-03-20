@@ -2,7 +2,6 @@ package logic;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,16 +29,6 @@ public class CatMgr {
 	
 	public void setTxtPath(String txt_path){
 		this.txt_path = txt_path;
-		try {
-			FileReader fileCheck = new FileReader(txt_path);
-		} catch (FileNotFoundException e) {
-			File newFile = new File(txt_path);
-			try {
-				newFile.createNewFile();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}
 	}
 
 	/**
