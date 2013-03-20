@@ -524,21 +524,18 @@ public class EntryMgr {
 	
 	/**
 	 * Gets the current id according to the transactions in the file. Only used for initialization!
-	 * Algorithm looks at all the ids, and takes the largest among them, as the ids might not be sorted in ascending order
 	 * After initialization the next id will be tracked by current_id
 	 * @return next id to be inserted
 	 */
 	private int initId(){
-		int id = 0, temp = 0;
+		int id = 0;
 		try {
 			Scanner fileReader = new Scanner(new FileReader(txt_path));
 
 			while (fileReader.hasNextLine()) {
 				StringTokenizer st = new StringTokenizer(fileReader.nextLine(), "|");
 				if(st.hasMoreTokens()){							//if clause to avoid problems with empty lines in txt file
-					temp = Integer.parseInt(st.nextToken());					
-					if(temp > id)								//check for max id basically
-						id = temp;
+					id = Integer.parseInt(st.nextToken());					
 				}
 			}
 			fileReader.close();

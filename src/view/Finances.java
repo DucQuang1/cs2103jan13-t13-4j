@@ -48,9 +48,9 @@ public class Finances {
 
 	private final TransactionMgr transactionMgr = new TransactionMgr(this);		//TransactionMgr handles all operations from user
 	
-	private final JFrame finances_FRM = new JFrame();							//Main Window of user interface
-	private final JPanel finances_PNL = new JPanel();							//Container for all display elements
-	private final JScrollPane finances_SCP = new JScrollPane(finances_PNL);		//Scroll pane class to enable scrolling
+	private final JFrame financesMain_FRM = new JFrame();						//Main Window of user interface
+	private final JPanel financesMain_PNL = new JPanel();						//Container for all display elements
+	private final JScrollPane financesMain_SCP = new JScrollPane(financesMain_PNL);	//Scroll pane class to enable scrolling
 	
 	private final JPanel financesBalance_PNL = new JPanel();					//financesBalance_PNL displays the welcome msg and user's balance
 	private final JPanel financesAsset_PNL = new JPanel();						//financesAsset_PNL displays the chart, edit and transfer buttons
@@ -92,7 +92,7 @@ public class Finances {
 			public void run(){
 				try {
 					Finances window = new Finances();
-					window.finances_FRM.setVisible(true);
+					window.financesMain_FRM.setVisible(true);
 				} catch (Exception e){
 					e.printStackTrace();
 				}
@@ -113,12 +113,12 @@ public class Finances {
 	private void initialize(){
 		
 		//setting up the main window
-		finances_FRM.getContentPane().setBackground(new Color(255, 255, 255));
-		finances_FRM.setSize(1200, 750);
-		finances_FRM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		finances_FRM.add(finances_SCP);
-		finances_PNL.setLayout(new MigLayout("", "[400]0[400]0[250:300:350]", "0[100,grow]0[300,grow]0[300,grow]0"));
-		finances_PNL.setBackground(new Color(255, 255, 255));
+		financesMain_FRM.getContentPane().setBackground(new Color(255, 255, 255));
+		financesMain_FRM.setSize(1200, 750);
+		financesMain_FRM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		financesMain_FRM.add(financesMain_SCP);
+		financesMain_PNL.setLayout(new MigLayout("", "[400]0[400]0[250:300:350]", "0[100,grow]0[300,grow]0[300,grow]0"));
+		financesMain_PNL.setBackground(new Color(255, 255, 255));
 		
 		//setting up the top panel
 		financesBalance_PNL.setBackground(new Color(255, 255, 255));		
@@ -127,7 +127,7 @@ public class Finances {
 		if(transactionMgr.getBalance() < 0)
 			financesBalance_LBL.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
 		financesBalance_PNL.add(financesBalance_LBL, "cell 0 1, align center");
-		finances_PNL.add(financesBalance_PNL, "cell 0 0 3 1,grow");
+		financesMain_PNL.add(financesBalance_PNL, "cell 0 0 3 1,grow");
 		
 		//setting up the asset panel
 		financesAsset_PNL.setBackground(new Color(255, 255, 255));
@@ -148,7 +148,7 @@ public class Finances {
 			}
 		});
 		financesAsset_PNL.add(financesAssetTransfer_BTN);
-		finances_PNL.add(financesAsset_PNL, "cell 0 1,grow");
+		financesMain_PNL.add(financesAsset_PNL, "cell 0 1,grow");
 
 		//setting up the liability panel
 		financesLiability_PNL.setBackground(new Color(255, 255, 255));
@@ -168,14 +168,14 @@ public class Finances {
 			}
 		});
 		financesLiability_PNL.add(financesLiabilityTransfer_BTN);
-		finances_PNL.add(financesLiability_PNL, "cell 1 1,grow");
+		financesMain_PNL.add(financesLiability_PNL, "cell 1 1,grow");
 		
 		//setting up the right panel
 		financesRight_PNL.setBackground(new Color(255, 255, 255));
 		financesRight_PNL.setLayout(new MigLayout("", "0[300,grow]0", "0[40]0[400]0[50]0"));
 		financesTransactions_LBL.setFont(new Font("Tahoma", Font.BOLD, 22));
 		financesRight_PNL.add(financesTransactions_LBL, "cell 0 0,growx,aligny top");
-		finances_PNL.add(financesRight_PNL, "cell 2 1 1 2,grow");
+		financesMain_PNL.add(financesRight_PNL, "cell 2 1 1 2,grow");
 
 		//setting up the transaction list panel and adding it to the right panel
 		financesTransactionList_PNL.setBackground(new Color(240, 240, 230));		
@@ -247,7 +247,7 @@ public class Finances {
 			}
 		});
 		financesIncome_PNL.add(financesRenameIncomeCat_BTN);
-		finances_PNL.add(financesIncome_PNL, "cell 0 2,grow");
+		financesMain_PNL.add(financesIncome_PNL, "cell 0 2,grow");
 
 		//setting up the expense panel
 		financesExpense_PNL.setBackground(new Color(255, 255, 255));
@@ -260,17 +260,17 @@ public class Finances {
 			}
 		});
 		financesExpense_PNL.add(financesRenameExpenseCat_BTN);
-		finances_PNL.add(financesExpense_PNL, "cell 1 2,grow");
+		financesMain_PNL.add(financesExpense_PNL, "cell 1 2,grow");
 		
 		/*
 		 * setting up the line chart panel
 		financesLineChart_PNL.setBackground(new Color(255, 255, 255));
 		financesLineChart_PNL.add(renderLineChart(TransactionMgr.getLineChartData()));
-		finances_PNL.add(financesLineChart_PNL, "cell 0 3 3 1,center");
+		financesMain_PNL.add(financesLineChart_PNL, "cell 0 3 3 1,center");
 		 */
 		
 		//to clear log when exiting the application
-		finances_FRM.addWindowListener(new WindowAdapter(){
+		financesMain_FRM.addWindowListener(new WindowAdapter(){
 			
 			public void windowClosing(WindowEvent e) {
                 TransactionMgr.clearLog();
@@ -326,23 +326,7 @@ public class Finances {
 		//refresh line chart
 		financesLineChart_PNL.add(renderLineChart(TransactionMgr.getLineChartData()));
 
-		finances_FRM.validate();
-	}
-	
-	/**
-	 * Disables main window
-	 */
-	public void disableFrame(){
-		
-		finances_FRM.setEnabled(false);
-	}
-
-	/**
-	 * Reactivates main window
-	 */
-	public void reactivateFrame(){
-		
-		finances_FRM.setEnabled(true);
+		financesMain_FRM.validate();
 	}
 
 	/**

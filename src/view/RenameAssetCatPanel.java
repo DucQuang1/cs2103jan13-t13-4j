@@ -27,7 +27,7 @@ public class RenameAssetCatPanel extends RenameCatPanel{
 			final EntryMgr entryMgr, final HistoryMgr historyMgr){
 		
 		super(hostFrame);
-		heading.setText("Rename Asset Category");
+		heading.setText("Asset Category Manager");
 		LinkedList<String> categoryList = assetCatMgr.getCategoryList();
 		
 		//this block creates the iOS-styled row.

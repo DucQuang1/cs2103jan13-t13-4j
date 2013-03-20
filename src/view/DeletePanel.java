@@ -79,17 +79,6 @@ public class DeletePanel {
 		deletePanel = new JPanel(new MigLayout("", "[100,left]5[100]25[130,left]5[100]5[grow]", "[20]5[]5[30]5[50]10[50,grow,top]"));
 		deletePanel.setBackground(new Color(255, 255, 255));
 		deletePanel.setSize(700,300);
-		//set colour for panel depending on transaction type
-		switch(entry.getTransactionType()){
-			case 0:	deletePanel.setBackground(new Color(160, 190, 220));
-					break;
-			case 1:
-			case 2:	deletePanel.setBackground(new Color(255, 200, 0));
-					break;
-			case 3:
-			case 4:	deletePanel.setBackground(new Color(255, 185, 215));
-					break;
-		}
 		
 		deletePanel.add(lblTransactionType, "cell 0 0 2 1,growx");
 		deletePanel.add(lblCategory1, "cell 0 1,growx");
