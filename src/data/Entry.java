@@ -1,5 +1,4 @@
 package data;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,7 +8,6 @@ import java.util.Date;
  *
  */
 public class Entry{
-	
 	protected int transactionType;
 	protected int id;
 	protected double amount;
@@ -18,8 +16,6 @@ public class Entry{
 	protected String category2;
 	protected String description;
 	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	protected final static DecimalFormat amount_format = new DecimalFormat("##.00");
-	
 	/**
 	 * Default Constructor
 	 */
@@ -161,7 +157,7 @@ public class Entry{
 		}
 		
 		output += Integer.toString(id) + "|" + Integer.toString(transactionType) + "|"
-				+ amount_format.format(amount) + "|" + date_format.format(date) + "|"
+				+ Double.toString(amount) + "|" + date_format.format(date) + "|"
 				+ category1 + "|" + category2 + "|" + description ;
 		
 		return output;

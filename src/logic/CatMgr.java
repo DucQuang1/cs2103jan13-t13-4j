@@ -2,7 +2,6 @@ package logic;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,8 +9,6 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import org.jfree.data.category.DefaultCategoryDataset;
-
-import data.Category;
 
 /**
  * Logic class that manages all the  categories
@@ -32,16 +29,6 @@ public class CatMgr {
 	
 	public void setTxtPath(String txt_path){
 		this.txt_path = txt_path;
-		try {
-			FileReader fileCheck = new FileReader(txt_path);
-		} catch (FileNotFoundException e) {
-			File newFile = new File(txt_path);
-			try {
-				newFile.createNewFile();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}
 	}
 
 	/**
@@ -158,9 +145,9 @@ public class CatMgr {
 		    fileReader.close();
 		    fileWriter.close();
 		    
-		    //warning if not edited
+		    //warning if not deleted
 		    if(!edited){
-		    	System.out.println("not edited!");
+		    	System.out.println("not deleted!");
 		    }
 		    
 		    //warning if could not delete file
@@ -268,7 +255,6 @@ public class CatMgr {
 	 */
 	public boolean deleteCategory(String inputCategory){
 		
-		boolean firstLine = true;	//to check and make sure no new line before the first line
 		boolean deleted = false;
 		
 		try{
@@ -290,12 +276,11 @@ public class CatMgr {
 					}
 					else{
 						fileWriter.print(line);
-						firstLine = false;
+						deleted = false;
 					}
 				}
 				else{
 					fileWriter.print(line);
-					firstLine = false;
 				}
 	    	}
 		    //this block parses through remainder of Category.txt and adds to temp file if not id to be deleted
@@ -310,17 +295,14 @@ public class CatMgr {
 							deleted = true;
 						}
 						else{
-							if(!firstLine)
-								fileWriter.println();
+							fileWriter.println();
 							fileWriter.print(line);
-							firstLine = false;
+							deleted = false;
 						}
 					}
 					else{
-						if(!firstLine)
-							fileWriter.println();
+						fileWriter.println();
 						fileWriter.print(line);
-						firstLine = false;
 					}
 		    	}
 		    }
@@ -411,11 +393,11 @@ public class CatMgr {
 	}
 
 	/**
-	 * Reads the Category.txt file and returns a linked list of category names
+	 * Reads the Category.txt file and return a linked list of category names
 	 * Pre: -
 	 * @return categoryList
 	 */
-	public LinkedList<String> getCategoryNameList(){
+	public LinkedList<String> getCategoryList(){
 		LinkedList<String> categoryList = new LinkedList<String>();
 		StringTokenizer st;
 		String category, line;
@@ -428,34 +410,6 @@ public class CatMgr {
 				st = new StringTokenizer(line, "|");
 				category = st.nextToken();
 				categoryList.add(category);
-			}
-			br.close();
-		} catch (Exception e){
-			System.out.println(e);
-		}
-
-		return categoryList;
-	}
-	
-	/**
-	 * Reads the Category.txt file and returns a linked list of Category objects 
-	 * @return
-	 */
-	public LinkedList<Category> getCategoryList(){
-		LinkedList<Category> categoryList = new LinkedList<Category>();
-		StringTokenizer st;
-		String category, line;
-		double amount;
-		BufferedReader br;
-		
-		try {
-			br = new BufferedReader(new FileReader(txt_path));
-
-			while ((line = br.readLine())!= null){
-				st = new StringTokenizer(line, "|");
-				category = st.nextToken();
-				amount = Double.parseDouble(st.nextToken());
-				categoryList.add(new Category(category,amount));
 			}
 			br.close();
 		} catch (Exception e){

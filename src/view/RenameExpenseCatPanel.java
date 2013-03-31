@@ -27,8 +27,8 @@ public class RenameExpenseCatPanel extends RenameCatPanel{
 			final EntryMgr entryMgr, final HistoryMgr historyMgr){
 		
 		super(hostFrame);
-		heading.setText("Rename Expense Category");
-		LinkedList<String> categoryList = expenseCatMgr.getCategoryNameList();
+		heading.setText("Expense Category Manager");
+		LinkedList<String> categoryList = expenseCatMgr.getCategoryList();
 		
 		//this block creates the iOS-styled row.
 		for(int i = 0; i < categoryList.size(); ++i){

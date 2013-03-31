@@ -38,7 +38,7 @@ public class InputPanelType4 extends InputPanel {
 		
 		//drop down menu for asset categories
 		final JComboBox<String> assetTypeCB = new JComboBox<String>();
-		for(String assetCat : assetCatMgr.getCategoryNameList())
+		for(String assetCat : assetCatMgr.getCategoryList())
 			assetTypeCB.addItem(assetCat);
 		assetTypeCB.addItem("New Category");
 		inputPanelInput_PNL.add(assetTypeCB, "cell 1 1,growx");
@@ -48,7 +48,7 @@ public class InputPanelType4 extends InputPanel {
 		
 		//drop down menu for liability categories
 		final JComboBox<String> liabilityCatCB = new JComboBox<String>();
-		for(String liabilityCat : liabilityCatMgr.getCategoryNameList())
+		for(String liabilityCat : liabilityCatMgr.getCategoryList())
 			liabilityCatCB.addItem(liabilityCat);
 		liabilityCatCB.addItem("New Category");
 		inputPanelInput_PNL.add(liabilityCatCB, "cell 3 1,growx");
@@ -99,19 +99,12 @@ public class InputPanelType4 extends InputPanel {
 				} catch (Exception exYY){
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
-				
 				Date date = null;
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
 				try {
 					date = date_format.parse(dateString);
 				} catch (ParseException e1) {
 					errorMsg += "Unable to process date.<br>";
-				}
-				
-				//check if date is before today
-				Date today = new Date();
-				if (today.before(date)){
-					errorMsg += "Date given is in the future!.<br>";
 				}
 	
 				//get asset category

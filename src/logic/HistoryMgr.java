@@ -1,4 +1,7 @@
 package logic;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,14 +15,12 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
-import view.Finances;
+import javax.swing.JFrame;
 
 import data.Entry;
 import data.Log;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Class that manages all the logs via History.txt
@@ -117,8 +118,6 @@ public class HistoryMgr {
 	 */
 	public boolean undo(){
 		Log lastLog = undoLast();
-		if (lastLog == null)
-			return false;
 		StringTokenizer st = new StringTokenizer(lastLog.toTxt(false), "|");
 		int operationType = Integer.parseInt(st.nextToken());
 		int id = Integer.parseInt(st.nextToken());
@@ -147,7 +146,6 @@ public class HistoryMgr {
 			System.out.println("No Date!");	//should not happen, but put here just in case for debugging
 			return false;
 		}
-		
 		return true;
 	}
 
@@ -194,13 +192,6 @@ public class HistoryMgr {
 			case 5:	assetCatMgr.addAmountToCategory(category2, -amount);
 					break;
 		}
-		
-		//pop up to inform user of successful operation
-		JOptionPane searchMgrConfirm_JOP = new JOptionPane();
-		searchMgrConfirm_JOP.setMessage("Deleted last added transaction!");
-		searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Undo.png")));
-		JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
-		dialog.setVisible(true);
 		
 		return true;
 	}
@@ -256,13 +247,6 @@ public class HistoryMgr {
 					break;
 		}
 		
-		//pop up to inform user of successful operation
-		JOptionPane searchMgrConfirm_JOP = new JOptionPane();
-		searchMgrConfirm_JOP.setMessage("Undone last edit!");
-		searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Undo.png")));
-		JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
-		dialog.setVisible(true);	
-		
 		return true;
 	}
 	
@@ -312,13 +296,6 @@ public class HistoryMgr {
 			case 5:	assetCatMgr.addAmountToCategory(category2, amount);
 					break;
 		}
-		
-		//pop up to inform user of successful operation
-		JOptionPane searchMgrConfirm_JOP = new JOptionPane();
-		searchMgrConfirm_JOP.setMessage("Added back last deleted transaction!");
-		searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Undo.png")));
-		JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
-		dialog.setVisible(true);
 				
 		return true;
 	}
@@ -379,15 +356,6 @@ public class HistoryMgr {
 		    } catch (Exception e){
 		    	e.printStackTrace();
 		    }
-		} catch (NullPointerException e) {
-			
-			//pop up to inform user
-			JOptionPane searchMgrConfirm_JOP = new JOptionPane();
-			searchMgrConfirm_JOP.setMessage("No more records left to undo!");
-			searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
-			JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
-			dialog.setVisible(true);
-			
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
@@ -437,7 +405,6 @@ public class HistoryMgr {
 			while ((line = fileReader.readLine()) != null) {
 
 		    	st = new StringTokenizer(line, "|");
-		    		
 		    	int operationType = Integer.parseInt(st.nextToken());
 				int id = Integer.parseInt(st.nextToken());
 				int transactionType = Integer.parseInt(st.nextToken());

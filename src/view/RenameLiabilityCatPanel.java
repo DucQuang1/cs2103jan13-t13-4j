@@ -27,8 +27,8 @@ public class RenameLiabilityCatPanel extends RenameCatPanel{
 			final EntryMgr entryMgr, final HistoryMgr historyMgr){
 		
 		super(hostFrame);
-		heading.setText("Rename Liability Category");
-		LinkedList<String> categoryList = liabilityCatMgr.getCategoryNameList();
+		heading.setText("Liability Category Manager");
+		LinkedList<String> categoryList = liabilityCatMgr.getCategoryList();
 		
 		//this block creates the iOS-styled row.
 		for(int i = 0; i < categoryList.size(); ++i){

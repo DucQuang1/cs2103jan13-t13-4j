@@ -1,3 +1,5 @@
-Food|2670.0
+Food|0.0
 Transport|5850.0
 Atas Restaurant|1000.0
+Car|0.0
+HDB|0.0

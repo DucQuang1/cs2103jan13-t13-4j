@@ -1,10 +1,7 @@
 package view;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
-import javax.swing.JTextField;
-
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -18,11 +15,9 @@ import javax.swing.JLabel;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 
-import data.Category;
 import data.Entry;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,16 +26,13 @@ import java.util.StringTokenizer;
 
 import logic.AssetCatMgr;
 import logic.EntryMgr;
-import logic.ExcelMgr;
 import logic.ExpenseCatMgr;
 import logic.HistoryMgr;
 import logic.IncomeCatMgr;
 import logic.LiabilityCatMgr;
 
 /**
- * GUI class that handles all requests from the user that may potential change user's data
- * This class generates a popup frame, which is passed to another class (depending on the function called)
- * that will continue to generate the rest of the fields and pass user's input to the relevant managers
+ * GUI class that handles all requests from the user
  * note: all the managers are static to prevent duplication, and final to prevent mutation of references
  * 
  * @author Pang Kang Wei,Joshua	A0087809M
@@ -49,7 +41,6 @@ import logic.LiabilityCatMgr;
 public class TransactionMgr {
 	
 	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
 	
 	private Finances finances;	//for calling the refresh function
 
@@ -137,7 +128,6 @@ public class TransactionMgr {
 	 * @return balance
 	 */
 	public double getBalance(){
-		
 		double subtotal = 0;
 		subtotal = assetCatMgr.getSubtotal() - liabilityCatMgr.getSubtotal();
 		return subtotal;
@@ -152,13 +142,8 @@ public class TransactionMgr {
 		
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel transactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Add.png")));
-		transactionMgrHeading_LBL.setText("Add Transaction");
-		transactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Type");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
 		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//to remove previous input panel's fields
@@ -175,10 +160,10 @@ public class TransactionMgr {
 		transactionMgr_CB.addItem("Expense by Credit");
 		transactionMgr_CB.addItem("Repaying Loan");
 		transactionMgr_CB.addItem("Take Loan");
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -211,7 +196,7 @@ public class TransactionMgr {
 					transactionMgrInput_PNL= transactionMgrJPanelTakeLoan.getPanel();
 					break;
 				}
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 1 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 			}
 		});
@@ -229,73 +214,20 @@ public class TransactionMgr {
 
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel transactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Edit.png")));
-		transactionMgrHeading_LBL.setText("Edit Transaction");
-		transactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
+		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//populate the comboBox. Clear before populating to prevent duplicate items
 		transactionMgr_CB.removeAllItems();
 		transactionMgr_CB.setSize(150, 20);
 		transactionList = entryMgr.getTransactionList();
-		LinkedList<Category> assetCategoryList = assetCatMgr.getCategoryList();
-		LinkedList<Category> liabilityCategoryList = liabilityCatMgr.getCategoryList();
-		for(Entry entry : transactionList){
-			
-			boolean category1exists = false;
-			boolean category2exists = false;
-			int type = entry.getTransactionType();
-			
-			switch(type){
-			case 0:
-			case 1:
-			case 2:	category2exists = true;
-					break;
-			}
-			
-			//check if it is an existing asset category
-			for(Category category : assetCategoryList){
-				if(category.category.equals(entry.getCategory1()))
-					switch(type){
-					case 0:
-					case 1:
-					case 3:
-					case 4:
-					case 5:	category1exists = true;
-							break;
-					}
-				if(category.category.equals(entry.getCategory2()) && type == 5)
-					category2exists = true;
-			}
-			
-			//check if it is an existing liability category
-			for(Category category : liabilityCategoryList){
-				if(category.category.equals(entry.getCategory1()))
-					switch(type){
-					case 2:
-					case 6:	category1exists = true;
-							break;
-					}
-				if(category.category.equals(entry.getCategory2()))
-					switch(type){
-					case 3:
-					case 4:
-					case 6:	category2exists = true;
-							break;
-					}
-			}
-			if(category1exists && category2exists){
-				String id = Integer.toString(entry.getId());
-				transactionMgr_CB.addItem(id);
-			}
-		}
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "cell 0 1");
+		for(Entry entry : transactionList)
+			transactionMgr_CB.addItem(Integer.toString(entry.getId()));
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -307,11 +239,12 @@ public class TransactionMgr {
 				
 				transactionMgrPopUp_FRM.getContentPane().remove(transactionMgrInput_PNL);
 				transactionMgrInput_PNL= editPanel.getPanel();
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 6 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 				
 			}
 		});
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 4 0 2 1");
 		
 		return true;
 	}
@@ -325,75 +258,20 @@ public class TransactionMgr {
 
 		setUptransactionMgrPopUp_FRM(0);
 		
-		JLabel transactionMgrHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Del.png")));
-		transactionMgrHeading_LBL.setText("Delete Transaction");
-		transactionMgrHeading_LBL.setFont(heading_font);
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgrHeading_LBL, "cell 0 0");
-		
 		JLabel lblTransactionType = new JLabel("Transaction Number");
-		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(lblTransactionType, "cell 0 0 1 1");
+		transactionMgrPopUp_FRM.getContentPane().setBackground(new Color(255, 255, 255));
 		
 		//populate the comboBox. Clear before populating to prevent duplicate items
 		transactionMgr_CB.removeAllItems();
 		transactionMgr_CB.setSize(150, 20);
 		transactionList = entryMgr.getTransactionList();
-		LinkedList<Category> assetCategoryList = assetCatMgr.getCategoryList();
-		LinkedList<Category> liabilityCategoryList = liabilityCatMgr.getCategoryList();
-		for(Entry entry : transactionList){
-			
-			boolean category1exists = false;
-			boolean category2exists = false;
-			int type = entry.getTransactionType();
-			
-			switch(type){
-			case 0:
-			case 1:
-			case 2:	category2exists = true;
-					break;
-			}
-			
-			//check if it is an existing asset category
-			for(Category category : assetCategoryList){
-				if(category.category.equals(entry.getCategory1()))
-					switch(type){
-					case 0:
-					case 1:
-					case 3:
-					case 4:
-					case 5:	category1exists = true;
-							break;
-					}
-				if(category.category.equals(entry.getCategory2()) && type == 5)
-					category2exists = true;
-			}
-			
-			//check if it is an existing liability category
-			for(Category category : liabilityCategoryList){
-				if(category.category.equals(entry.getCategory1()))
-					switch(type){
-					case 2:
-					case 6:	category1exists = true;
-							break;
-					}
-				if(category.category.equals(entry.getCategory2()))
-					switch(type){
-					case 3:
-					case 4:
-					case 6:	category2exists = true;
-							break;
-					}
-			}
-			if(category1exists && category2exists){
-				String id = Integer.toString(entry.getId());
-				transactionMgr_CB.addItem(id);
-			}
-			System.out.println(entry.getCategory1() + " " + entry.getCategory2());
-			System.out.println(category1exists + " " + category2exists);
-		}
-		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 1");
+		for(Entry entry : transactionList)
+			transactionMgr_CB.addItem(Integer.toString(entry.getId()));
+		transactionMgrPopUp_FRM.getContentPane().add(transactionMgr_CB, "flowx, cell 0 0 1 1");
 
 		JButton btnSelect = new JButton("Select");
-		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 1");
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 0 0 1 1");
 		btnSelect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 	
@@ -405,11 +283,12 @@ public class TransactionMgr {
 				
 				transactionMgrPopUp_FRM.getContentPane().remove(transactionMgrInput_PNL);
 				transactionMgrInput_PNL= deletePanel.getPanel();
-				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 2,grow");
+				transactionMgrPopUp_FRM.getContentPane().add(transactionMgrInput_PNL, "cell 0 1 6 1,grow");
 				transactionMgrPopUp_FRM.revalidate();
 				
 			}
 		});
+		transactionMgrPopUp_FRM.getContentPane().add(btnSelect, "cell 4 0 2 1");
 		
 		return true;
 	}
@@ -510,71 +389,19 @@ public class TransactionMgr {
 	}
 	
 	/**
-	 * Creates a pop up that allows user to delete an asset category
-	 * @return void
-	 */
-	public void deleteAssetCategory() {
-		
-		setUptransactionMgrPopUp_FRM(2);
-		DeleteAssetCategoryPanel deleteAssetCategoryPanel = new DeleteAssetCategoryPanel(
-				transactionMgrPopUp_FRM, assetCatMgr, entryMgr, historyMgr);
-		transactionMgrPopUp_FRM.validate();
-	}
-	
-	/**
-	 * Creates a pop up that allows user to delete a liability category
-	 * @return void
-	 */
-	public void deleteLiabilityCategory() {
-		
-		setUptransactionMgrPopUp_FRM(2);
-		DeleteLiabilityCategoryPanel deleteLiabilityCategoryPanel = new DeleteLiabilityCategoryPanel(
-				transactionMgrPopUp_FRM, liabilityCatMgr, entryMgr, historyMgr);
-		transactionMgrPopUp_FRM.validate();
-	}
-	
-	/**
 	 * Undoes the last transaction.
 	 * @return true if undone successfully
 	 */
 	public boolean undo(){
-		
 		historyMgr.undo();
 		return true;
 	}	
-	
-	/**
-	 * Prompts user for file path and imports from there
-	 * @param importList
-	 * @return true (if imported successfully)
-	 */
-	public boolean importTransactionList() {
-		
-		setUptransactionMgrPopUp_FRM(2);
-		ImportPanel importPanel = new ImportPanel(transactionMgrPopUp_FRM, 
-				assetCatMgr, liabilityCatMgr, incomeCatMgr, expenseCatMgr, entryMgr, historyMgr);
-		return true;
-	}
-	
-	/**
-	 * Prompts user for file path and exports there
-	 * @return
-	 */
-	public boolean exportTransactionList() {
-		
-		setUptransactionMgrPopUp_FRM(2);
-		ExportPanel exportPanel = new ExportPanel(transactionMgrPopUp_FRM, getTransactionList());
-		return true;
-	}
 	
 	/**
 	 * Private method for setting up the pop up frame's formatting
 	 * @param size (0 for normal frame, 1 for small frame)
 	 */
 	private void setUptransactionMgrPopUp_FRM(int size){
-		
-		//disable main frame to prevent generation of more than 1 pop up frame
-		finances.disableFrame();
 		
 		transactionMgrPopUp_FRM = new JFrame();
 		transactionMgrPopUp_FRM.setVisible(true);
@@ -585,7 +412,6 @@ public class TransactionMgr {
 			
 			public void windowClosed(WindowEvent e) {
 			
-				finances.reactivateFrame();	
 	            finances.refresh();
 	        }
 		});
@@ -593,22 +419,15 @@ public class TransactionMgr {
 			case 0:	transactionMgrPopUp_FRM.getContentPane().setLayout(new MigLayout(
 					"", 
 					"[720]", 
-					"[50,grow]5[30,grow]5[300,grow]"));
+					"[30,grow]5[350,grow]"));
 					transactionMgrPopUp_FRM.setSize(720,400);
 					break;
 			case 1:	transactionMgrPopUp_FRM.getContentPane().setLayout(new MigLayout(
 					"", 
 					"[400]", 
-					"[30,grow]5[350,shrink]"));
+					"[30,grow]5[350,grow]"));
 					transactionMgrPopUp_FRM.setSize(400,400);
-					break;
-			case 2: transactionMgrPopUp_FRM.getContentPane().setLayout(new MigLayout(
-					"", 
-					"[400]", 
-					"[400,shrink]"));
 					break;
 		}
 	}
-
-	
 }

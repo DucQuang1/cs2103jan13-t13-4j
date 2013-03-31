@@ -38,7 +38,7 @@ public class InputPanelType0 extends InputPanel {
 		
 		//drop down menu for asset categories
 		final JComboBox<String> assetTypeCB = new JComboBox<String>();
-		for(String assetCat : assetCatMgr.getCategoryNameList())
+		for(String assetCat : assetCatMgr.getCategoryList())
 			assetTypeCB.addItem(assetCat);
 		assetTypeCB.addItem("New Category");
 		inputPanelInput_PNL.add(assetTypeCB, "cell 1 1,growx");
@@ -48,7 +48,7 @@ public class InputPanelType0 extends InputPanel {
 		
 		//drop down menu for income categories
 		final JComboBox<String> incomeCatCB = new JComboBox<String>();
-		for(String incomeCat : incomeCatMgr.getCategoryNameList())
+		for(String incomeCat : incomeCatMgr.getCategoryList())
 			incomeCatCB.addItem(incomeCat);
 		incomeCatCB.addItem("New Category");
 		inputPanelInput_PNL.add(incomeCatCB, "cell 3 1,growx");
@@ -99,7 +99,6 @@ public class InputPanelType0 extends InputPanel {
 				} catch (Exception exYY){
 					errorMsg += "Year entered was not a valid number.<br>";
 				}
-				
 				//process dd mm yyyy into date
 				Date date = null;
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
@@ -107,12 +106,6 @@ public class InputPanelType0 extends InputPanel {
 					date = date_format.parse(dateString);
 				} catch (ParseException e1) {
 					errorMsg += "Unable to process date.<br>";
-				}
-				
-				//check if date is before today
-				Date today = new Date();
-				if (today.before(date)){
-					errorMsg += "Date given is in the future!.<br>";
 				}
 	
 				//get asset category
