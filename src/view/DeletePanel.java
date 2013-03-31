@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.StringTokenizer;
 
@@ -32,7 +31,6 @@ public class DeletePanel {
 
 	//default format for date
 	protected static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	protected static final DecimalFormat double_format = new DecimalFormat("##.00");
 	protected static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
 	
 	//hostFrame refers to the pop-up frame that holds this DeletePanel
@@ -81,17 +79,6 @@ public class DeletePanel {
 		deletePanel = new JPanel(new MigLayout("", "[100,left]5[100]25[130,left]5[100]5[grow]", "[20]5[]5[30]5[50]10[50,grow,top]"));
 		deletePanel.setBackground(new Color(255, 255, 255));
 		deletePanel.setSize(700,300);
-		//set colour for panel depending on transaction type
-		switch(entry.getTransactionType()){
-			case 0:	deletePanel.setBackground(new Color(160, 190, 220));
-					break;
-			case 1:
-			case 2:	deletePanel.setBackground(new Color(255, 200, 0));
-					break;
-			case 3:
-			case 4:	deletePanel.setBackground(new Color(255, 185, 215));
-					break;
-		}
 		
 		deletePanel.add(lblTransactionType, "cell 0 0 2 1,growx");
 		deletePanel.add(lblCategory1, "cell 0 1,growx");
@@ -241,7 +228,7 @@ public class DeletePanel {
 			case 6:	lblTransactionType.setText("Liability Transfer");
 					break;
 		}
-		amountField.setText(double_format.format(entry.getAmount()));
+		amountField.setText(Double.toString(entry.getAmount()));
 		String date = date_format.format(entry.getDate());
 		StringTokenizer stDate = new StringTokenizer(date,"/");
 		dd.setText(stDate.nextToken());

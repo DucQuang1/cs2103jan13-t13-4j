@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -33,8 +32,8 @@ import data.Entry;
 public class EntryMgr {
 	
 	//default format for date
-	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
-	private final String txt_path = getClass().getResource(".").getPath() + "/db/EntryList.txt";
+	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	public final String txt_path = getClass().getResource(".").getPath() + "/db/EntryList.txt";
 	private static int current_id;
 	
 	/**
@@ -459,8 +458,6 @@ public class EntryMgr {
 				category2 = st.nextToken();
 				if (st.hasMoreTokens())				//check, as description is an optional entry
 					description = st.nextToken();
-				else
-					description = "";
 				tempEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
 				transactionList.add(tempEntry);
 			}
@@ -527,21 +524,18 @@ public class EntryMgr {
 	
 	/**
 	 * Gets the current id according to the transactions in the file. Only used for initialization!
-	 * Algorithm looks at all the ids, and takes the largest among them, as the ids might not be sorted in ascending order
 	 * After initialization the next id will be tracked by current_id
 	 * @return next id to be inserted
 	 */
 	private int initId(){
-		int id = 0, temp = 0;
+		int id = 0;
 		try {
 			Scanner fileReader = new Scanner(new FileReader(txt_path));
 
 			while (fileReader.hasNextLine()) {
 				StringTokenizer st = new StringTokenizer(fileReader.nextLine(), "|");
 				if(st.hasMoreTokens()){							//if clause to avoid problems with empty lines in txt file
-					temp = Integer.parseInt(st.nextToken());					
-					if(temp > id)								//check for max id basically
-						id = temp;
+					id = Integer.parseInt(st.nextToken());					
 				}
 			}
 			fileReader.close();

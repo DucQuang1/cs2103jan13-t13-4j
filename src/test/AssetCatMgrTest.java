@@ -4,8 +4,6 @@ import logic.AssetCatMgr;
 
 import org.junit.Test;
 
-import data.Category;
-
 /**
  * Test driver for AssetCatMgr
  * @author JP
@@ -17,13 +15,13 @@ public class AssetCatMgrTest {
 	public void test(){
 		AssetCatMgr assetCatMgr = new AssetCatMgr();
 		
-		//douchebagSystem.out.println(assetCatMgr.getSubtotal());
+		System.out.println(assetCatMgr.getSubtotal());
 		
 		//System.out.println(assetCatMgr.checkExisting("OCBC"));
 		
 		//System.out.println(assetCatMgr.addCategory("EZ-Link", 90.0));
 		
-		System.out.println(assetCatMgr.deleteCategory("OCBC"));
+		//System.out.println(assetCatMgr.deleteAssetCategory("Wallet"));
 		
 		//System.out.println(assetCatMgr.addAmountToAssetCategory("OCBC", -50));
 		
@@ -31,8 +29,8 @@ public class AssetCatMgrTest {
 		
 		//assetCatMgr.addAmountToAssetCategory("Cash", 20);
 		
-		for(Category category : assetCatMgr.getCategoryList())
-			System.out.println(category.category + " " + category.amount);
+		for(String category : assetCatMgr.getCategoryList())
+			System.out.println(category);
 		
 	}
 
