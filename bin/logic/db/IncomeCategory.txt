@@ -1,0 +1,3 @@
+Salary|15530.0
+Gift|140.0
+Dividends|4930.0
