@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 
 /**
  * GUI class that contains a JPanel to handle category deletion
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class DeleteLiabilityCategoryPanel {

@@ -24,7 +24,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * Class that manages all the logs via History.txt
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class HistoryMgr {

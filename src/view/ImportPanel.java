@@ -31,7 +31,7 @@ import logic.LiabilityCatMgr;
 
 /**
  * Class that handles the importing of entries from an excel file
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class ImportPanel {

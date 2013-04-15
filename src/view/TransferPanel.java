@@ -19,8 +19,8 @@ import logic.HistoryMgr;
 
 /**
  * GUI class that contains a JPanel to handle adding of entries
- * @author JP
- * @author Bohua
+ * @author A0086581W, Wong Jing Ping
+ * @author A0091879J, Liu Bohua
  */
 public class TransferPanel {
 

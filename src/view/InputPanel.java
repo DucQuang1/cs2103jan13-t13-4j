@@ -23,7 +23,7 @@ import logic.LiabilityCatMgr;
 
 /**
  * GUI class that contains a JPanel to handle adding of entries
- * @author Pang Kang Wei,Joshua	A0087809M
+ * @author A0087809M, Pang Kang Wei, Joshua
  *
  */
 public class InputPanel {

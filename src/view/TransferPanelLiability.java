@@ -17,7 +17,7 @@ import logic.LiabilityCatMgr;
 
 /**
  * Specific TransferPanel for handling transfer between Liability Categories
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class TransferPanelLiability extends TransferPanel{

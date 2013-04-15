@@ -12,9 +12,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * Logic class that manages all the  categories
- * @author JP
- * @author Zhiyuan
- * 
+ * @author A0086581W, Wong Jing Ping
+ * @author A0091859M, Lin Zhiyuan
  */
 public class CatMgr {
 	

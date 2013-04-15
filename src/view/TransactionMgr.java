@@ -35,8 +35,7 @@ import logic.LiabilityCatMgr;
  * GUI class that handles all requests from the user
  * note: all the managers are static to prevent duplication, and final to prevent mutation of references
  * 
- * @author Pang Kang Wei,Joshua	A0087809M
- * @author JP
+ * @author A0087809M, Pang Kang Wei, Joshua, A0086581W, Wong Jing Ping
  */
 public class TransactionMgr {
 	

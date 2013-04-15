@@ -2,7 +2,7 @@ package logic;
 /**
  * IncomeCatMgr inherits from CatMgr
  * It only has to set the txt_path for the functions from CatMgr to work as usual
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class IncomeCatMgr extends CatMgr {

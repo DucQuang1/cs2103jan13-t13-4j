@@ -26,7 +26,7 @@ import data.Entry;
 
 /**
  * Manages all entries via EntryList.txt
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class EntryMgr {

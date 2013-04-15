@@ -2,7 +2,7 @@ package data;
 
 /**
  * Simple pair structure that contains a category's name and its associated amount
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class Category {

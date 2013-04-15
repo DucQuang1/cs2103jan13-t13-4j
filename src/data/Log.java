@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * This class is similar to transaction, except it has an extra field to record the operation type
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class Log extends Entry{
