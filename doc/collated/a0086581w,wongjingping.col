@@ -1,0 +1,3839 @@
+//@author: a0086581w,wongjingping
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\AssetCatMgr.java
+	 */
+
+ *
+ */
+public class AssetCatMgr extends CatMgr {
+	
+	private final String txt_path = getClass().getResource(".").getPath() + "/db/AssetCategory.txt";
+	
+	public AssetCatMgr(){
+	
+		setTxtPath(txt_path);
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\AssetCatMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\BackgroundPanel.java
+	 */
+
+ */
+public class BackgroundPanel extends JPanel {
+
+	private Image image;
+	
+	public BackgroundPanel(){}
+	
+	public BackgroundPanel(Image image) {
+        this.image = image;
+    }
+	
+    public void setImage(Image image) {
+        this.image = image;
+    }
+    
+    public void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+    }
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\BackgroundPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Category.java
+	 */
+
+ *
+ */
+public class Category {
+
+	public String category;
+	public double amount;
+	
+	public Category(String category, double amount) {
+		this.category = category;
+		this.amount = amount;
+	}
+
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Category.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\CatMgr.java
+	 */
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\CatMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeleteAssetCategoryPanel.java
+	 */
+
+ *
+ */
+public class DeleteAssetCategoryPanel {
+	
+	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
+	
+	private JPanel deleteAssetCategory_PNL = new JPanel(new MigLayout("", "[150]5[100]5[100]", "[50]5[30]5[50]5[50]"));
+	
+	private JLabel deleteAssetCategoryHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+	private JLabel deleteAssetCategorySelect_LBL = new JLabel("Please select a category to delete:");
+	private JComboBox<String> deleteAssetCategorySelect_CB = new JComboBox<String>();
+	private JButton deleteAssetCategorySelect_BTN = new JButton("Select");
+	private JOptionPane deleteAssetCategory_JOP = new JOptionPane();
+	
+	private LinkedList<Category> categoryList;
+
+	public DeleteAssetCategoryPanel(final JFrame hostFrame,
+			final AssetCatMgr assetCatMgr, final EntryMgr entryMgr, final HistoryMgr historyMgr) {
+		
+		hostFrame.setSize(500,300);
+		hostFrame.getContentPane().add(deleteAssetCategory_PNL);
+		
+		deleteAssetCategory_PNL.setBackground(new Color(255, 255, 255));
+		
+		deleteAssetCategoryHeading_LBL.setText("Delete Asset Category");
+		deleteAssetCategoryHeading_LBL.setFont(heading_font);
+		deleteAssetCategory_PNL.add(deleteAssetCategoryHeading_LBL, "cell 0 0 3 1");
+		
+		deleteAssetCategory_PNL.add(deleteAssetCategorySelect_LBL, "cell 0 1 ");
+		
+		this.categoryList = assetCatMgr.getCategoryList();
+		for(Category category : categoryList){
+			deleteAssetCategorySelect_CB.addItem(category.category);
+		}
+		deleteAssetCategory_PNL.add(deleteAssetCategorySelect_CB, "cell 1 1");
+		deleteAssetCategorySelect_BTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String selectedCategory = (String) deleteAssetCategorySelect_CB.getSelectedItem();
+				for(Category category : categoryList){
+					
+					//check if the selected category's balance is 0, and delete if it is 0
+					if(category.category.equals(selectedCategory) && category.amount == 0.0){
+						
+						assetCatMgr.deleteCategory(selectedCategory);
+						
+						//pop up to inform user
+						deleteAssetCategory_JOP.setMessage("Deleted Successfully!");
+						deleteAssetCategory_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+						JDialog dialog = deleteAssetCategory_JOP.createDialog(null);
+						dialog.setVisible(true);
+						hostFrame.dispose();
+						return;
+					}
+				}
+				//otherwise prompt user to transfer transactions to another category
+				deleteAssetCategory_JOP.setMessage("This asset category has a non-zero balance.\n" +
+						"You can delete those transactions, or make a transfer to another asset category.");
+				deleteAssetCategory_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+				JDialog dialog = deleteAssetCategory_JOP.createDialog("Unable to delete");
+				dialog.setVisible(true);
+				hostFrame.dispose();
+				return;
+			}
+		});
+		
+		deleteAssetCategory_PNL.add(deleteAssetCategorySelect_BTN, "cell 2 1");
+		
+	}
+
+	
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeleteAssetCategoryPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeleteLiabilityCategoryPanel.java
+	 */
+
+ *
+ */
+public class DeleteLiabilityCategoryPanel {
+	
+	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
+		
+	private JPanel deleteLiabilityCategory_PNL = new JPanel(new MigLayout("", "[150]5[100]5[100]", "[50]5[30]5[50]5[50]"));
+	
+	private JLabel deleteLiabilityCategoryHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+	private JLabel deleteLiabilityCategorySelect_LBL = new JLabel("Please select a category to delete:");
+	private JComboBox<String> deleteLiabilityCategorySelect_CB = new JComboBox<String>();
+	private JButton deleteLiabilityCategorySelect_BTN = new JButton("Select");
+	private JOptionPane deleteLiabilityCategory_JOP = new JOptionPane();
+	
+	private LinkedList<Category> categoryList;
+
+	public DeleteLiabilityCategoryPanel(final JFrame hostFrame,
+			final LiabilityCatMgr liabilityCatMgr, final EntryMgr entryMgr, final HistoryMgr historyMgr) {
+		
+		hostFrame.setSize(500,300);
+		hostFrame.getContentPane().add(deleteLiabilityCategory_PNL);
+		
+		deleteLiabilityCategory_PNL.setBackground(new Color(255, 255, 255));
+		
+		deleteLiabilityCategoryHeading_LBL.setText("Delete Liability Category");
+		deleteLiabilityCategoryHeading_LBL.setFont(heading_font);
+		deleteLiabilityCategory_PNL.add(deleteLiabilityCategoryHeading_LBL, "cell 0 0 3 1");
+		
+		deleteLiabilityCategory_PNL.add(deleteLiabilityCategorySelect_LBL, "cell 0 1 ");
+		
+		this.categoryList = liabilityCatMgr.getCategoryList();
+		for(Category category : categoryList){
+			deleteLiabilityCategorySelect_CB.addItem(category.category);
+		}
+		deleteLiabilityCategory_PNL.add(deleteLiabilityCategorySelect_CB, "cell 1 1");
+		deleteLiabilityCategorySelect_BTN.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String selectedCategory = (String) deleteLiabilityCategorySelect_CB.getSelectedItem();
+				for(Category category : categoryList){
+					
+					//check if the selected category's balance is 0, and delete if it is 0
+					if(category.category.equals(selectedCategory) && category.amount == 0.0){
+						
+						liabilityCatMgr.deleteCategory(selectedCategory);
+						
+						//pop up to inform user
+						deleteLiabilityCategory_JOP.setMessage("Deleted Successfully!");
+						deleteLiabilityCategory_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+						JDialog dialog = deleteLiabilityCategory_JOP.createDialog(null);
+						dialog.setVisible(true);
+						hostFrame.dispose();
+						return;
+					}
+				}
+				//otherwise prompt user to transfer transactions to another category
+				deleteLiabilityCategory_JOP.setMessage("This Liability category has a non-zero balance.\n" +
+						"You can delete those transactions, or make a transfer to another Liability category.");
+				deleteLiabilityCategory_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Trash.png")));
+				JDialog dialog = deleteLiabilityCategory_JOP.createDialog("Unable to delete");
+				dialog.setVisible(true);
+				hostFrame.dispose();
+				return;
+			}
+		});
+		
+		deleteLiabilityCategory_PNL.add(deleteLiabilityCategorySelect_BTN, "cell 2 1");
+		
+	}
+
+	
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeleteLiabilityCategoryPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeletePanel.java
+	 */
+
+ *
+ */
+public class DeletePanel {
+
+	//default format for date
+	protected static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	protected static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
+	
+	//hostFrame refers to the pop-up frame that holds this DeletePanel
+	protected JFrame hostFrame;
+	
+	private JPanel deletePanel;
+
+	private JLabel lblTransactionType = new JLabel();
+	private JLabel lblAmount = new JLabel("Amount");
+	private JLabel amountField = new JLabel();
+	private JLabel lblDate = new JLabel("Date");
+	private JLabel dd = new JLabel();
+	private JLabel mm = new JLabel();
+	private JLabel yyyy = new JLabel();
+	
+	private JLabel lblCategory1 = new JLabel();
+	private JLabel lblCategory2 = new JLabel();
+	private JLabel lblDescription = new JLabel("Description");
+	private JLabel descriptionField = new JLabel();
+	private JLabel ErrorDisplay = new JLabel();
+	private String errorMsg = "";
+	
+	private final AssetCatMgr assetCatMgr;
+	private final LiabilityCatMgr liabilityCatMgr;
+	private final IncomeCatMgr incomeCatMgr;
+	private final ExpenseCatMgr expenseCatMgr;
+	private final EntryMgr entryMgr;
+	private final HistoryMgr historyMgr;
+	
+	private final Entry entry;
+	
+	public DeletePanel(final JFrame hostFrame, final AssetCatMgr assetCatMgr, final LiabilityCatMgr liabilityCatMgr,
+			final IncomeCatMgr incomeCatMgr, final ExpenseCatMgr expenseCatMgr, final EntryMgr entryMgr, 
+			final HistoryMgr historyMgr, final Entry entry){
+		
+		//pass reference to the panel for checking and adding of transactions
+		this.hostFrame = hostFrame;
+		this.assetCatMgr = assetCatMgr;
+		this.liabilityCatMgr = liabilityCatMgr;
+		this.incomeCatMgr = incomeCatMgr;
+		this.expenseCatMgr = expenseCatMgr;
+		this.entryMgr = entryMgr;
+		this.historyMgr = historyMgr;
+		this.entry = entry;		
+		
+		deletePanel = new JPanel(new MigLayout("", "[100,left]5[100]25[130,left]5[100]5[grow]", "[20]5[]5[30]5[50]10[50,grow,top]"));
+		deletePanel.setBackground(new Color(255, 255, 255));
+		deletePanel.setSize(700,300);
+		
+		deletePanel.add(lblTransactionType, "cell 0 0 2 1,growx");
+		deletePanel.add(lblCategory1, "cell 0 1,growx");
+		deletePanel.add(lblCategory2, "cell 1 1,growx");
+		deletePanel.add(lblAmount, "cell 0 2,alignx left");
+		deletePanel.add(amountField, "cell 1 2,growx");
+		deletePanel.add(lblDate, "cell 2 2,alignx left");
+		deletePanel.add(dd, "flowx,cell 3 2,growx");
+		deletePanel.add(mm, "cell 3 2,growx");
+		deletePanel.add(yyyy, "cell 4 2");
+		deletePanel.add(lblDescription, "cell 0 3");
+		deletePanel.add(descriptionField, "cell 1 3 4 1,grow");
+		
+		ErrorDisplay.setFont(error_font);
+		ErrorDisplay.setForeground(Color.RED);
+		deletePanel.add(ErrorDisplay, "cell 1 4 3 1,grow");
+		
+		JButton btnSubmitEntry = new JButton("Delete Entry");
+		btnSubmitEntry.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				int transactionType = entry.getTransactionType();
+				double amount = entry.getAmount();
+				
+				//check if balance in relevant categories sufficient
+				String category1 = entry.getCategory1();
+				String category2 = entry.getCategory2();
+				boolean category1insufficient = false;	//true if category insufficient
+				boolean category2insufficient = false;
+				switch(transactionType){
+					case 0:	if(amount > assetCatMgr.getAmount(category1)){	//if deduction > current
+								category1insufficient = true;
+							}	//no need to check income as income can only increase
+							break;
+					case 1:	//no need to check asset as deleting this type will only increase asset
+							//no need to check expense as expense can only increase
+							break;
+					case 2: if(amount > liabilityCatMgr.getAmount(category1)){	//if deduction > current
+								category1insufficient = true;
+							}	//no need to check expense as expense can only increase
+							break;
+					case 3:	//no need to check asset and liability as deleting this type will only increase both types
+							break;
+					case 4:	if(amount > assetCatMgr.getAmount(category1)){	//if deduction > current
+								category1insufficient = true;
+							}
+							if(amount > liabilityCatMgr.getAmount(category2)){	//if deduction > current
+								category2insufficient = true;
+							}
+							break;
+					case 5:	if(amount > assetCatMgr.getAmount(category2)){	//if deduction > cat2's balance
+								category2insufficient = true;
+							}
+							break;
+					case 6:	if(amount > liabilityCatMgr.getAmount(category2)){
+								category2insufficient = true;
+							}
+							break;
+				}
+				if(category1insufficient){
+					errorMsg += "Sorry, you do not have enough money in " + category1 + " for deduction.<br>";
+				}
+				if(category2insufficient){
+					errorMsg += "Sorry, you do not have enough money in " + category2 + " for deduction.<br>";
+				}
+				
+				//if any errors present, display errorMsg
+				if (errorMsg != ""){
+					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
+					ErrorDisplay.setText(errorMsg);
+					errorMsg = "";
+				}
+				else {
+					
+					//delete entry from entryMgr using entry's id
+					entryMgr.deleteEntry(entry.getId());
+					
+					//update historyMgr with the old entry's information
+					historyMgr.addLog(2, entry.getId(), transactionType, entry.getAmount(),
+							entry.getDate(), entry.getCategory1(), entry.getCategory2(), entry.getDescription());
+					
+					//update 2 relevant out of 4 CatMgrs with the new difference
+					switch(transactionType){
+						case 0:	assetCatMgr.addAmountToCategory(entry.getCategory1(), - amount);
+								incomeCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+						case 1:	assetCatMgr.addAmountToCategory(entry.getCategory1(), amount);
+								expenseCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+						case 2:	liabilityCatMgr.addAmountToCategory(entry.getCategory1(), - amount);
+								expenseCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+						case 3:	assetCatMgr.addAmountToCategory(entry.getCategory1(), amount);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), amount);
+								break;
+						case 4:	assetCatMgr.addAmountToCategory(entry.getCategory1(), - amount);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+						case 5:	assetCatMgr.addAmountToCategory(entry.getCategory1(), + amount);
+								assetCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+						case 6:	liabilityCatMgr.addAmountToCategory(entry.getCategory1(), + amount);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), - amount);
+								break;
+					}
+					
+					hostFrame.dispose();
+				}
+				
+			}
+		});
+		deletePanel.add(btnSubmitEntry, "cell 4 4");
+		populateFields(entry);
+		
+	}
+
+	/**
+	 * Gets the panel
+	 * @return deletePanel
+	 */
+	public JPanel getPanel(){
+		return deletePanel;
+	}
+	
+	/**
+	 * Populates fields with the entry provided
+	 * @param entry
+	 */
+	public void populateFields(Entry entry){
+		
+		int transactionType = entry.getTransactionType();
+		
+		switch (transactionType){
+			case 0:	lblTransactionType.setText("Income Entry:");
+					break;
+			case 1: lblTransactionType.setText("Expense using Assets:");
+					break;
+			case 2: lblTransactionType.setText("Expense using Liabilities:");
+					break;
+			case 3: lblTransactionType.setText("Repay Loan:");
+					break;
+			case 4: lblTransactionType.setText("Take Loan");
+					break;
+			case 5:	lblTransactionType.setText("Asset Transfer");
+					break;
+			case 6:	lblTransactionType.setText("Liability Transfer");
+					break;
+		}
+		amountField.setText(Double.toString(entry.getAmount()));
+		String date = date_format.format(entry.getDate());
+		StringTokenizer stDate = new StringTokenizer(date,"/");
+		dd.setText(stDate.nextToken());
+		mm.setText(stDate.nextToken());
+		yyyy.setText(stDate.nextToken());
+		lblCategory1.setText(entry.getCategory1());
+		lblCategory2.setText(entry.getCategory2());
+		descriptionField.setText(entry.getDescription());
+		deletePanel.validate();
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\DeletePanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\EditPanel.java
+	 */
+
+ *
+ */
+public class EditPanel {
+
+	//default format for date and errorMsg
+	protected static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	protected static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
+	
+	//hostFrame refers to the pop-up frame that holds this EditPanel
+	protected JFrame hostFrame;
+	
+	private JPanel editPanel;
+	private JTextField amountField;
+	private JTextField dd;
+	private JTextField mm;
+	private JTextField yyyy;
+	private JTextField descriptionField;
+	
+	private JLabel lblTransactionType = new JLabel();
+	private JLabel lblAmount = new JLabel("Amount");
+	private JLabel lblDate = new JLabel("Date");
+	private JLabel lblCategory1 = new JLabel();
+	private JLabel lblCategory2 = new JLabel();
+	private JLabel lblDescription = new JLabel("Description");
+	private JLabel ErrorDisplay = new JLabel();
+	private String errorMsg = "";
+	
+	private final AssetCatMgr assetCatMgr;
+	private final LiabilityCatMgr liabilityCatMgr;
+	private final IncomeCatMgr incomeCatMgr;
+	private final ExpenseCatMgr expenseCatMgr;
+	private final EntryMgr entryMgr;
+	private final HistoryMgr historyMgr;
+	
+	private final Entry entry;
+	
+	/**
+	 * Default Constructor for creating the panel.
+	 */
+	public EditPanel(final JFrame hostFrame, final AssetCatMgr assetCatMgr, final LiabilityCatMgr liabilityCatMgr,
+			final IncomeCatMgr incomeCatMgr, final ExpenseCatMgr expenseCatMgr, final EntryMgr entryMgr, 
+			final HistoryMgr historyMgr, final Entry entry){
+		
+		//pass reference to the panel for checking and adding of transactions
+		this.hostFrame = hostFrame;
+		this.assetCatMgr = assetCatMgr;
+		this.liabilityCatMgr = liabilityCatMgr;
+		this.incomeCatMgr = incomeCatMgr;
+		this.expenseCatMgr = expenseCatMgr;
+		this.entryMgr = entryMgr;
+		this.historyMgr = historyMgr;
+		this.entry = entry;
+		
+		
+		editPanel = new JPanel(new MigLayout("", "[100,left]5[100]25[130,left]5[100]5[grow]", "[20]5[]5[30]5[50]10[50,grow,top]"));
+		editPanel.setBackground(new Color(255, 255, 255));
+		editPanel.setSize(700,300);
+		
+		editPanel.add(lblTransactionType, "cell 0 0 2 1,growx");
+		editPanel.add(lblCategory1, "cell 0 1,growx");
+		editPanel.add(lblCategory2, "cell 1 1,growx");
+		
+		editPanel.add(lblAmount, "cell 0 2,alignx left");
+
+		amountField = new JTextField();
+		amountField.setColumns(10);
+		editPanel.add(amountField, "cell 1 2,growx");
+		
+		editPanel.add(lblDate, "cell 2 2,alignx left");
+
+		dd = new JTextField();
+		dd.setColumns(5);
+		editPanel.add(dd, "flowx,cell 3 2,growx");
+		
+		mm = new JTextField();
+		mm.setColumns(5);
+		editPanel.add(mm, "cell 3 2,growx");
+		
+		yyyy = new JTextField();
+		editPanel.add(yyyy, "cell 4 2");
+		yyyy.setColumns(8);
+		
+		editPanel.add(lblDescription, "cell 0 3");
+		
+		descriptionField = new JTextField();
+		editPanel.add(descriptionField, "cell 1 3 4 1,grow");
+		
+		ErrorDisplay.setFont(error_font);
+		ErrorDisplay.setForeground(Color.RED);
+		editPanel.add(ErrorDisplay, "cell 1 4 3 1,grow");
+		
+				
+		
+		
+		JButton btnSubmitEntry = new JButton("Edit Entry");
+		btnSubmitEntry.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				//variables for storing user's inputs. Initialized just to avoid compilation error
+				int DD = 01, MM = 0, YYYY = 2013, transactionType = entry.getTransactionType();
+				double amount = 0;
+				String description;
+				
+				//check if amount is valid
+				try{
+					amount = Double.parseDouble(amountField.getText());
+					if (amount < 0)
+						throw new Exception();
+				} catch (Exception exAmount){
+					errorMsg += amount + " is negative. Amount cannot be a negative number!<br>";
+				}
+				
+				//check if day of month is valid
+				try{
+					DD = Integer.parseInt(dd.getText());
+					if (DD <= 0 || DD > 31)
+						throw new Exception();
+				} catch (Exception exDD){
+					errorMsg += "Day entered was not a valid number.<br>";
+				}
+				
+				//check if month is valid
+				try{
+					MM = Integer.parseInt(mm.getText());
+					if (MM <= 0 || MM > 12)
+						throw new Exception();
+				} catch (Exception exMM){
+					errorMsg += "Month entered was not a valid number.<br>";
+				}
+				
+				//check if year is valid
+				try{
+					YYYY  = Integer.parseInt(yyyy.getText());
+					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
+						throw new Exception();
+				} catch (Exception exYY){
+					errorMsg += "Year entered was not a valid number.<br>";
+				}
+				
+				//process dd mm yyyy into date
+				Date date = null;
+				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
+				try {
+					date = date_format.parse(dateString);
+				} catch (ParseException e1) {
+					errorMsg += "Unable to process date.<br>";
+				}
+				
+				
+				double difference = amount - entry.getAmount();	//new - old amount
+				String category1 = entry.getCategory1();
+				String category2 = entry.getCategory2();
+				boolean category1insufficient = false;	//true if category insufficient
+				boolean category2insufficient = false;
+				
+				//check if balance in relevant categories sufficient
+				switch(transactionType){
+				
+					case 0:	if(-difference > assetCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}	//no need to check income as income can only increase
+							break;
+					case 1:	if(difference > assetCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}	//no need to check expense as expense can only increase
+							break;
+					case 2: if(-difference > liabilityCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}	//no need to check expense as expense can only increase
+							break;
+					case 3:	if(difference > assetCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}
+							if(difference > liabilityCatMgr.getAmount(category2)){
+								category2insufficient = true;
+							}
+							break;
+					case 4:	if(-difference > assetCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}
+							if(-difference > liabilityCatMgr.getAmount(category2)){
+								category2insufficient = true;
+							}
+							break;
+					case 5:	if(difference > assetCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}
+							if(-difference > assetCatMgr.getAmount(category2)){
+								category2insufficient = true;
+							}
+							break;
+					case 6:	if(difference > liabilityCatMgr.getAmount(category1)){
+								category1insufficient = true;
+							}
+							if(-difference > liabilityCatMgr.getAmount(category2)){
+								category2insufficient = true;
+							}
+							break;
+				}
+				if(category1insufficient){
+					errorMsg += "Sorry, you do not have enough money in " + category1 + " for deduction.<br>";
+				}
+				if(category2insufficient){
+					errorMsg += "Sorry, you do not have enough money in " + category2 + " for deduction.<br>";
+				}
+				
+				//check for pipe characters in description field
+				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
+				
+				//if any errors present, display errorMsg
+				if (errorMsg != ""){
+					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
+					ErrorDisplay.setText(errorMsg);
+					errorMsg = "";
+				}
+				else {
+					
+					Entry editedEntry = new Entry(entry.getId(), entry.getTransactionType(), amount,
+							date, category1, category2, description);
+					
+					//update entryMgr
+					entryMgr.editEntry(editedEntry);
+					
+					//update historyMgr
+					historyMgr.addLog(1, entry.getId(), entry.getTransactionType(), 
+							difference, date, category1, category2, description);
+					
+					//update 2 relevant out of 4 CatMgrs with the new difference
+					switch(transactionType){
+						case 0:	assetCatMgr.addAmountToCategory(entry.getCategory1(), difference);
+								incomeCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+						case 1:	assetCatMgr.addAmountToCategory(entry.getCategory1(), -difference);
+								expenseCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+						case 2:	liabilityCatMgr.addAmountToCategory(entry.getCategory1(), difference);
+								expenseCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+						case 3:	assetCatMgr.addAmountToCategory(entry.getCategory1(), -difference);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), -difference);
+								break;
+						case 4:	assetCatMgr.addAmountToCategory(entry.getCategory1(), difference);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+						case 5:	assetCatMgr.addAmountToCategory(entry.getCategory1(), -difference);
+								assetCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+						case 6:	liabilityCatMgr.addAmountToCategory(entry.getCategory1(), -difference);
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), difference);
+								break;
+					}
+
+					hostFrame.dispose();
+				}
+			}
+		});
+		editPanel.add(btnSubmitEntry, "cell 4 4");
+		populateFields(entry);
+		
+	}
+
+	
+	/**
+	 * Gets panel 
+	 * @return ediPanel
+	 */
+	public JPanel getPanel(){
+		return editPanel;
+	}
+	
+	/**
+	 * Populates fields with the entry provided
+	 * @param entry
+	 */
+	public void populateFields(Entry entry){
+		
+		int transactionType = entry.getTransactionType();
+		
+		switch (transactionType){
+			case 0:	lblTransactionType.setText("Income Entry:");
+					break;
+			case 1: lblTransactionType.setText("Expense using Assets:");
+					break;
+			case 2: lblTransactionType.setText("Expense using Liabilities:");
+					break;
+			case 3: lblTransactionType.setText("Repay Loan:");
+					break;
+			case 4: lblTransactionType.setText("Take Loan");
+					break;
+			case 5:	lblTransactionType.setText("Asset Transfer");
+					break;
+			case 6:	lblTransactionType.setText("Liability Transfer");
+					break;
+		}
+		amountField.setText(Double.toString(entry.getAmount()));
+		String date = date_format.format(entry.getDate());
+		StringTokenizer stDate = new StringTokenizer(date,"/");
+		dd.setText(stDate.nextToken());
+		mm.setText(stDate.nextToken());
+		yyyy.setText(stDate.nextToken());
+		lblCategory1.setText(entry.getCategory1());
+		lblCategory2.setText(entry.getCategory2());
+		descriptionField.setText(entry.getDescription());
+		editPanel.validate();
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\EditPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Entry.java
+	 */
+
+ *
+ */
+public class Entry{
+	protected int transactionType;
+	protected int id;
+	protected double amount;
+	protected Date date;
+	protected String category1;
+	protected String category2;
+	protected String description;
+	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	/**
+	 * Default Constructor
+	 */
+	public Entry(){}
+	/**
+	 * Constructor that creates an entry with the following fields
+	 * @param id
+	 * @param transactionType
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 */
+	public Entry(int id, int transactionType, double amount, Date date, String category1, String category2, String description){
+		this.id = id;
+		this.transactionType = transactionType;
+		this.amount = amount;
+		this.date = date;
+		this.category1 = category1;
+		this.category2 = category2;
+		this.description = description;
+	}
+	
+	/**
+	 * gets id
+	 * @return id
+	 */
+	public int getId(){
+		return id;
+	}
+	/**
+	 * gets transactionType
+	 * @return transactionType
+	 */
+	public int getTransactionType(){
+		return transactionType;
+	}
+	/**
+	 * gets amount
+	 * @return amount
+	 */
+	public double getAmount(){
+		return amount;
+	}
+	/**
+	 * get date
+	 * @return date
+	 */
+	public Date getDate(){
+		return date;
+	}
+	/**
+	 * get category1
+	 * @return category1
+	 */
+	public String getCategory1(){
+		return category1;
+	}
+	/**
+	 * get category2
+	 * @return category2
+	 */
+	public String getCategory2(){
+		return category2;
+	}
+	/**
+	 * get description
+	 * @return description
+	 */
+	public String getDescription(){
+		return description;
+	}
+	
+	/**
+	 * sets id
+	 * @param id
+	 */
+	public void setId(int id){
+		this.id= id;
+	}
+	/**
+	 * sets transactionType
+	 * @param transactionType
+	 */
+	public void setTransactionType(int transactionType){
+		this.transactionType= transactionType;
+	}
+	/**
+	 * sets amount
+	 * @param amount
+	 */
+	public void setAmount(double amount){
+		this.amount = amount;
+	}
+	/**
+	 * sets date
+	 * @param date
+	 */
+	public void setDate(Date date){
+		this.date = date;
+	}
+	/**
+	 * sets category1
+	 * @param category1
+	 */
+	public void setCategory1(String category1){
+		this.category1 = category1;
+	}
+	/**
+	 * sets category2
+	 * @param category2
+	 */
+	public void setCategory2(String category2){
+		this.category2 = category2;
+	}
+	/**
+	 * sets description
+	 * @param description
+	 */
+	public void setDescription(String description){
+		this.description = description;
+	}
+	
+	/**
+	 * returns a string in format to be printed to txt file
+	 * each field is separated by a pipe character
+	 * includes a newline in front by default
+	 * supports option for not printing newline in front, 
+	 * which is used for first entry to file, to prevent a blank line and subsequent errors
+	 * @param includeNewLine
+	 * @return output
+	 */
+	public String toTxt(boolean includeNewLine){
+		
+		String output = new String();
+		
+		if (includeNewLine){
+			output += "\n";
+		}
+		
+		output += Integer.toString(id) + "|" + Integer.toString(transactionType) + "|"
+				+ Double.toString(amount) + "|" + date_format.format(date) + "|"
+				+ category1 + "|" + category2 + "|" + description ;
+		
+		return output;
+	}
+}
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Entry.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\EntryMgr.java
+	 */
+
+ *
+ */
+public class EntryMgr {
+	
+	//default format for date
+	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	public final String txt_path = getClass().getResource(".").getPath() + "/db/EntryList.txt";
+	private static int current_id;
+	
+	/**
+	 * Default Constructor
+	 * Initializes current_id based on latest transaction id in EntryList.txt
+	 */
+	public EntryMgr(){
+		current_id = initId();	//initialize current_id at start-up.
+	}
+	
+	/**
+	 * Adds an entry to EntryList.txt
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 * @return current_id
+	 */
+	public int addEntry(int transactionType, double amount, Date date, 
+			String category1, String category2, String description){
+		
+		int id = current_id + 1;			//update current_id at each entry
+		Entry newEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+		
+		BufferedWriter entryWriter;
+		
+		try {
+			Scanner entryReader = new Scanner(new FileReader(txt_path));
+			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			
+			if (!entryReader.hasNext()){
+				entryWriter.append(newEntry.toTxt(false));
+			}
+			else{
+				entryWriter.append(newEntry.toTxt(true));
+			}
+			entryReader.close();
+			entryWriter.close();
+			return ++current_id;	//return 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return current_id;
+	}
+	
+	/**
+	 * Adds back an entry with a previous id into EntryList.txt
+	 * For undoing a delete operation
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 * @return current_id
+	 */
+	public int addBackEntry(int id, int transactionType, double amount, Date date, 
+			String category1, String category2, String description){
+		
+		Entry newEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+		
+		BufferedWriter entryWriter;
+		
+		try {
+			Scanner entryReader = new Scanner(new FileReader(txt_path));
+			entryWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			
+			if (!entryReader.hasNext()){
+				entryWriter.append(newEntry.toTxt(false));
+			}
+			else{
+				entryWriter.append(newEntry.toTxt(true));
+			}
+			entryReader.close();
+			entryWriter.close();
+			return ++current_id;	//return 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return current_id;
+	}
+	
+	/**
+	 * Searches EntryList.txt for and entry with the following id and returns an Entry object
+	 * @param id
+	 * @return entry
+	 */
+	public Entry getEntry(int id){
+		Entry entry = null;
+		try{
+			String line = null;
+			boolean idFound = false;
+			
+		    BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
+		    
+		    //this block parses id of each entry from EntryList.txt and searches for entry with id
+		    while ((line = fileReader.readLine()) != null) {
+		    	if(line != ""){
+		    		StringTokenizer st = new StringTokenizer(line, "|");
+			    	int currentId = Integer.parseInt(st.nextToken());
+			        if (currentId == id) {
+			        	idFound = true;
+						int transactionType = Integer.parseInt(st.nextToken());
+						double amount = Double.parseDouble(st.nextToken());
+						Date date = date_format.parse(st.nextToken());
+						String category1 = st.nextToken();
+						String category2 = st.nextToken();
+						String description = "";
+						if (st.hasMoreTokens())				//check, as description is an optional entry
+							description = st.nextToken();
+						entry = new Entry(id, transactionType, amount, date, category1, category2, description);
+			        }
+		    	}
+		    }
+		    fileReader.close();
+		    
+		    //warning if id not found
+		    if(!idFound){
+		    	System.out.println("id not found!");
+		    }
+		    
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return entry;
+	}
+	
+	/**
+	 * Edits a given entry in EntryList.txt given an updated entry
+	 * @param entry
+	 * @return true if edited successfully
+	 */
+	public boolean editEntry(Entry entry){
+		
+		int id = entry.getId();
+		boolean edited = false;
+		
+		try {
+			
+			File inFile = new File(txt_path);
+			File tempFile;
+			tempFile = File.createTempFile("tempFile", ".txt");
+			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    
+		    //this block parses id of first entry from EntryList.txt and adds to temp file if not id to be edited
+		    //no need to check if first line exists as this method can only be invoked if there are entries in the txt
+		    String line = fileReader.readLine();
+		    StringTokenizer st = new StringTokenizer(line, "|");
+		    if (Integer.parseInt(st.nextToken()) != id){
+		    	fileWriter.print(line);		
+		    	fileWriter.flush();
+		    }
+		    else{
+		    	fileWriter.print(entry.toTxt(false));
+		    	fileWriter.flush();
+		    	edited = true;
+		    }
+		    
+		    //this block parses id of each entry from EntryList.txt and adds to temp file if not id to be edited
+		    while ((line = fileReader.readLine()) != null) {
+		    	
+		    	if(line != ""){
+			    	st = new StringTokenizer(line, "|");
+			        if (Integer.parseInt(st.nextToken())!= id) {
+			        	fileWriter.println();			//newline should be added before the line
+			        	fileWriter.print(line);
+			        	fileWriter.flush();
+			        }
+			        else{
+			        	fileWriter.print(entry.toTxt(true));	//no println before as entry.toTxt() inserts a newline before
+			        	fileWriter.flush();
+			        	edited = true;
+			        }
+		    
+		    	}
+		    }
+		    fileReader.close();
+		    fileWriter.close();
+		    
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+	    return edited;
+	}
+	
+	/**
+	 * Deletes an entry with a specific id. Returns true if deleted successfully
+	 * @param id
+	 */
+	public Entry deleteEntry(int id){
+		Entry deletedEntry = null;
+		try{
+			File inFile = new File(txt_path);
+			File tempFile = File.createTempFile("tempFile", ".txt");
+			boolean idFound = false;
+			
+		    BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from EntryList.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    
+		    //this block parses id of first entry from EntryList.txt and adds to temp file if not id to be deleted
+		    //no need to check if first line exists as this method can only be invoked if there are entries in the txt
+		    String line = fileReader.readLine();
+		    StringTokenizer st = new StringTokenizer(line, "|");
+		    if (Integer.parseInt(st.nextToken()) != id){
+		    	fileWriter.print(line);		
+		    	fileWriter.flush();
+		    }
+		    else{
+		    	idFound = true;
+		    }
+		    
+		    //this block parses id of remaining entries from EntryList.txt and adds to temp file if not id to be deleted
+		    while ((line = fileReader.readLine()) != null) {
+		    	if(line != ""){
+			    	st = new StringTokenizer(line, "|");
+			        if (Integer.parseInt(st.nextToken())!= id) {
+			        	fileWriter.println();			//newline should be added before the line
+			        	fileWriter.print(line);
+			        	fileWriter.flush();
+			        }
+			        else{
+			        	//collect info about deleted Entry
+			        	st = new StringTokenizer(line, "|");
+			        	st.nextToken();	//skip id
+						int transactionType = Integer.parseInt(st.nextToken());
+						double amount = Double.parseDouble(st.nextToken());
+						Date date = date_format.parse(st.nextToken());
+						String category1 = st.nextToken();
+						String category2 = st.nextToken();
+						String description = "";
+						if (st.hasMoreTokens())				//check, as description is an optional entry
+							description = st.nextToken();
+						deletedEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+			        	idFound = true;
+			        }
+		    	}
+		    }
+		    fileReader.close();
+		    fileWriter.close();
+		    
+		    //warning if id not found
+		    if(!idFound){
+		    	System.out.println("id not found!");
+		    	return null;
+		    }
+		    
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return deletedEntry;
+	}
+	
+	/**
+	 * Renames all entries having the old category name with the new category name
+	 * @param type (0:Assets, 1:Liabilities, 2:Income, 3:Expenses)
+	 * @param oldName
+	 * @param newName
+	 * @return true if renamed successfully
+	 */
+	public boolean renameCat(int type, String oldName, String newName){
+		
+		try {
+			File inFile = new File(txt_path);
+			File tempFile = File.createTempFile("tempFile", ".txt");
+			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from History.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    boolean notFirstLine = false;	//boolean flag to indicate first line, need new line
+		    String line = null;
+			StringTokenizer st = null;
+			Entry tempEntry = null;
+			
+			
+			while ((line = fileReader.readLine()) != null) {
+
+		    	st = new StringTokenizer(line, "|");
+				int id = Integer.parseInt(st.nextToken());
+				int transactionType = Integer.parseInt(st.nextToken());
+				double amount = Double.parseDouble(st.nextToken());
+				Date date = date_format.parse(st.nextToken());
+				String category1 = st.nextToken();
+				String category2 = st.nextToken();
+				String description = "";
+				if(st.hasMoreTokens())				//check, as description is an optional entry
+					description = st.nextToken();
+				
+				//nested switch to check type, then transaction type, then the relevant category names
+				switch(type){
+					case 0:	//check for asset-related transaction types
+							switch(transactionType){
+							case 5:	if(category2.equals(oldName))
+										category2 = newName;
+							case 0:
+							case 1:
+							case 3:
+							case 4:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							}
+							break;
+					case 1:	//check for liability-related transaction types
+							switch(transactionType){
+							case 2:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							case 6:	if(category1.equals(oldName))
+										category1 = newName;
+							case 3:
+							case 4:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 2:	//check for income-related transaction types
+							switch(transactionType){
+							case 0:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 3:	//check for expense-related transaction types
+							switch(transactionType){
+							case 1:
+							case 2:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+				}
+				tempEntry = new Entry(id, transactionType, amount,
+						date, category1, category2, description);
+				fileWriter.print(tempEntry.toTxt(notFirstLine));	//first line no new line, the rest will have new line
+				notFirstLine = true;
+
+			}
+			
+			fileReader.close();
+			fileWriter.close();
+			
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Gets the latest id used for a transaction.
+	 * @return current_id
+	 */
+	public int getCurrentId(){
+		return current_id;
+	}
+	
+	/**
+	 * Reads the entries from EntryList.txt 
+	 * Returns a sorted linked list of all entries from earliest to latest
+	 * @return transactionList
+	 */
+	public LinkedList<Entry> getTransactionList(){
+		LinkedList<Entry> transactionList = new LinkedList<Entry>();
+		int id, transactionType;
+		double amount;
+		Date date = new Date();
+		String category1 = "", category2 = "", description = "";
+		Entry tempEntry;
+		try {
+			Scanner fileReader = new Scanner(new FileReader(txt_path));
+
+			while (fileReader.hasNext()) {
+				StringTokenizer st = new StringTokenizer(fileReader.nextLine(), "|");
+				id = Integer.parseInt(st.nextToken());
+				transactionType = Integer.parseInt(st.nextToken());
+				amount = Double.parseDouble(st.nextToken());
+				date = date_format.parse(st.nextToken());
+				category1 = st.nextToken();
+				category2 = st.nextToken();
+				if (st.hasMoreTokens())				//check, as description is an optional entry
+					description = st.nextToken();
+				tempEntry = new Entry(id, transactionType, amount, date, category1, category2, description);
+				transactionList.add(tempEntry);
+			}
+			fileReader.close();
+			
+		} catch (FileNotFoundException | ParseException e) {
+			e.printStackTrace();
+		}
+		sort(transactionList);
+		return transactionList;
+	}
+	
+	/**
+	 * Returns a time series collection for rendering of XY chart
+	 * Not used currently
+	 * @return transactionDataset
+	 */
+	public XYDataset getTransactionByTime(){
+		
+		TimeSeriesCollection transactionDataset = new TimeSeriesCollection();
+		TimeSeries incomeSeries = new TimeSeries("Income");
+		TimeSeries expenseSeries = new TimeSeries("Expense");
+		transactionDataset.addSeries(incomeSeries);
+		transactionDataset.addSeries(expenseSeries);
+		
+		LinkedList<Entry> transactionList = getTransactionList();
+		
+		//faulty logic here. it only registers the latest for the month, and doesn't do the subtotal.
+		for(Entry entry : transactionList){
+			
+			Date tempDate = entry.getDate();
+			
+			switch(entry.getTransactionType()){
+			case 0:	incomeSeries.addOrUpdate(new Month(tempDate.getMonth()+1,tempDate.getYear()), entry.getAmount());
+					break;
+			case 1:
+			case 2:	expenseSeries.addOrUpdate(new Month(tempDate.getMonth()+1,tempDate.getYear()), entry.getAmount());
+					break;
+			}
+		}
+		
+		//TODO debug the rendering. need to collect all the total for the month first. and check if income or expense
+		
+		/*
+		int index = 0;														//keep track of current index
+		double runningDate = transactionList.getFirst().getDate().getTime();	//in ms
+		double lastDate = transactionList.getLast().getDate().getTime();	//in ms
+		double currentDate = runningDate;
+		double interval = 1000 * 60 * 60 * 24 * 30;							// 1 month in ms
+		
+		for(; runningDate <= lastDate; runningDate += interval){
+			double subtotal = 0.0;
+			while(runningDate <= currentDate && currentDate <= runningDate + interval){
+				subtotal += transactionList.get(index).getAmount();
+				if(transactionList.size() > index)
+					++index;
+			}
+			
+		}
+		*/
+		return transactionDataset;
+	}
+	
+	
+	/**
+	 * Gets the current id according to the transactions in the file. Only used for initialization!
+	 * After initialization the next id will be tracked by current_id
+	 * @return next id to be inserted
+	 */
+	private int initId(){
+		int id = 0;
+		try {
+			Scanner fileReader = new Scanner(new FileReader(txt_path));
+
+			while (fileReader.hasNextLine()) {
+				StringTokenizer st = new StringTokenizer(fileReader.nextLine(), "|");
+				if(st.hasMoreTokens()){							//if clause to avoid problems with empty lines in txt file
+					id = Integer.parseInt(st.nextToken());					
+				}
+			}
+			fileReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+	
+	/**
+	 * Sorts a list of entries from earliest to latest
+	 * @param entryList
+	 */
+	private void sort(LinkedList<Entry> entryList){
+		
+		Collections.sort(entryList, new Comparator<Entry>(){
+			
+	        public int compare(Entry e1, Entry e2) {
+	            return later(e1.getDate(),e2.getDate());
+	        }
+		});
+	}
+	
+	/**
+	 * Compares 2 dates
+	 * @param d1
+	 * @param d2
+	 * @return 1 if d1 later d2, 0 if same, -1 if earlier
+	 */
+	private int later(Date d1, Date d2){
+
+		if (d1.getTime() < d2.getTime())
+			return -1;
+		if(d1.getTime() == d2.getTime())
+			return 0;
+		else	//(d1.getTime() > d2.getTime())
+			return 1;
+	}
+}
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\EntryMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExcelExporter.java
+	 */
+
+ *
+ */
+public class ExcelExporter {
+	
+	private final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	private String date = date_format.format(new Date());
+	
+	public ExcelExporter(){}
+	
+	public void exportTable(JTable table, File file){
+		try {
+
+			TableModel model = table.getModel();
+			FileWriter out = new FileWriter(file);
+
+		  	for(int i=0; i < model.getColumnCount();i++) {
+		  		out.write(model.getColumnName(i)+"\t");
+		  	}
+		  	out.write("\n");
+
+		  	for(int i=0; i < model.getRowCount();i++){
+		  		for(int j=0; j< model.getColumnCount(); j++){
+	  				out.write(model.getValueAt(i,j).toString() + "\t");
+				}
+		  		out.write("\n");
+		  	}
+		  	out.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExcelExporter.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExcelMgr.java
+	 */
+
+ *
+ */
+public class ExcelMgr {
+	
+	private static final DecimalFormat amount_format = new DecimalFormat("##.00");
+	protected final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yyyy");
+	
+	public ExcelMgr(){}
+	
+	public boolean exportTable(JTable table, File excelFile){
+		try {
+
+			TableModel model = table.getModel();
+			WritableWorkbook workbook = Workbook.createWorkbook(excelFile);
+			WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+
+
+		  	for(int i=0; i < model.getColumnCount();i++) {
+		  		sheet.addCell(new Label(i, 0, model.getColumnName(i)));
+		  	}
+
+		  	for(int i=0; i < model.getRowCount();i++){
+		  		
+		  		sheet.addCell(new Number(0, i+1, Double.parseDouble(model.getValueAt(i, 0).toString())));
+		  		sheet.addCell(new Label(1, i+1, model.getValueAt(i,1).toString()));
+		  		sheet.addCell(new Number(2, i+1, Double.parseDouble(model.getValueAt(i,2).toString())));	
+		  		
+		  		for(int j=3; j< model.getColumnCount(); j++){
+		  		
+		  			sheet.addCell(new Label(j, i+1, model.getValueAt(i,j).toString()));	
+				}
+		  	}
+		  	workbook.write();
+		  	workbook.close();
+
+		  	return true;
+		  	
+		} catch (WriteException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		}
+	
+	public boolean exportEntryList(LinkedList<Entry> entryList, File excelFile){
+
+		try {
+			
+			WritableWorkbook workbook = Workbook.createWorkbook(excelFile);
+			WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+
+			sheet.addCell(new Label(0,0,"ID"));
+			sheet.addCell(new Label(1,0,"Transaction Type"));
+			sheet.addCell(new Label(2,0,"Amount"));
+			sheet.addCell(new Label(3,0,"Date"));
+			sheet.addCell(new Label(4,0,"Category 1"));
+			sheet.addCell(new Label(5,0,"Category 2"));
+			sheet.addCell(new Label(6,0,"Description"));
+			
+			int size = entryList.size();
+		  	for(int i=0; i < size;i++){
+		  		
+		  		sheet.addCell(new Number(0, i+1, entryList.get(i).getId()));
+		  		
+		  		switch(entryList.get(i).getTransactionType()){
+		  		case 0:
+		  			sheet.addCell(new Label(1, i+1, "Income Received"));
+		  			break;
+		  		case 1:
+		  			sheet.addCell(new Label(1, i+1, "Expense Using Assets"));
+		  			break;
+		  		case 2:
+		  			sheet.addCell(new Label(1, i+1, "Expense Using Liabilities"));
+		  			break;
+		  		case 3:
+		  			sheet.addCell(new Label(1, i+1, "Repay Loan"));
+		  			break;
+		  		case 4:
+		  			sheet.addCell(new Label(1, i+1, "Take Loan"));
+		  			break;
+		  		case 5:
+		  			sheet.addCell(new Label(1, i+1, "Intra-Asset Transfer"));
+		  			break;
+		  		case 6:
+		  			sheet.addCell(new Label(1, i+1, "Intra-Liability Transfer"));
+		  			break;
+		  		}
+		  		
+				sheet.addCell(new Number(2, i+1, entryList.get(i).getAmount()));
+				sheet.addCell(new Label(3, i+1, date_format.format(entryList.get(i).getDate())));
+				sheet.addCell(new Label(4, i+1, entryList.get(i).getCategory1()));
+				sheet.addCell(new Label(5, i+1, entryList.get(i).getCategory2()));
+				sheet.addCell(new Label(6, i+1, entryList.get(i).getDescription()));
+				
+		  	}
+		  	workbook.write();
+		  	workbook.close();
+
+		  	return true;
+		  	
+		} catch (WriteException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public LinkedList<Entry> importExcel(final String file_path) throws Exception {
+        
+		int i=1;
+		LinkedList<Entry> importList = new LinkedList<Entry>();
+		
+		try {
+            Workbook wb = Workbook.getWorkbook(new File(file_path));    // get the excel work book
+            Sheet sheet = wb.getSheet(0);
+            int columns = sheet.getColumns();
+            boolean hasDescription = (columns == 7 ? true : false);		//check if user input has description column
+             
+            // travel all cells in the selected sheet. ignore row 0
+            for(i=1; i < sheet.getRows(); i++) {
+            	
+            	Entry entry = null;
+            	int id = Integer.parseInt(sheet.getCell(0,i).getContents());
+            	String type = sheet.getCell(1,i).getContents();
+            	
+            	//parse for transaction type
+            	int transactionType;
+            	if(type.equals("Income Received")){
+            		transactionType = 0;
+            	} else if(type.equals("Expense Using Assets")){
+            		transactionType = 1;
+            	} else if(type.equals("Expense Using Liabilities")){
+            		transactionType = 2;
+            	} else if(type.equals("Repay Loan")){
+            		transactionType = 3;
+            	} else if(type.equals("Take Loan")){
+            		transactionType = 4;
+            	} else if(type.equals("Intra-Asset Transfer")){
+            		transactionType = 5;
+            	} else if(type.equals("Intra-Liability Transfer")){
+            		transactionType = 6;
+            	} else throw new Exception("Invalid transaction type!");
+            	
+            	double amount = Double.parseDouble(sheet.getCell(2,i).getContents());
+            	Date date = date_format.parse(sheet.getCell(3,i).getContents());
+            	String category1 = sheet.getCell(4,i).getContents();
+            	String category2 = sheet.getCell(5,i).getContents();
+            	String description = "";
+            	if(hasDescription)
+            		description = sheet.getCell(6,i).getContents();
+            	entry = new Entry(id,transactionType,amount,date,category1,category2,description);
+            	
+            	importList.add(entry);
+            	
+            }
+        } catch (BiffException e) {
+            throw new Exception("Error with " + i + "th entry\n" + e.getMessage());
+        } catch (NumberFormatException e) {
+        	throw new Exception("Did you use numbers in your file when they were required?");
+        } catch (IOException e) {
+        	throw new Exception("Does your file exist?");
+        }
+		return importList;
+    }
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExcelMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExpenseCatMgr.java
+	 */
+
+ *
+ */
+public class ExpenseCatMgr extends CatMgr {
+	
+	private final String txt_path = getClass().getResource(".").getPath() + "/db/ExpenseCategory.txt";
+	
+	public ExpenseCatMgr(){
+	
+		setTxtPath(txt_path);
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExpenseCatMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExportPanel.java
+	 */
+
+ *
+ */
+public class ExportPanel {
+	
+	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
+	
+	private JPanel exportPanel_PNL = new JPanel(new MigLayout("","[]","[grow][grow][grow]"));
+	private JTextArea exportPanelFilePath_TA = new JTextArea();
+	private JFrame hostFrame = null;
+	
+	private ExcelMgr excelMgr = new ExcelMgr();
+	
+	private LinkedList<Entry> exportList = null;
+	private JTable table = null;
+
+	
+	ExportPanel(final JFrame hostFrame, LinkedList<Entry> transactionList){
+		
+		this.hostFrame = hostFrame;
+		hostFrame.getContentPane().add(exportPanel_PNL, "cell 0 0 1 2, growy");
+		exportList = transactionList;
+		setUp();
+		
+	}
+	
+	ExportPanel(final JFrame hostFrame, JTable table){
+		
+		this.hostFrame = hostFrame;
+		hostFrame.getContentPane().add(exportPanel_PNL, "cell 0 0 1 2, growy");
+		this.table = table;
+		setUp();
+		
+	}
+	
+	private void setUp() {
+		exportPanel_PNL.setBackground(Color.white);
+		
+		JLabel exportPanelHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Export.png")));
+		exportPanelHeading_LBL.setText("Export");
+		exportPanelHeading_LBL.setFont(heading_font);
+		exportPanel_PNL.add(exportPanelHeading_LBL, "cell 0 0");
+		
+		JLabel exportPanelInstruction_LBL = new JLabel(
+				"Please enter your desired export destination");
+		exportPanel_PNL.add(exportPanelInstruction_LBL, "cell 0 1");
+		
+		exportPanelFilePath_TA.setColumns(20);
+		exportPanelFilePath_TA.setLineWrap(true);
+		exportPanel_PNL.add(exportPanelFilePath_TA, "cell 0 2,growy");
+		
+		JButton exportPanelSubmit_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Tick.png")));
+		exportPanelSubmit_BTN.setToolTipText("Export!");
+		exportPanelSubmit_BTN.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				
+				String filePath = exportPanelFilePath_TA.getText();
+				
+				//try block for exporting excel file
+				try {
+					if(exportList != null){
+						excelMgr.exportEntryList(exportList, new File(filePath));
+					} else if(table != null){
+						excelMgr.exportTable(table, new File(filePath));
+					} else
+						throw new Exception("Nothing to export!");
+					
+					//pop up to inform user
+					JOptionPane searchMgrConfirm_JOP = new JOptionPane();
+					searchMgrConfirm_JOP.setMessage("Exported Successfully!");
+					searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Tick.png")));
+					JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
+					dialog.setVisible(true);
+					
+					hostFrame.dispose();
+					
+				} catch (Exception e1) {
+					
+					JOptionPane searchMgrConfirm_JOP = new JOptionPane();
+					searchMgrConfirm_JOP.setMessage("Error Exporting!\n" + e1.getMessage());
+					searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
+					JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
+					dialog.setVisible(true);
+					e1.printStackTrace();
+					
+					hostFrame.dispose();
+				}
+			}
+			
+		});
+		exportPanel_PNL.add(exportPanelSubmit_BTN, "cell 0 2");
+		hostFrame.pack();
+		hostFrame.revalidate();
+	}
+
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ExportPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Finances.java
+	 */
+
+ *
+ */
+public class Finances {
+
+	private final TransactionMgr transactionMgr = new TransactionMgr(this);		//TransactionMgr handles all operations from user
+	
+	private final JFrame financesMain_FRM = new JFrame();						//Main Window of user interface
+	private final JPanel financesMain_PNL = new JPanel();						//Container for all display elements
+	private final JScrollPane financesMain_SCP = new JScrollPane(financesMain_PNL);	//Scroll pane class to enable scrolling
+	
+	private final JPanel financesBalance_PNL = new JPanel();					//financesBalance_PNL displays the welcome msg and user's balance
+	private final JPanel financesAsset_PNL = new JPanel();						//financesAsset_PNL displays the chart, edit and transfer buttons
+	private final JPanel financesLiability_PNL = new JPanel();					//financesLiability_PNL displays the chart, edit and transfer buttons
+	private final JPanel financesIncome_PNL = new JPanel();						//financesIncome_PNL holds the chart and edit income category button
+	private final JPanel financesExpense_PNL = new JPanel();					//financesExpense_PNL holds the chart and edit expense category button
+	private final JPanel financesRight_PNL = new JPanel();						//financesRight_PNL holds scrolling pane and financesCrud_PNL
+	private final JScrollPane financesTransactionList_SCP = new JScrollPane();	//Scrollable pane for viewing history of transactions
+	private final JPanel financesTransactionList_PNL = new JPanel();			//financesTransactionList_PNL displays the list of past transactions
+	private final JPanel financesCrud_PNL = new JPanel();						//financesCrud_PNL stores the buttons for CRUD operations, undo and search 
+	private final JPanel financesLineChart_PNL = new JPanel();					//financesLineChart_PNL displays the line chart of income/expense over time
+	
+	//labels
+	private final JLabel financesWelcome_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Header.png")));
+	private final JLabel financesBalance_LBL = new JLabel("You have $" + transactionMgr.getBalance());	//Needs to be updated
+	private final JLabel financesTransactions_LBL = new JLabel("Transactions", SwingConstants.CENTER);
+	
+	//buttons for editing chart and categories
+	private final JButton financesRenameAssetCat_BTN = new JButton("Rename Asset Categories");
+	private final JButton financesAssetTransfer_BTN = new JButton("Transfer");
+	private final JButton financesRenameLiabilityCat_BTN = new JButton("Rename Liability Categories");
+	private final JButton financesLiabilityTransfer_BTN = new JButton("Transfer");
+	private final JButton financesRenameIncomeCat_BTN = new JButton("Rename Income Categories");
+	private final JButton financesRenameExpenseCat_BTN = new JButton("Rename Expense Categories");
+	
+	//crud, undo, search buttons
+	private final JButton financesAdd_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Add.png")));
+	private final JButton financesEdit_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Edit.png")));
+	private final JButton financesDel_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Del.png")));
+	private final JButton financesUndo_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Undo.png")));
+	private final JButton financesSearch_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Search.png")));
+	
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args){
+		EventQueue.invokeLater(new Runnable(){
+			public void run(){
+				try {
+					Finances window = new Finances();
+					window.financesMain_FRM.setVisible(true);
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public Finances(){
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize(){
+		
+		//setting up the main window
+		financesMain_FRM.getContentPane().setBackground(new Color(255, 255, 255));
+		financesMain_FRM.setSize(1200, 750);
+		financesMain_FRM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		financesMain_FRM.add(financesMain_SCP);
+		financesMain_PNL.setLayout(new MigLayout("", "[400]0[400]0[250:300:350]", "0[100,grow]0[300,grow]0[300,grow]0"));
+		financesMain_PNL.setBackground(new Color(255, 255, 255));
+		
+		//setting up the top panel
+		financesBalance_PNL.setBackground(new Color(255, 255, 255));		
+		financesBalance_PNL.setLayout(new MigLayout("", "[1100]", "[50]5[30]"));
+		financesBalance_PNL.add(financesWelcome_LBL, "cell 0 0, align center");
+		if(transactionMgr.getBalance() < 0)
+			financesBalance_LBL.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
+		financesBalance_PNL.add(financesBalance_LBL, "cell 0 1, align center");
+		financesMain_PNL.add(financesBalance_PNL, "cell 0 0 3 1,grow");
+		
+		//setting up the asset panel
+		financesAsset_PNL.setBackground(new Color(255, 255, 255));
+		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
+		AssetDataset = TransactionMgr.getAssetChartData();
+		financesAsset_PNL.add(renderBarChart(AssetDataset, 0));
+		financesRenameAssetCat_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameAssetCategories();
+			}
+		});
+		financesAsset_PNL.add(financesRenameAssetCat_BTN);
+		financesAssetTransfer_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.transferIntraAsset();
+			}
+		});
+		financesAsset_PNL.add(financesAssetTransfer_BTN);
+		financesMain_PNL.add(financesAsset_PNL, "cell 0 1,grow");
+
+		//setting up the liability panel
+		financesLiability_PNL.setBackground(new Color(255, 255, 255));
+		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
+		LiabilityDataset = TransactionMgr.getLiabilityChartData();
+		financesLiability_PNL.add(renderBarChart(LiabilityDataset, 1));
+		financesRenameLiabilityCat_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+
+				transactionMgr.renameLiabilityCategories();
+			}
+		});
+		financesLiability_PNL.add(financesRenameLiabilityCat_BTN);
+		financesLiabilityTransfer_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.transferIntraLiability();
+			}
+		});
+		financesLiability_PNL.add(financesLiabilityTransfer_BTN);
+		financesMain_PNL.add(financesLiability_PNL, "cell 1 1,grow");
+		
+		//setting up the right panel
+		financesRight_PNL.setBackground(new Color(255, 255, 255));
+		financesRight_PNL.setLayout(new MigLayout("", "0[300,grow]0", "0[40]0[400]0[50]0"));
+		financesTransactions_LBL.setFont(new Font("Tahoma", Font.BOLD, 22));
+		financesRight_PNL.add(financesTransactions_LBL, "cell 0 0,growx,aligny top");
+		financesMain_PNL.add(financesRight_PNL, "cell 2 1 1 2,grow");
+
+		//setting up the transaction list panel and adding it to the right panel
+		financesTransactionList_PNL.setBackground(new Color(240, 240, 230));		
+		renderList(financesTransactionList_PNL, TransactionMgr.getTransactionList());
+		financesTransactionList_SCP.setViewportView(financesTransactionList_PNL);
+		financesTransactionList_PNL.setLayout(new MigLayout("flowy", "5[grow,left]5", "5[grow,top]5"));
+		financesRight_PNL.add(financesTransactionList_SCP, "cell 0 1,grow");
+		financesRight_PNL.validate();
+		
+		//setting up the crud buttons panel and adding it to the right panel
+		financesCrud_PNL.setBackground(new Color(255, 255, 255));
+		financesCrud_PNL.setLayout(new MigLayout("", "0[50]3[50]3[50]3[50]3[50]0", "0[50]0"));
+		financesRight_PNL.add(financesCrud_PNL, "flowx,cell 0 2");
+		
+		//Add the respective buttons with their icon and a simple tooltip
+		financesAdd_BTN.setToolTipText("Add an Entry");
+		financesAdd_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.addTransaction();
+			}
+		});
+		financesCrud_PNL.add(financesAdd_BTN, "cell 0 0");
+		
+		financesEdit_BTN.setBackground(new Color(255, 255, 255));
+		financesEdit_BTN.setToolTipText("Edit an Entry");
+		financesEdit_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.editTransaction();
+			}
+		});
+		financesCrud_PNL.add(financesEdit_BTN, "cell 1 0");
+		
+		financesDel_BTN.setBackground(new Color(255, 255, 255));
+		financesDel_BTN.setToolTipText("Delete an Entry");
+		financesDel_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.deleteTransaction();
+			}
+		});
+		financesCrud_PNL.add(financesDel_BTN, "cell 2 0");		
+		
+		financesUndo_BTN.setBackground(new Color(255, 255, 255));
+		financesUndo_BTN.setToolTipText("Undo your last transaction");
+		financesUndo_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.undo();
+				refresh();
+			}
+		});
+		financesCrud_PNL.add(financesUndo_BTN, "cell 3 0");
+		
+		financesSearch_BTN.setBackground(new Color(255, 255, 255));
+		financesSearch_BTN.setToolTipText("Search");
+		financesSearch_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				SearchMgr searchMgr = new SearchMgr();
+			}
+		});
+		financesCrud_PNL.add(financesSearch_BTN, "cell 4 0");
+		
+		//setting up the income panel
+		financesIncome_PNL.setBackground(new Color(255, 255, 255));
+		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
+		IncomeDataset = TransactionMgr.getIncomeChartData();
+		financesIncome_PNL.add(renderBarChart(IncomeDataset,2));
+		financesRenameIncomeCat_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.renameIncomeCategories();
+			}
+		});
+		financesIncome_PNL.add(financesRenameIncomeCat_BTN);
+		financesMain_PNL.add(financesIncome_PNL, "cell 0 2,grow");
+
+		//setting up the expense panel
+		financesExpense_PNL.setBackground(new Color(255, 255, 255));
+		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
+		ExpenseDataset = TransactionMgr.getExpenseChartData();
+		financesExpense_PNL.add(renderBarChart(ExpenseDataset, 3));
+		financesRenameExpenseCat_BTN.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				transactionMgr.renameExpenseCategories();
+			}
+		});
+		financesExpense_PNL.add(financesRenameExpenseCat_BTN);
+		financesMain_PNL.add(financesExpense_PNL, "cell 1 2,grow");
+		
+		/*
+		 * setting up the line chart panel
+		financesLineChart_PNL.setBackground(new Color(255, 255, 255));
+		financesLineChart_PNL.add(renderLineChart(TransactionMgr.getLineChartData()));
+		financesMain_PNL.add(financesLineChart_PNL, "cell 0 3 3 1,center");
+		 */
+		
+		//to clear log when exiting the application
+		financesMain_FRM.addWindowListener(new WindowAdapter(){
+			
+			public void windowClosing(WindowEvent e) {
+                TransactionMgr.clearLog();
+            }
+		});
+
+	}
+	
+	/**
+	 * refreshes the 4 charts and the transactionList
+	 */
+	public void refresh(){
+		
+		//refresh total balance
+		double balance = transactionMgr.getBalance();
+		financesBalance_LBL.setText("You have $" + balance);
+		if(balance < 0)
+			financesBalance_LBL.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
+		else
+			financesBalance_LBL.setIcon(null);
+		
+		//refresh 4 types
+		DefaultCategoryDataset AssetDataset = new DefaultCategoryDataset();
+		AssetDataset = TransactionMgr.getAssetChartData();
+		financesAsset_PNL.removeAll();
+		financesAsset_PNL.add(renderBarChart(AssetDataset, 0));
+		financesAsset_PNL.add(financesRenameAssetCat_BTN);
+		financesAsset_PNL.add(financesAssetTransfer_BTN);
+		
+		DefaultCategoryDataset LiabilityDataset = new DefaultCategoryDataset();
+		LiabilityDataset = TransactionMgr.getLiabilityChartData();
+		financesLiability_PNL.removeAll();
+		financesLiability_PNL.add(renderBarChart(LiabilityDataset, 1));
+		financesLiability_PNL.add(financesRenameLiabilityCat_BTN);
+		financesLiability_PNL.add(financesLiabilityTransfer_BTN);
+		
+		DefaultCategoryDataset IncomeDataset = new DefaultCategoryDataset();
+		IncomeDataset = TransactionMgr.getIncomeChartData();
+		financesIncome_PNL.removeAll();
+		financesIncome_PNL.add(renderBarChart(IncomeDataset, 2));
+		financesIncome_PNL.add(financesRenameIncomeCat_BTN);
+		
+		DefaultCategoryDataset ExpenseDataset = new DefaultCategoryDataset();
+		ExpenseDataset = TransactionMgr.getExpenseChartData();
+		financesExpense_PNL.removeAll();
+		financesExpense_PNL.add(renderBarChart(ExpenseDataset, 3));
+		financesExpense_PNL.add(financesRenameExpenseCat_BTN);
+		
+		//refresh transactionList
+		financesTransactionList_PNL.removeAll();
+		renderList(financesTransactionList_PNL, TransactionMgr.getTransactionList());
+		
+		//refresh line chart
+		financesLineChart_PNL.add(renderLineChart(TransactionMgr.getLineChartData()));
+
+		financesMain_FRM.validate();
+	}
+
+	/**
+	 * This method takes in a scrollable pane, and populates it with entries from a linked list
+	 * Each entry fills up a JTextArea
+	 * @param financesTransactionList_SCP
+	 * @param transactionList
+	 */
+	private void renderList(JPanel ListPane, LinkedList<Entry> transactionList){
+		int size = transactionList.size();
+		for(int i = 0; i < size; ++i){
+			JPanel tempPanel = new JPanel(new MigLayout("flowy","5[280]5","[]"));
+			tempPanel.setBackground(new Color(255, 255, 255));
+			JTextArea entry = new JTextArea();
+			String entryText = new String();
+			Entry tempEntry = transactionList.get(i);
+			entryText += "ID:\t" + Integer.toString(tempEntry.getId()) + "\n";
+			switch(tempEntry.getTransactionType())
+			{
+				case 0:	entryText += "Income\t";
+						break;
+				case 1:
+				case 2: entryText += "Expense\t";
+						break;
+				case 3: entryText += "Repay Loan\t";
+						break;
+				case 4:	entryText += "Take Loan\t";
+						break;
+				case 5: entryText += "Asset Transfer\t";
+						break;
+				case 6:	entryText += "Liability Transfer\t";
+						break;
+				default:entryText += "Unspecified Type!";
+						break;
+			}
+			entryText += Double.toString(tempEntry.getAmount()) + "\n";
+			entryText += "From:\t" + tempEntry.getCategory1() + "\n";
+			entryText += "To:\t" + tempEntry.getCategory2() + "\n";
+			entry.setText(entryText);			
+			tempPanel.add(entry);
+			JLabel financesDescription_LBL = new JLabel("<html>" + tempEntry.getDescription() + "</html>");
+			financesDescription_LBL.setFont(new Font("SanSerif",Font.ITALIC,12));
+			tempPanel.add(financesDescription_LBL);
+			
+			ListPane.add(tempPanel, "alignx left, gapx 2px 5px, gapy 2px 2px, top");
+			ListPane.validate();
+		}
+	}
+
+	/**
+	 * This method renders the chart given a dataset on the respective panel
+	 * @param dataset
+	 * @param type (0: Assets, 1: Liabilities, 2: Income, 3: Expense)
+	 */
+	private ChartPanel renderBarChart(DefaultCategoryDataset dataset, int type){
+
+		//Customize the chart's title
+		String title = "";
+		switch(type){
+			case 0:	title = "Assets";
+					break;
+			case 1:	title = "Liabilities";
+					break;
+			case 2:	title = "Income";
+					break;
+			case 3:	title = "Expenses";
+					break;
+		}
+		
+		//Create JFreeChart with dataSet
+		JFreeChart newChart = ChartFactory.createBarChart(
+				title, "Categories", "Amount", dataset,
+				PlotOrientation.VERTICAL, false, true, false);
+		
+		//Change the chart's visual properties
+		CategoryPlot chartPlot = newChart.getCategoryPlot();
+		chartPlot.setBackgroundPaint(Color.WHITE);							//to set the background color of the chart as white
+		BarRenderer chartRenderer = (BarRenderer) chartPlot.getRenderer();
+		
+		//Customize the chart's color
+		switch (type){
+			case 0:	chartRenderer.setSeriesPaint(0, new Color(50, 170, 20));
+					break;
+			case 1:	chartRenderer.setSeriesPaint(0, new Color(200, 30, 20));
+					break;
+			case 2: chartRenderer.setSeriesPaint(0, new Color(13, 92, 166));
+					break;
+			case 3:	chartRenderer.setSeriesPaint(0, new Color(255, 205, 50));
+					break;
+		}
+		chartRenderer.setBarPainter(new StandardBarPainter());				//to disable the default 'shiny look'
+		
+		//Create the chart panel
+		ChartPanel newChartPanel = new ChartPanel(newChart,
+				350,200,200,100,800,300,true,true,true,true,true,true);
+		newChartPanel.setSize(270, 200);
+		
+		return newChartPanel;
+	}
+	
+	/**
+	 * This method renders a line chart of income and expense entries over 1-month intervals
+	 * @param dataset
+	 * @return financesLineChart_PNL
+	 */
+	private ChartPanel renderLineChart(XYDataset dataset){
+		
+		//Create JFreeChart with dataSet
+		JFreeChart lineChart = ChartFactory.createTimeSeriesChart(
+				"", "", "Amount", dataset, true, true, false);
+		
+		
+		//Change the x-axis (time interval) format
+		XYPlot plot = (XYPlot) lineChart.getPlot();
+		DateAxis dateAxis = (DateAxis) plot.getDomainAxis();
+		dateAxis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+
+		//Change the chart's visual properties
+		plot.setBackgroundPaint(Color.white);
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setRangeGridlinePaint(Color.white);
+		plot.setDomainCrosshairVisible(true);
+		plot.setRangeCrosshairVisible(true);
+		
+		XYItemRenderer r = plot.getRenderer();
+		if (r instanceof XYLineAndShapeRenderer) {
+			XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
+			renderer.setBaseShapesVisible(true);
+			renderer.setBaseShapesFilled(true);
+			renderer.setDrawSeriesLineAsPath(true);
+		}
+		
+		
+		//Create and format the chart panel
+		ChartPanel financesLineChart_PNL = new ChartPanel(lineChart,
+				600,250,200,100,800,300,true,true,true,true,true,true);
+		financesLineChart_PNL.setSize(800,300);
+		
+		return financesLineChart_PNL;
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Finances.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\HistoryMgr.java
+	 */
+
+ *
+ */
+public class HistoryMgr {
+
+	//default format for date
+	public final static SimpleDateFormat date_format = new SimpleDateFormat("dd/MM/yy");
+	public final String txt_path = getClass().getResource(".").getPath() + "/db/History.txt";
+	
+	//access to the mgrs
+	private static AssetCatMgr assetCatMgr;
+	private static LiabilityCatMgr liabilityCatMgr;
+	private static IncomeCatMgr incomeCatMgr;
+	private static ExpenseCatMgr expenseCatMgr;
+	private static EntryMgr entryMgr;
+	
+	/**
+	 * Default Constructor
+	 */
+	public HistoryMgr(AssetCatMgr assetCatMgr, LiabilityCatMgr liabilityCatMgr,
+			IncomeCatMgr incomeCatMgr, ExpenseCatMgr expenseCatMgr, EntryMgr entryMgr){
+		HistoryMgr.assetCatMgr = assetCatMgr;
+		HistoryMgr.liabilityCatMgr = liabilityCatMgr;
+		HistoryMgr.incomeCatMgr = incomeCatMgr;
+		HistoryMgr.expenseCatMgr = expenseCatMgr;
+		HistoryMgr.entryMgr = entryMgr;
+	}
+	
+	/**
+	 * Adds a log entry. No limit at the moment.
+	 * @param operationType
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 */
+	public void addLog(int operationType, int id, int transactionType, double amount, 
+			Date date, String category1, String category2, String description){
+		
+		Log newLog = new Log(operationType, id, transactionType, amount, date, category1, category2, description);
+		
+		BufferedWriter logWriter;
+		
+		try {
+			Scanner logReader = new Scanner(new FileReader(txt_path));
+			logWriter = new BufferedWriter(new FileWriter(txt_path, true));
+			
+			//check if first log. do not add a newline for the first log.
+			if (!logReader.hasNext()){
+				logWriter.append(newLog.toTxt(false));
+			}
+			else{
+				logWriter.append(newLog.toTxt(true));				
+			}
+			logReader.close();
+			logWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * gets that transactionId of the last operation (add/edit/delete)
+	 * @return transactionId
+	 */
+	public int getLastId(){
+		int id = 0;
+		try {
+			Scanner assetCatReader = new Scanner(new FileReader(txt_path));
+
+			//reads the log for last transactionId
+			while (assetCatReader.hasNextLine()) {
+				StringTokenizer st = new StringTokenizer(assetCatReader.nextLine(), "|");
+				if(st.hasMoreTokens()){
+					st.nextToken();	//skip the operation type
+					id = Integer.parseInt(st.nextToken());
+				}
+			}
+			assetCatReader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+	
+	/**
+	 * Undoes the last transaction.
+	 * @return true if undone successfully
+	 */
+	public boolean undo(){
+		Log lastLog = undoLast();
+		StringTokenizer st = new StringTokenizer(lastLog.toTxt(false), "|");
+		int operationType = Integer.parseInt(st.nextToken());
+		int id = Integer.parseInt(st.nextToken());
+		int transactionType = Integer.parseInt(st.nextToken());
+		double amount = Double.parseDouble(st.nextToken());
+		try {
+			Date date = date_format.parse(st.nextToken());
+			String category1 = st.nextToken();
+			String category2 = st.nextToken();
+			String description = "";
+			if (st.hasMoreTokens())				//check, as description is an optional entry
+				description = st.nextToken();
+			
+			switch(operationType){
+			
+				case 0:	return(undoAdd(id, transactionType, amount, category1, category2));
+	
+				case 1:	return(undoEdit(id, transactionType, amount, date, category1, category2, description));
+	
+				case 2:	return(undoDelete(id, transactionType, amount, date, category1, category2, description));
+	
+			}
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+			System.out.println("No Date!");	//should not happen, but put here just in case for debugging
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Follows up on the undo operation for 'add' operations
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param category1
+	 * @param category2
+	 * @return true if updated
+	 */
+	private boolean undoAdd(int id, int transactionType, double amount, String category1, String category2) {
+		
+		entryMgr.deleteEntry(id);
+		
+		//update category 1 based on transactionType
+		switch(transactionType){
+			case 0:
+			case 4:	assetCatMgr.addAmountToCategory(category1, -amount);
+					break;
+			case 1:
+			case 3:
+			case 5:	assetCatMgr.addAmountToCategory(category1, amount);
+					break;
+			case 2:	liabilityCatMgr.addAmountToCategory(category1, -amount);
+					break;
+			case 6:	liabilityCatMgr.addAmountToCategory(category1, amount);
+					break;
+		}
+		
+		//update category2 based on transactionType
+		switch(transactionType){
+			case 0: incomeCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 1:
+			case 2:	expenseCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 3:	liabilityCatMgr.addAmountToCategory(category2, amount);
+					break;
+			case 4:
+			case 6:	liabilityCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 5:	assetCatMgr.addAmountToCategory(category2, -amount);
+					break;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Follows up on the undo operation for 'edit' operations
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 * @return true if updated
+	 */
+	private boolean undoEdit(int id, int transactionType, double amount, Date date,
+			String category1, String category2, String description) {
+		
+		//amount = entryMgr.getEntry(id).getAmount() - amount;
+		//test
+		System.out.println(amount);
+		entryMgr.editEntry(new Entry(id, transactionType, entryMgr.getEntry(id).getAmount() - amount,
+				date, category1, category2, description));
+		
+		//update category 1 based on transactionType
+		switch(transactionType){
+			case 0:
+			case 4:	assetCatMgr.addAmountToCategory(category1, -amount);
+					break;
+			case 1:
+			case 3:
+			case 5:	assetCatMgr.addAmountToCategory(category1, amount);
+					break;
+			case 2:	liabilityCatMgr.addAmountToCategory(category1, -amount);
+					break;
+			case 6:	liabilityCatMgr.addAmountToCategory(category1, amount);
+					break;
+		}
+		
+		//update category2 based on transactionType
+		switch(transactionType){
+			case 0: incomeCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 1:
+			case 2:	expenseCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 3:	liabilityCatMgr.addAmountToCategory(category2, amount);
+					break;
+			case 4:
+			case 6:	liabilityCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 5:	assetCatMgr.addAmountToCategory(category2, -amount);
+					break;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Follows up on the undo operation for 'delete' operations
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 * @return true if updated 
+	 */
+	private boolean undoDelete(int id, int transactionType, double amount, Date date,
+			String category1, String category2, String description) {
+
+		entryMgr.addBackEntry(id, transactionType, amount, date, category1, category2, description);
+
+		//update category 1 based on transactionType
+		switch(transactionType){
+			case 0:
+			case 4:	assetCatMgr.addAmountToCategory(category1, amount);
+					break;
+			case 1:
+			case 3:
+			case 5:	assetCatMgr.addAmountToCategory(category1, -amount);
+					break;
+			case 2:	liabilityCatMgr.addAmountToCategory(category1, amount);
+					break;
+			case 6:	liabilityCatMgr.addAmountToCategory(category1, -amount);
+					break;
+		}
+		
+		//update category2 based on transactionType
+		switch(transactionType){
+			case 0: incomeCatMgr.addAmountToCategory(category2, amount);
+					break;
+			case 1:
+			case 2:	expenseCatMgr.addAmountToCategory(category2, amount);
+					break;
+			case 3:	liabilityCatMgr.addAmountToCategory(category2, -amount);
+					break;
+			case 4:
+			case 6:	liabilityCatMgr.addAmountToCategory(category2, amount);
+					break;
+			case 5:	assetCatMgr.addAmountToCategory(category2, amount);
+					break;
+		}
+				
+		return true;
+	}
+	
+	/**
+	 * deletes the last operation and returns the log
+	 * @return Log
+	 */
+	private Log undoLast(){
+		Log lastOperation = null;
+		
+		try {
+			File inFile = new File(txt_path);
+			File tempFile = File.createTempFile("tempFile", ".txt");
+			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from History.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    String line = new String();
+		    String prevLine = null;
+			StringTokenizer st = null;
+			//while loop to get last line
+			prevLine = new String(fileReader.readLine());
+			while ((line = fileReader.readLine()) != null) {
+		    	if(prevLine != ""){
+			        	fileWriter.println();			//newline should be added before the line, like Log.toTxt()
+			        	fileWriter.print(prevLine);
+			        	fileWriter.flush();
+		        }
+		    	prevLine = new String(line);
+			}
+			st = new StringTokenizer(prevLine, "|");
+			if(st.hasMoreTokens()){							//if clause to avoid problems with empty lines in txt file
+				int operationType = Integer.parseInt(st.nextToken());
+				int id = Integer.parseInt(st.nextToken());
+				int transactionType = Integer.parseInt(st.nextToken());
+				double amount = Double.parseDouble(st.nextToken());
+				Date date = date_format.parse(st.nextToken());
+				String category1 = st.nextToken();
+				String category2 = st.nextToken();
+				String description = "";
+				if (st.hasMoreTokens())				//check, as description is an optional field
+					description = st.nextToken();
+				lastOperation = new Log(operationType, id, transactionType, amount,
+						date, category1, category2, description);
+			}
+			fileReader.close();
+			fileWriter.close();
+			
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+		}
+		return lastOperation;
+	}
+	
+	/**
+	 * Clears the log. Automatically executed when closing the application.
+	 */
+	public boolean clearLog(){
+		try {
+			File inFile = new File(txt_path);
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+			File newFile = new File(txt_path);
+			newFile.createNewFile();
+			return true;
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+	}
+	
+	/**
+	 * This method renames all relevant logs' categories in History.txt when a particular category is renamed
+	 * @param type (0:Assets, 1:Liability, 2:Income, 3:Expenses)
+	 * @param oldName
+	 * @param newName
+	 * @return true if successfully renamed
+	 */
+	public boolean renameCat(int type, String oldName, String newName){
+		
+		try {
+			File inFile = new File(txt_path);
+			File tempFile = File.createTempFile("tempFile", ".txt");
+			BufferedReader fileReader = new BufferedReader(new FileReader(txt_path));	//reads from History.txt
+		    PrintWriter fileWriter = new PrintWriter(new FileWriter(tempFile));			//writes to a temp file
+		    boolean notFirstLine = false;	//boolean flag to indicate first line, need new line
+		    String line = null;
+			StringTokenizer st = null;
+			Log tempLog = null;
+			
+			
+			while ((line = fileReader.readLine()) != null) {
+
+		    	st = new StringTokenizer(line, "|");
+		    	int operationType = Integer.parseInt(st.nextToken());
+				int id = Integer.parseInt(st.nextToken());
+				int transactionType = Integer.parseInt(st.nextToken());
+				double amount = Double.parseDouble(st.nextToken());
+				Date date = date_format.parse(st.nextToken());
+				String category1 = st.nextToken();
+				String category2 = st.nextToken();
+				String description = "";
+				if(st.hasMoreTokens())				//check, as description is an optional field
+					description = st.nextToken();
+				
+				//nested switch to check type, then transaction type, then the relevant category names
+				switch(type){
+					case 0:	//check for asset-related transaction types
+							switch(transactionType){
+							case 5:	if(category2.equals(oldName))
+										category2 = newName;
+							case 0:
+							case 1:
+							case 3:
+							case 4:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							}
+							break;
+					case 1:	//check for liability-related transaction types
+							switch(transactionType){
+							case 2:	if(category1.equals(oldName))
+										category1 = newName;
+									break;
+							case 6:	if(category1.equals(oldName))
+										category1 = newName;
+							case 3:
+							case 4:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 2:	//check for income-related transaction types
+							switch(transactionType){
+							case 0:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+					case 3:	//check for expense-related transaction types
+							switch(transactionType){
+							case 1:
+							case 2:	if(category2.equals(oldName))
+										category2 = newName;
+									break;
+							}
+							break;
+				}
+				tempLog = new Log(operationType, id, transactionType, amount,
+						date, category1, category2, description);
+				fileWriter.print(tempLog.toTxt(notFirstLine));	//first line no new line, the rest will have new line
+				notFirstLine = true;
+
+			}
+			
+			fileReader.close();
+			fileWriter.close();
+			
+		    //warning if could not delete file
+		    try{ 
+		    	inFile.delete();
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		    
+		    //warning if could not rename file
+		    try{
+		    	tempFile.renameTo(inFile);
+		    } catch (Exception e){
+		    	e.printStackTrace();
+		    }
+		} catch (IOException | ParseException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\HistoryMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ImagePanel.java
+	 */
+
+ *
+ */
+public class ImagePanel extends JPanel {
+
+	private Image image;
+	
+	public ImagePanel(){}
+	
+	public ImagePanel(Image image) {
+        this.image = image;
+    }
+	
+    public void setImage(Image image) {
+        this.image = image;
+    }
+    
+    public void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+    }
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ImagePanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ImportPanel.java
+	 */
+
+ *
+ */
+public class ImportPanel {
+	
+	private final static Font heading_font = new Font("Lucida Grande", Font.BOLD, 20);
+	
+	private JFrame hostFrame;
+	private JPanel importPanel_PNL = new JPanel(new MigLayout("","[]","[grow][grow][grow]"));
+	
+	private ExcelMgr excelMgr = new ExcelMgr();
+	
+	ImportPanel(final JFrame hostFrame, final AssetCatMgr assetCatMgr, final LiabilityCatMgr liabilityCatMgr, 
+			final IncomeCatMgr incomeCatMgr, final ExpenseCatMgr expenseCatMgr, final EntryMgr entryMgr, final HistoryMgr historyMgr){
+		
+		this.hostFrame = hostFrame;
+		
+		importPanel_PNL.setBackground(Color.white);
+		hostFrame.getContentPane().add(importPanel_PNL, "cell 0 0 1 2, growy");
+		
+		JLabel importPanelHeading_LBL = new JLabel(new ImageIcon(Finances.class.getResource("/img/Import.png")));
+		importPanelHeading_LBL.setText("Import");
+		importPanelHeading_LBL.setFont(heading_font);
+		importPanel_PNL.add(importPanelHeading_LBL, "cell 0 0");
+		
+		JLabel importPanelInstruction_LBL = new JLabel(
+				"Please enter in the directory of your desired excel file");
+		importPanel_PNL.add(importPanelInstruction_LBL, "cell 0 1");
+		
+		final JTextArea importPanelFilePath_TA = new JTextArea();
+		importPanelFilePath_TA.setColumns(20);
+		importPanelFilePath_TA.setLineWrap(true);
+		importPanel_PNL.add(importPanelFilePath_TA, "cell 0 2,growy");
+		
+		JButton importPanelSubmit_BTN = new JButton(new ImageIcon(Finances.class.getResource("/img/Tick.png")));
+		importPanelSubmit_BTN.setToolTipText("Import!");
+		importPanelSubmit_BTN.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				
+				boolean pipePresent = false;
+				String filePath = importPanelFilePath_TA.getText();
+				String errorMsg = "";
+				
+				//try block for importing excel file
+				try {
+					
+					LinkedList<Entry> importList = excelMgr.importExcel(filePath);
+				
+					//first for loop that checks all entries for any potentials errors
+					for(Entry entry : importList){
+						
+						//check if amount is valid
+							if (entry.getAmount() < 0)
+								errorMsg += "Amount was not a valid number.<br>";
+						
+						//check if date is valid
+						if (entry.getDate().after(new Date()))
+							errorMsg += "Date is in the future.<br>" +
+									"Please enter only dates today or before.<br>";
+						
+						//check for pipes in description
+						if(entry.getDescription().indexOf("|") >= 0)
+							pipePresent = true;
+						
+						switch(entry.getTransactionType()){
+						
+						case 0:	
+							
+							//check asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory1()))){
+								if(entry.getCategory1().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check income category
+							if (!(incomeCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+						case 1:	
+							
+							//check asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory1()))){
+								errorMsg += "Cannot deduct from a new category.<br>" +
+										"You may register an income in the new category first or deduct from an existing category.<br>";
+							} else if(assetCatMgr.getAmount(entry.getCategory1()) < entry.getAmount()){
+								errorMsg += "Sorry, you do not have enough money in " + entry.getCategory1() + ".<br>" +
+										"Please register an income in " + entry.getCategory1() + " or deduct from another category.<br>";
+							}
+							
+							//check expense category
+							if (!(expenseCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+						case 2:
+							
+							//check liability category
+							if (!(liabilityCatMgr.checkExisting(entry.getCategory1()))){
+								if(entry.getCategory1().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check expense category
+							if (!(expenseCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+							
+						case 3:
+							
+							//check asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory1()))){
+								errorMsg += "Cannot deduct from " + entry.getCategory1() + ".<br>" +
+										"You may register an income in the new category first or deduct from an existing category.<br>";
+							} else if(assetCatMgr.getAmount(entry.getCategory1()) < entry.getAmount()){
+								errorMsg += "Sorry, you do not have enough money in " + entry.getCategory1() + ".<br>" +
+										"Please register an income in " + entry.getCategory1() + " or deduct from another category.<br>";
+							}
+							
+							//check liability category
+							if (!(liabilityCatMgr.checkExisting(entry.getCategory2()))){
+								errorMsg += "Cannot deduct from " + entry.getCategory2() + ".<br>" +
+										"You may register an income in the new category first or deduct from an existing category.<br>";
+							} else if(liabilityCatMgr.getAmount(entry.getCategory2()) < entry.getAmount()){
+								errorMsg += "Sorry, you do not have enough money in " + entry.getCategory2() + ".<br>" +
+										"Please register an income in " + entry.getCategory2() + " or deduct from another category.<br>";
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+							
+						case 4:
+							
+							//check asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory1()))){
+								if(entry.getCategory1().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check liability category
+							if (!(liabilityCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+							
+						case 5:
+							
+							//check first asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory1()))){
+								errorMsg += "Cannot deduct from a new category.<br>" +
+										"You may register an income in the new category first or deduct from an existing category.<br>";
+							} else if(assetCatMgr.getAmount(entry.getCategory1()) < entry.getAmount()){
+								errorMsg += "Sorry, you do not have enough money in " + entry.getCategory1() + ".<br>" +
+										"Please register an income in " + entry.getCategory1() + " or deduct from another category.<br>";
+							}
+							
+							//check second asset category
+							if (!(assetCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//check if both categories are the same
+							if(entry.getCategory1().equals(entry.getCategory2())){
+								errorMsg += "Both categories are the same.<br>" +
+										"You need to select 2 different categories to make a transfer.<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							break;
+							
+							
+						case 6:
+							
+							//check first liability category
+							if (!(liabilityCatMgr.checkExisting(entry.getCategory1()))){
+								errorMsg += "Cannot deduct from a new category.<br>" +
+										"You may register an income in the new category first or deduct from an existing category.<br>";
+							} else if(liabilityCatMgr.getAmount(entry.getCategory1()) < entry.getAmount()){
+								errorMsg += "Sorry, you do not have enough money in " + entry.getCategory1() + ".<br>" +
+										"Please register an income in " + entry.getCategory1() + " or deduct from another category.<br>";
+							}
+							
+							//check second liability category
+							if (!(liabilityCatMgr.checkExisting(entry.getCategory2()))){
+								if(entry.getCategory2().indexOf("|") >= 0)
+									pipePresent = true;
+							}
+							
+							//check if pipes present
+							if(pipePresent){
+								errorMsg += "Pipe characters are not supported.<br>" +
+										"So sorry about that!<br>";
+							}
+							
+							//check if both categories are the same
+							if(entry.getCategory1().equals(entry.getCategory2())){
+								errorMsg += "Both categories are the same.<br>" +
+										"You need to select 2 different categories to make a transfer.<br>";
+							}
+							
+							//if any errors present, throw new exception
+							if (errorMsg != ""){
+								errorMsg = "<html>Error with ID: " + entry.getId() + "<br>" + errorMsg + 
+										"Please try again!" + "</html>";	//to wrap text
+								throw new Exception(errorMsg);
+							}
+							
+							break;
+						}
+						
+					}
+					
+					for(Entry entry : importList){
+						
+						switch(entry.getTransactionType()){
+						
+						case 0:	
+							
+								//update assetCatMgr
+								if (assetCatMgr.checkExisting(entry.getCategory1())){
+									assetCatMgr.addAmountToCategory(entry.getCategory1(), entry.getAmount());
+								}
+								else{
+									assetCatMgr.addCategory(entry.getCategory1(), entry.getAmount());
+								}
+								
+								//update expenseCatMgr
+								if (expenseCatMgr.checkExisting(entry.getCategory2())){
+									expenseCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									expenseCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								
+								break;
+								
+						case 1:
+
+								//update assetCatmgr. note assets are reduced for this transaction type
+								assetCatMgr.addAmountToCategory(entry.getCategory1(), -entry.getAmount());
+								
+								//update expenseCatMgr
+								if (expenseCatMgr.checkExisting(entry.getCategory2())){
+									expenseCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									expenseCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								
+								break;
+								
+						case 2:
+							
+								//update liabilityCatMgr
+								if (liabilityCatMgr.checkExisting(entry.getCategory1())){
+									liabilityCatMgr.addAmountToCategory(entry.getCategory1(), entry.getAmount());
+								}
+								else{
+									liabilityCatMgr.addCategory(entry.getCategory1(), entry.getAmount());
+								}
+
+								//update expenseCatMgr
+								if (expenseCatMgr.checkExisting(entry.getCategory2())){
+									expenseCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									expenseCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								
+								break;
+								
+						case 3:
+							
+								//update assetCatmgr. note assets are reduced for this transaction type
+								assetCatMgr.addAmountToCategory(entry.getCategory1(), -entry.getAmount());
+							
+								//update liabilityCatMgr
+								liabilityCatMgr.addAmountToCategory(entry.getCategory2(), -entry.getAmount());
+								
+								break;
+								
+						case 4:
+							
+								//update assetCatmgr
+								if (assetCatMgr.checkExisting(entry.getCategory1())){
+									assetCatMgr.addAmountToCategory(entry.getCategory1(), entry.getAmount());
+								}
+								else{
+									assetCatMgr.addCategory(entry.getCategory1(), entry.getAmount());
+								}
+								
+								//update liabilityCatMgr
+								if (liabilityCatMgr.checkExisting(entry.getCategory2())){
+									liabilityCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									liabilityCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								
+								break;
+								
+						case 5:
+							
+								//update assetCatmgr
+								assetCatMgr.addAmountToCategory(entry.getCategory1(), -entry.getAmount());
+								
+								//update assetCatMgr
+								if (assetCatMgr.checkExisting(entry.getCategory2())){
+									assetCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									assetCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								
+								break;
+								
+						case 6:
+
+								//update liabilityCatmgr
+								liabilityCatMgr.addAmountToCategory(entry.getCategory1(), -entry.getAmount());
+								
+								//update liabilityCatMgr
+								if (liabilityCatMgr.checkExisting(entry.getCategory2())){
+									liabilityCatMgr.addAmountToCategory(entry.getCategory2(), entry.getAmount());
+								}
+								else{
+									liabilityCatMgr.addCategory(entry.getCategory2(), entry.getAmount());
+								}
+								break;
+						}
+						
+						
+						//update entryMgr. New id is created to prevent id collision
+						entryMgr.addEntry(entry.getTransactionType(), entry.getAmount(), entry.getDate(), entry.getCategory1(),
+								entry.getCategory2(), entry.getDescription());
+						
+						//update historyMgr
+						int id = entryMgr.getCurrentId();
+						historyMgr.addLog(0, id, entry.getTransactionType(), entry.getAmount(), entry.getDate(), 
+								entry.getCategory1(), entry.getCategory2(), entry.getDescription());
+					}
+
+					//pop up to inform user
+					JOptionPane searchMgrConfirm_JOP = new JOptionPane();
+					searchMgrConfirm_JOP.setMessage("Imported Successfully!");
+					searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Tick.png")));
+					JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
+					dialog.setVisible(true);
+					
+					hostFrame.dispose();
+					
+				} catch (Exception e1) {
+					
+					JOptionPane searchMgrConfirm_JOP = new JOptionPane();
+					searchMgrConfirm_JOP.setMessage("Error Importing!\n" + e1.getMessage());
+					searchMgrConfirm_JOP.setIcon(new ImageIcon(Finances.class.getResource("/img/Warning.png")));
+					JDialog dialog = searchMgrConfirm_JOP.createDialog(null);
+					dialog.setVisible(true);
+					e1.printStackTrace();
+				}
+			}
+			
+		});
+		importPanel_PNL.add(importPanelSubmit_BTN, "cell 0 2");
+		hostFrame.pack();
+		hostFrame.revalidate();
+	}
+
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\ImportPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\IncomeCatMgr.java
+	 */
+
+ *
+ */
+public class IncomeCatMgr extends CatMgr {
+	
+	private final String txt_path = getClass().getResource(".").getPath() + "/db/IncomeCategory.txt";
+	
+	public IncomeCatMgr(){
+	
+		setTxtPath(txt_path);
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\IncomeCatMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\LiabilityCatMgr.java
+	 */
+
+ *
+ */
+public class LiabilityCatMgr extends CatMgr {
+	
+	private final String txt_path = getClass().getResource(".").getPath() + "/db/LiabilityCategory.txt";
+	
+	public LiabilityCatMgr(){
+	
+		setTxtPath(txt_path);
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\LiabilityCatMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Log.java
+	 */
+
+ *
+ */
+public class Log extends Entry{
+	/**
+	 * operationType:
+	 * 	0: add
+	 * 	1: edit
+	 *  2: delete
+	 */
+	protected int operationType;	
+	
+	/**
+	 * Default Constructor
+	 */
+	public Log(){}
+	
+	/**
+	 * Constructor
+	 * @param operationType
+	 * @param id
+	 * @param transactionType
+	 * @param amount
+	 * @param date
+	 * @param category1
+	 * @param category2
+	 * @param description
+	 */
+	public Log(int operationType, int id, int transactionType, double amount, Date date, 
+			String category1, String category2, String description){
+		this.operationType = operationType;
+		this.id = id;
+		this.transactionType = transactionType;
+		this.amount = amount;
+		this.date = date;
+		this.category1 = category1;
+		this.category2 = category2;
+		this.description = description;
+	}
+	
+	/**
+	 * gets operationType
+	 * @return operationType
+	 */
+	public int getOperationType(){
+		return operationType;
+	}
+	/**
+	 * sets operationType
+	 * @param operationType
+	 */
+	public void setOperationType(int operationType){
+		this.operationType = operationType;
+	}
+	
+	/**
+	 * returns a string in format to be printed to txt file
+	 * each field is separated by a pipe character
+	 * boolean parameter allows printing with or without newline
+	 * @param includeNewLine
+	 * @return output
+	 */
+	public String toTxt(boolean includeNewLine){
+		
+		String output = new String();
+		
+		if (includeNewLine)
+			output += "\n";
+		
+		output += Integer.toString(operationType) + "|" + Integer.toString(id) + "|" 
+				+ Integer.toString(transactionType) + "|"+ Double.toString(amount) + "|" 
+				+ date_format.format(date) + "|" + category1 + "|" + category2 + "|" + description ;
+		return output;
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\Log.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\RenameCatPanel.java
+	 */
+
+ *
+ */
+public class RenameCatPanel{
+	
+	/**
+	 * This private class is meant for creating the GUI for popUpFrame,
+	 * which is organized into rows.
+	 * Other than index which is immutable, remaining fields can be edited, removed.
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\RenameCatPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\RenameCatPanel.java
+	 */
+
+	 *
+	 */
+	protected class Row{
+		
+		private final int index;
+		public JPanel rowPanel = new JPanel();
+		public JLabel lblOldName = new JLabel();
+		public JButton btnRename = new JButton("Rename");
+		public JTextField newNameField = new JTextField();
+		public JButton btnConfirm = new JButton("Submit");
+		public JLabel errorDisplay = new JLabel("Sorry, that name has already been taken");
+		
+		/**
+		 * Constructor that initializes row object with appropriate index
+		 * @param index
+		 */
+		Row(int index){
+			this.index = index;
+			rowPanel.setBackground(new Color(255, 255, 255));
+			rowPanel.setLayout(new MigLayout("", "5[200,grow,left]5[grow,right]5", "5[grow,top]5[grow]5"));
+			rowPanel.add(lblOldName, "cell 0 0,flowx");
+			rowPanel.add(btnRename, "cell 1 0");
+			errorDisplay.setFont(error_font);
+		}
+		
+		/**
+		 * Gets the index of the row
+		 * Row index is immutable for lifetime of pop-up
+		 * @return index
+		 */
+		public int getIndex(){
+			return index;
+		}
+	}
+	
+	protected final static Font error_font = new Font("SanSerif", Font.ITALIC, 12);
+	
+	protected JLabel heading = new JLabel();
+	protected JPanel scrollPanel = new JPanel();
+	protected JScrollPane scrollPane = new JScrollPane();
+	
+	protected final LinkedList<Row> rowList = new LinkedList<Row>();	//immutable reference due to action listeners
+	
+	RenameCatPanel(JFrame hostFrame){
+		
+		heading.setBackground(new Color(255, 255, 255));
+		heading.setFont(new Font("Tahoma", Font.BOLD, 22));
+		hostFrame.getContentPane().add(heading, "cell 0 0");
+	}
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\RenameCatPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\SearchMgr.java
+	 */
+
+			 */
+			public void actionPerformed(ActionEvent e) {
+				
+				//disable search frame
+				frame.setEnabled(false);
+				
+				JFrame exportFrame = new JFrame();
+				exportFrame.setVisible(true);
+				exportFrame.setResizable(false);
+				exportFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				exportFrame.getContentPane().setBackground(new Color(255, 255, 255));
+				exportFrame.getContentPane().setLayout(new MigLayout("", "[400]", "[shrink]"));
+				
+				exportFrame.addWindowListener(new WindowAdapter(){
+					
+					public void windowClosed(WindowEvent e) {
+					
+						frame.setEnabled(true);	
+			        }
+				});
+				
+				ExportPanel exportPanel = new ExportPanel(exportFrame, searchMgrResults_TABLE);
+				
+			}
+			
+		});
+		frame.addWindowListener(new WindowAdapter(){
+			
+			public void windowClosed(WindowEvent e) {
+				
+				finances.reactivateFrame();	
+				finances.refresh();
+			}
+		});
+	}
+	
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\SearchMgr.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanel.java
+	 */
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanelAsset.java
+	 */
+
+ *
+ */
+public class TransferPanelAsset extends TransferPanel{
+	
+	private final AssetCatMgr assetCatMgr;
+
+	public TransferPanelAsset(final JFrame hostFrame, final AssetCatMgr assetCatMgr, 
+			final EntryMgr entryMgr, final HistoryMgr historyMgr) {
+		super(hostFrame, entryMgr, historyMgr);
+		this.assetCatMgr = assetCatMgr;
+		resetFields();
+		
+		JButton btnSubmitEntry = new JButton("Submit Entry");
+		btnSubmitEntry.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				//variables for storing user's inputs. Initialized just to avoid compilation error
+				int DD = 01, MM = 0, YYYY = 2013;
+				double amount = 0;
+				String description;
+				
+				//check if amount is valid
+				try{
+					amount = Double.parseDouble(amountField.getText());
+					if (amount < 0)
+						throw new Exception();
+				} catch (Exception exAmount){
+					errorMsg += amount + " is negative. Amount cannot be a negative number!<br>";
+				}
+				
+				//check if day of month is valid
+				try{
+					DD = Integer.parseInt(dd.getText());
+					if (DD <= 0 || DD > 31)
+						throw new Exception();
+				} catch (Exception exDD){
+					errorMsg += "Day entered was not a valid number.<br>";
+				}
+				
+				//check if month is valid
+				try{
+					MM = Integer.parseInt(mm.getText());
+					if (MM <= 0 || MM > 12)
+						throw new Exception();
+				} catch (Exception exMM){
+					errorMsg += "Month entered was not a valid number.<br>";
+				}
+				
+				//check if year is valid
+				try{
+					YYYY  = Integer.parseInt(yyyy.getText());
+					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
+						throw new Exception();
+				} catch (Exception exYY){
+					errorMsg += "Year entered was not a valid number.<br>";
+				}
+				
+				//process dd mm yyyy into date
+				Date date = null;
+				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
+				try {
+					date = date_format.parse(dateString);
+				} catch (ParseException e1) {
+					errorMsg += "Unable to process date.<br>";
+				}
+				
+				//check for pipe characters in description field
+				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
+				
+				//check if balance in relevant categories sufficient
+				String category1 = String.valueOf(fromCB.getSelectedItem());
+				String category2 = String.valueOf(toCB.getSelectedItem());
+			
+				if(amount > assetCatMgr.getAmount(category1)){
+					errorMsg += "Sorry, you do not have enough money in " + category1 + " for transferring.<br>";
+				}
+				
+				//check if both categories are the same
+				if(category1.equals(category2)){
+					errorMsg += "Both categories are the same.<br>" +
+							"You need to select 2 different categories to make a transfer.<br>";
+				}
+				//if any errors present, display errorMsg
+				if (errorMsg != ""){
+					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
+					ErrorDisplay.setText(errorMsg);
+					errorMsg = "";
+				}
+				else {
+					
+					//update entryMgr
+					int currentId = entryMgr.addEntry(5, amount, date, category1, category2, description);
+					
+					//update historyMgr
+					historyMgr.addLog(0, currentId, 5, 
+							amount, date, category1, category2, description);
+					
+					//update assetCatMgr with the new amount
+					assetCatMgr.addAmountToCategory(category1, -amount);
+					assetCatMgr.addAmountToCategory(category2, amount);
+					
+					hostFrame.dispose();
+				}
+			}
+		});
+		transferPanel.add(btnSubmitEntry, "cell 4 4");
+
+	}
+	
+	/**
+	 * Resets all input fields
+	 */
+	public void resetFields(){
+		 
+		resetDefault();
+		
+		//populate fromCB with updated categories
+		LinkedList<String> fromList = assetCatMgr.getCategoryList();
+		for(String category : fromList)
+			fromCB.addItem(category);
+		
+		//populate toCB with updated categories
+		LinkedList<String> toList = assetCatMgr.getCategoryList();
+		for(String category : toList)
+			toCB.addItem(category);
+		
+		descriptionField.setText("");
+	}
+
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanelAsset.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanelLiability.java
+	 */
+
+ *
+ */
+public class TransferPanelLiability extends TransferPanel{
+	
+	private final LiabilityCatMgr liabilityCatMgr;
+
+	public TransferPanelLiability(final JFrame hostFrame, final LiabilityCatMgr liabilityCatMgr, 
+			final EntryMgr entryMgr, final HistoryMgr historyMgr) {
+		super(hostFrame, entryMgr, historyMgr);
+		this.liabilityCatMgr = liabilityCatMgr;
+		resetFields();
+		
+		JButton btnSubmitEntry = new JButton("Submit Entry");
+		btnSubmitEntry.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				//variables for storing user's inputs. Initialized just to avoid compilation error
+				int DD = 01, MM = 0, YYYY = 2013;
+				double amount = 0;
+				String description;
+				
+				//check if amount is valid
+				try{
+					amount = Double.parseDouble(amountField.getText());
+					if (amount < 0)
+						throw new Exception();
+				} catch (Exception exAmount){
+					errorMsg += amount + " is negative. Amount cannot be a negative number!<br>";
+				}
+				
+				//check if day of month is valid
+				try{
+					DD = Integer.parseInt(dd.getText());
+					if (DD <= 0 || DD > 31)
+						throw new Exception();
+				} catch (Exception exDD){
+					errorMsg += "Day entered was not a valid number.<br>";
+				}
+				
+				//check if month is valid
+				try{
+					MM = Integer.parseInt(mm.getText());
+					if (MM <= 0 || MM > 12)
+						throw new Exception();
+				} catch (Exception exMM){
+					errorMsg += "Month entered was not a valid number.<br>";
+				}
+				
+				//check if year is valid
+				try{
+					YYYY  = Integer.parseInt(yyyy.getText());
+					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
+						throw new Exception();
+				} catch (Exception exYY){
+					errorMsg += "Year entered was not a valid number.<br>";
+				}
+				
+				//process dd mm yyyy into date
+				Date date = null;
+				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
+				try {
+					date = date_format.parse(dateString);
+				} catch (ParseException e1) {
+					errorMsg += "Unable to process date.<br>";
+				}
+				
+				description = descriptionField.getText();
+				
+				//check if balance in relevant categories sufficient
+				String category1 = String.valueOf(fromCB.getSelectedItem());
+				String category2 = String.valueOf(toCB.getSelectedItem());
+			
+				if(amount > liabilityCatMgr.getAmount(category1)){
+					errorMsg += "Sorry, you do not have enough money in " + category1 + " for transferring.<br>";
+				}
+
+				//check for pipe characters in description field
+				description = descriptionField.getText();
+				if(description.indexOf("|") >= 0)
+					errorMsg += "Pipe characters are not supported.<br>" +
+								"So sorry about that!<br>";
+				
+				//if any errors present, display errorMsg
+				if (errorMsg != ""){
+					errorMsg = "<html>" + errorMsg + "Please try again!" + "</html>";	//to wrap text
+					ErrorDisplay.setText(errorMsg);
+					errorMsg = "";
+				}
+				else {
+					
+					//update entryMgr
+					int currentId = entryMgr.addEntry(6, amount, date, category1, category2, description);
+					
+					//update historyMgr
+					historyMgr.addLog(0, currentId, 6, 
+							amount, date, category1, category2, description);
+					
+					//update LiabilityCatMgr with the new amount
+					liabilityCatMgr.addAmountToCategory(category1, -amount);
+					liabilityCatMgr.addAmountToCategory(category2, amount);
+					
+					hostFrame.dispose();
+				}
+			}
+		});
+		transferPanel.add(btnSubmitEntry, "cell 4 4");
+		
+	}
+	
+	/**
+	 * Resets all input fields
+	 */
+	public void resetFields(){
+		 
+		resetDefault();
+		
+		//populate fromCB with updated categories
+		LinkedList<String> fromList = liabilityCatMgr.getCategoryList();
+		for(String category : fromList)
+			fromCB.addItem(category);
+		
+		//populate toCB with updated categories
+		LinkedList<String> toList = liabilityCatMgr.getCategoryList();
+		for(String category : toList)
+			toCB.addItem(category);
+		
+		descriptionField.setText("");
+	}
+
+}
+
+	// End of segment: C:\Users\Joshua\workspace\CS2103-T13-4J\src\Latest Files\TransferPanelLiability.java
+
+
+
+
+
