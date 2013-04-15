@@ -1,0 +1,2 @@
+Salary|7000.003
+GST Rebate|250.0
