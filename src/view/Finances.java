@@ -41,7 +41,7 @@ import java.awt.event.WindowEvent;
 
 /**
  * GUI class that displays the main window
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class Finances {

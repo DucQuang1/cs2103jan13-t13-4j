@@ -15,7 +15,7 @@ import logic.HistoryMgr;
 
 /**
  * Specific TransferPanel for handling transfer between Asset Categories
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class TransferPanelAsset extends TransferPanel{

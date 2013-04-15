@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Entry class that contains essential fields for an entry.
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class Entry{

@@ -14,7 +14,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * This is the parent class (GUI) used for getting user's input when renaming categories
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class RenameCatPanel{
@@ -23,7 +23,7 @@ public class RenameCatPanel{
 	 * This private class is meant for creating the GUI for popUpFrame,
 	 * which is organized into rows.
 	 * Other than index which is immutable, remaining fields can be edited, removed.
-	 * @author JP
+	 * @author A0086581W, Wong Jing Ping
 	 *
 	 */
 	protected class Row{

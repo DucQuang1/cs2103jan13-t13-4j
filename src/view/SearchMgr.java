@@ -22,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -41,7 +42,7 @@ import java.awt.event.KeyEvent;
 
 /**
  * This GUI class is the Search Manager to help the user with searching for particular entries 
- * @author: Pang Kang Wei, Joshua A0087809M
+ * @author: A0087809M, Pang Kang Wei, Joshua
  */
 public class SearchMgr {
 	
@@ -66,7 +67,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by ascending ID
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortIDAscending(LinkedList<Entry> entryLL) {
@@ -84,7 +85,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by descending ID
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortIDDecending(LinkedList<Entry> entryLL) {
@@ -103,7 +104,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by ascending amount
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortAmtAscending(LinkedList<Entry> entryLL) {
@@ -122,7 +123,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by descending amount
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortAmtDecending(LinkedList<Entry> entryLL) {
@@ -141,7 +142,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by ascending date
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortDateAscending(LinkedList<Entry> entryLL) {
@@ -160,7 +161,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by descending date
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortDateDecending(LinkedList<Entry> entryLL) {
@@ -179,7 +180,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by ascending transaction type
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	static LinkedList<Entry> bubbleSortTransAscending(LinkedList<Entry> entryLL) {
@@ -198,7 +199,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to sort the search results by descending transaction type
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: entryLL
 	 */
 	public static LinkedList<Entry> bubbleSortTransDecending(LinkedList<Entry> entryLL) {
@@ -217,7 +218,7 @@ public class SearchMgr {
 	
 	/**
 	 * description: This function is to call the appropriate sort function depending on the search type
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: searchType
 	 * @param: searched
 	 */
@@ -261,7 +262,7 @@ public class SearchMgr {
 
 	/**
 	 * description: This function is to return a linked list of Entry results after searching by transaction type
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: transactionType
 	 */
 	public LinkedList<Entry> searchByTransactionType(int transactionType){
@@ -280,54 +281,31 @@ public class SearchMgr {
 	
 	/**
 	 * description: This function is to return a linked list of Entry results after searching by date
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: sign
 	 * @param: inputDD
 	 * @param: inputMM
 	 * @param: inputYYYY
 	 */
 	public LinkedList<Entry> searchByDate(int sign, String inputDD, String inputMM, String inputYYYY){
-		
-		//check if day of month is valid
-		try{
-			DD = Integer.parseInt(inputDD);
-			if (DD <= 0 || DD > 31)
-				throw new Exception();
-		} catch (Exception exDD){
-			System.out.println(exDD);
-			JOptionPane.showMessageDialog(frame, "Invalid Day");
-		}
-		
-		//check if month is valid
-		try{
-			MM = Integer.parseInt(inputMM);
-			if (MM <= 0 || MM > 12)
-				throw new Exception();
-		} catch (Exception exMM){
-			System.out.println(exMM);
-			JOptionPane.showMessageDialog(frame, "Invalid Month");
-		}
-		
-		//check if year is valid
-		try{
-			YYYY  = Integer.parseInt(inputYYYY);
-			if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
-				throw new Exception();
-		} catch (Exception exYY){
-			System.out.println(exYY);
-			JOptionPane.showMessageDialog(frame, "Invalid year");
-		}
+
+		LinkedList<Entry> allEntries = new LinkedList<Entry>();
+		LinkedList<Entry> resultEntries = new LinkedList<Entry>();
+		String formatString = "dd/MM/yyyy";
+		String dateString = inputDD + "/" + inputMM + "/" + inputYYYY;
+
+		try {
+			SimpleDateFormat format = new SimpleDateFormat(formatString);
+			format.setLenient(false);
+			format.parse(dateString);
 		
 		Date date = null;
-		String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
 		try {
 			date = date_format.parse(dateString);
 		} catch (Exception e1) {
 			System.out.println(e1);
 		}
 		
-		LinkedList<Entry> allEntries = new LinkedList<Entry>();
-		LinkedList<Entry> resultEntries = new LinkedList<Entry>();
 		allEntries = entryMgr.getTransactionList();
 
 		for (int i = 0; i < allEntries.size(); i++) {
@@ -361,12 +339,17 @@ public class SearchMgr {
 		}
 
 		searchMgrDisplay_LBL.setText(resultEntries.size() + " result(s) has been found");
+		} catch (ParseException e1) {
+			JOptionPane.showMessageDialog(frame, "Invalid Date");
+		} catch (IllegalArgumentException e2) {
+			JOptionPane.showMessageDialog(frame, "Invalid Date");
+		}
 		return resultEntries;
 	}
 	
 	/**
 	 * description: This function is to return a linked list of Entry results after searching by amount
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: sign
 	 * @param: amount
 	 */
@@ -412,7 +395,7 @@ public class SearchMgr {
 	
 	/**
 	 * description: This function is to return a linked list of Entry results after searching by description
-	 * @author: Pang Kang Wei, Joshua A0087809M
+	 * @author: A0087809M, Pang Kang Wei, Joshua
 	 * @param: description
 	 */
 	public LinkedList<Entry> searchByDescription(String description){
@@ -597,7 +580,7 @@ public class SearchMgr {
 		searchMgrSort_CB.addItem("Type Desc");
 		/**
 		 * description: Function is to listen for the Search Now button to be clicked and do the appropriate search
-		 * @author: Pang Kang Wei, Joshua A0087809M
+		 * @author: A0087809M, Pang Kang Wei, Joshua
 		 */
 		searchMgrSearchNow_BTN.addActionListener(new ActionListener() {
 
@@ -699,7 +682,7 @@ public class SearchMgr {
 		searchMgrExport_BTN.addActionListener(new ActionListener(){
 			/**
 			 * description: button outputs search results to a xls file
-			 * @author JP
+			 * @author A0086581W, Wong Jing Ping
 			 */
 			public void actionPerformed(ActionEvent e) {
 				

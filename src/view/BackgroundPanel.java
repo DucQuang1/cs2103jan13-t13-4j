@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 /**
  * JPanel with a background
- * @author Wong Jing Ping, A0086581W
+ * @author A0086581W, Wong Jing Ping 
  */
 public class BackgroundPanel extends JPanel {
 

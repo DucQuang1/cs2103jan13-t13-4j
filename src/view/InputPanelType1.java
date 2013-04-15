@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,7 +21,7 @@ import logic.HistoryMgr;
 
 /**
  * GUI class that handles an expense entry
- * @author Pang Kang Wei,Joshua	A0087809M
+ * @author A0087809M, Pang Kang Wei, Joshua
  *
  */
 public class InputPanelType1 extends InputPanel {
@@ -38,7 +39,7 @@ public class InputPanelType1 extends InputPanel {
 		
 		//drop down menu for asset categories
 		final JComboBox<String> assetTypeCB = new JComboBox<String>();
-		for(String assetCat : assetCatMgr.getCategoryList())
+		for(String assetCat : assetCatMgr.getCategoryNameList())
 			assetTypeCB.addItem(assetCat);
 		assetTypeCB.addItem("New Category");
 		inputPanelInput_PNL.add(assetTypeCB, "cell 1 1,growx");
@@ -48,7 +49,7 @@ public class InputPanelType1 extends InputPanel {
 		
 		//drop down menu for expense categories
 		final JComboBox<String> expenseCatCB = new JComboBox<String>();
-		for(String expenseCat : expenseCatMgr.getCategoryList())
+		for(String expenseCat : expenseCatMgr.getCategoryNameList())
 			expenseCatCB.addItem(expenseCat);
 		expenseCatCB.addItem("New Category");
 		inputPanelInput_PNL.add(expenseCatCB, "cell 3 1,growx");
@@ -72,40 +73,35 @@ public class InputPanelType1 extends InputPanel {
 				} catch (Exception exAmount){
 					errorMsg += "Amount was not a valid number.<br>";
 				}
-				
-				//check if day of month is valid
-				try{
-					DD = Integer.parseInt(inputPanelDD_TF.getText());
-					if (DD <= 0 || DD > 31)
-						throw new Exception();
-				} catch (Exception exDD){
-					errorMsg += "Day entered was not a valid number.<br>";
-				}
-				
-				//check if month is valid
-				try{
-					MM = Integer.parseInt(inputPanelMM_TF.getText());
-					if (MM <= 0 || MM > 12)
-						throw new Exception();
-				} catch (Exception exMM){
-					errorMsg += "Month entered was not a valid number.<br>";
-				}
-				
-				//check if year is valid
-				try{
-					YYYY  = Integer.parseInt(inputPanelYYYY_TF.getText());
-					if (YYYY < 1900 || YYYY > Calendar.getInstance().get(Calendar.YEAR))
-						throw new Exception();
-				} catch (Exception exYY){
-					errorMsg += "Year entered was not a valid number.<br>";
-				}
-				
-				Date date = null;
+
+				//Check if date is valid
+				DD = Integer.parseInt(inputPanelDD_TF.getText());
+				MM = Integer.parseInt(inputPanelMM_TF.getText());
+				YYYY = Integer.parseInt(inputPanelYYYY_TF.getText());
+				String formatString = "dd/MM/yyyy";
 				String dateString = Integer.toString(DD) + "/" + Integer.toString(MM) + "/" + Integer.toString(YYYY);
+
+				try {
+					SimpleDateFormat format = new SimpleDateFormat(formatString);
+					format.setLenient(false);
+					format.parse(dateString);
+				} catch (ParseException e1) {
+					errorMsg += "Invalid date.<br>";
+				} catch (IllegalArgumentException e2) {
+					errorMsg += "Invalid date.<br>";
+				}
+					
+				Date date = null;
 				try {
 					date = date_format.parse(dateString);
 				} catch (ParseException e1) {
 					errorMsg += "Unable to process date.<br>";
+				}
+				
+				//check if date is before today
+				Date today = new Date();
+				if (today.before(date)){
+					errorMsg += "Date given is in the future!.<br>";
 				}
 	
 				//get asset category

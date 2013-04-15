@@ -24,7 +24,7 @@ import net.miginfocom.swing.MigLayout;
 
 /**
  * GUI class that contains a JPanel to edit entries
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class DeletePanel {

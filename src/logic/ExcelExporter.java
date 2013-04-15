@@ -12,7 +12,7 @@ import javax.swing.table.TableModel;
 /**
  * Class that takes in a JTable, a file path, and writes to it
  * For exporting to excel
- * @author JP
+ * @author A0086581W, Wong Jing Ping
  *
  */
 public class ExcelExporter {
